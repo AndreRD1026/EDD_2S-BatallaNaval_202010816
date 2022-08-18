@@ -1,0 +1,20 @@
+{
+    "usuarios": [
+      { "nick": "andre", "password": "1234", "monedas": "1000", "edad": "20" },
+      { "nick": "angel", "password": "angel1", "monedas": "900", "edad": "20" },
+      { "nick": "diego", "password": "cano", "monedas": "800", "edad": "20" }
+    ],
+    "articulos": [
+      { "id": "10", "categoria": "legendario", "precio": "1000", "nombre": "", "src": "" },
+      { "id": "2", "categoria": "epico", "precio": "2000", "nombre": "", "src": "" },
+      { "id": "3", "categoria": "basico", "precio": "500", "nombre": "", "src": "" }
+    ],
+   "tutorial": {
+      "ancho":"",
+      "alto":"",
+      "movimientos":[
+          { "x": "", "y": "" },
+          { "x": "", "y": "" },
+          { "x": "", "y": "" }
+  ] }
+  }
