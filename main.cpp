@@ -48,7 +48,6 @@ do {
 		case 3:
 			login();
 			break;
-                        
         case 4:
             reportes();
             break;
@@ -149,49 +148,39 @@ void registrousuario(){
 	cout<<"\n";
 }
 
+
 void login(){
-	nodo *temporal = primero;
-	string usu, contrab;
-	int posicion = 0;
-	bool encontro = false;
-	cout<<"Ingrese su nombre de usuario"<<endl;
-	cin>> usu;
-	cout<<"Ingrese su contraseña"<<endl;
-	cin>>contrab;
-
-    while(temporal != NULL){
-        if(temporal->nombreuser == usu && temporal->contra == contrab){
-			cout <<"Datos correctos"<<endl;
-            encontro = true;
-			sub_login();
-            break;
-        }
-		if(temporal->nombreuser != usu && temporal->contra != contrab){
-			cout <<"Usuario y contraseña incorrecto"<<endl;
-            encontro = true;
-            break;
+	nodo* actual = new nodo();
+	actual = primero;
+	bool encontrado = false;
+	string nodoBuscado;
+	string usuariob, contrab;
+	cout << " Ingrese su usuario: "<<endl;
+	cin >> usuariob;
+	cout << "Ingrese su contraseña: "<<endl;
+	cin >> contrab;
+	if(primero!=NULL){
+		do{
+			
+			if(actual->nombreuser==usuariob && actual->contra==contrab ){
+				encontrado = true;	
+				cout<<" Datos correctos"<<endl;
+				sub_login();	
+			}
+			
+			actual = actual->siguiente;
+		}while(actual!=primero && encontrado != true);
+		
+		if(!encontrado){
+			cout << "\n Usuario o contraseña incorrectos\n\n";
 		}
-		if(temporal->nombreuser == usu && temporal->contra != contrab){
-			cout <<"Contraseña incorrecta"<<endl;
-            encontro = true;
-            break;
-		}
-		if(temporal->nombreuser != usu && temporal->contra == contrab){
-			cout <<"Usuario incorrecto"<<endl;
-            encontro = true;
-            break;
-		}
-		else{
-            posicion += 1;
-        }
-
-        temporal = temporal -> siguiente;
-    }
-    if(encontro == false){
-        cout  << "\n Usuario no encontrado en la Lista \n\n";
-    }
-
+		
+	}else{
+		cout << "\n No existen usuarios en la lista\n\n";
+	}
 }
+
+
 
 void reportes(){
 	cout<<"Opcion reportes"<<endl;
@@ -221,10 +210,6 @@ void registro_usuario(string nombreuser, string contra, int monedas ,int edad){
 	}
 
 };
-
-void insertar_nodo(){
-
-}
 
 
 void ver_lista_PaU() {
