@@ -11,10 +11,16 @@ using namespace std;
 void cargamasiva();
 void registrousuario();
 void login();
-void sub_login();
+void sub_login(string nombreuser, string contra,int edad);
 void reportes();
+void sub_reportes();
 void registro_usuario(string nombreuser, string contra,int monedas, int edad);
-void ver_lista_PaU();
+void lista_usuarios();
+void eliminarCuenta(string nombreuser);
+void editar_info(string nombreuser, int edad, string contra);
+void modificarNick(string nombreuser);
+void modificarEdad(int edad);
+void modificarContra(string contra);
 
 struct nodo
 {
@@ -165,7 +171,7 @@ void login(){
 			if(actual->nombreuser==usuariob && actual->contra==contrab ){
 				encontrado = true;	
 				cout<<" Datos correctos"<<endl;
-				sub_login();	
+				sub_login(actual->nombreuser, actual->contra,actual-> edad);
 			}
 			
 			actual = actual->siguiente;
@@ -176,15 +182,97 @@ void login(){
 		}
 		
 	}else{
-		cout << "\n No existen usuarios en la lista\n\n";
+		cout << "\n No existe el usuario en la lista\n\n";
 	}
 }
 
 
 
 void reportes(){
+	int opreport;
+	cout<<"\n";
 	cout<<"Opcion reportes"<<endl;
-	ver_lista_PaU();
+	cout<<"1. Estructuras Utilizadas"<<endl;
+	cout<<"2. Listado de usuarios ordenados por edad"<<endl;
+	cout<<"3. Listado de articulos ordenados por precio"<<endl;
+	cin >> opreport;
+
+	switch (opreport)
+	{
+	case 1:
+	int opcestruct;
+		cout<<"1. Lista Usuarios"<<endl;
+		cout<<"2. Lista Articulos"<<endl;
+		cout<<"3. Tutorial"<<endl;
+		cout<<"4. Listado de Jugadas"<<endl;
+		cin>> opcestruct;
+
+		switch (opcestruct){
+		case 1:
+			lista_usuarios();
+			break;
+		case 2:
+			cout<<"Reporte de Articulos"<<endl;
+			break;
+		case 3:
+			cout<<"Reporte de Tutorial"<<endl;
+			break;
+		case 4:
+			cout<<"Reporte de Jugadas"<<endl;
+			break;	
+		
+		default:
+			cout<<"Reporte error"<<endl;
+			break;
+		}
+		break;
+	
+	case 2:
+	int ordenl;
+		cout<<"1. Orden Ascendente"<<endl;
+		cout<<"2. Orden Descendente"<<endl;
+		cin>> ordenl;
+
+		switch (ordenl)
+		{
+		case 1:
+			cout<<"lista usuarios de forma ascendente"<<endl;
+			break;
+		
+		case 2:
+			cout<<"lista usuarios de forma descendente"<<endl;
+			break;
+	
+		default:
+			cout<<"\n";
+			break;
+		}
+	
+	case 3:
+	int ordenp;
+		cout<<"1. Orden Ascendente"<<endl;
+		cout<<"2. Orden Descendente"<<endl;
+		cin>> ordenp;
+
+		switch (ordenp)
+		{
+		case 1:
+			cout<<"lista articulos de forma precio ascendente"<<endl;
+			break;
+		
+		case 2:
+			cout<<"lista usuarios de forma precio descendente"<<endl;
+			break;
+	
+		default:
+			cout<<"\n";
+			break;
+		}
+	
+	default:
+		break;
+	}
+	
 	cout<<"\n";
 }
 
@@ -212,12 +300,12 @@ void registro_usuario(string nombreuser, string contra, int monedas ,int edad){
 };
 
 
-void ver_lista_PaU() {
+void lista_usuarios() {
 	nodo *actual = new nodo();
 	actual = primero;
 	if (primero!=NULL) {
 		do {
-			cout <<actual->nombreuser<<" "<<actual->contra<<" "<<actual->monedas<<" "<<actual->edad <<"->";
+			cout <<"| "<<"Nick: "<<actual->nombreuser<<" Contra: "<<actual->contra<<" Monedas: "<<actual->monedas<<" Edad: "<<actual->edad <<"| ";
 			actual = actual -> siguiente;
 		} while(actual!=primero);
 	}else{
@@ -226,11 +314,10 @@ void ver_lista_PaU() {
  
 }
 
-void sub_login(){
+void sub_login(string nombreuser, string contra,int edad){
 	int op1=0;
 
 	do {
-		
 	cout<<"************ Usuario ***********"<<endl;
 	cout<<"* 1. Editar Informacion        *"<<endl;
     cout<<"* 2. Eliminar Cuenta           *"<<endl;
@@ -240,12 +327,18 @@ void sub_login(){
 	cout<<"* 6. Salir al menu principal   *"<<endl;
 	cout<<"********************************"<<endl;
 	cin>>op1;
+	cout<<"\n";
 	switch(op1){
 		case 1:
-			cout<<"Editar Informacion"<<endl;
+			cout<<"Datos del Usuario"<<endl;
+			cout<<"Nick -> "<< nombreuser <<endl;
+			cout<<"Contraseña -> "<< contra <<endl;
+			cout<<"Edad -> "<< edad <<endl;
+			cout<<"\n";
+			editar_info(nombreuser, edad, contra);
             break;
 		case 2:
-			cout<<"Eliminar"<<endl;
+			eliminarCuenta(nombreuser);
             break;
 		case 3:
 			cout<<"Ver tutorial"<<endl;
@@ -258,10 +351,140 @@ void sub_login(){
             cout<<"Movimientos"<<endl;
             break;
 		case 6:
-			cout << "\nFin del programa\n";
+			cout << "\nRegresando\n";
 			break;
 		default:
 			cout << "\nIngrese una opcion correcta\n\n";
 		}	
     }while (op1!=6);
+}
+
+void editar_info(string nombreuser, int edad, string contra){
+	int opcio;
+	cout<<"\n";
+	cout<<"Elija lo que quiere editar: "<<endl;
+	cout<<"1. Editar Nick"<<endl;
+	cout<<"2. Editar Edad"<<endl;
+	cout<<"3. Editar Contraseña"<<endl;
+	cout<<"4. Regresar"<<endl;
+	cin>>opcio;
+
+	switch (opcio){
+	case 1:
+		cout<<"Opcion 1";
+		modificarNick(nombreuser);
+		break;
+	case 2:
+		cout<<"Opcion 2";
+		modificarEdad(edad);
+		break;
+	case 3:
+		cout<<"Opcion 3";
+		modificarContra(contra);
+		break;
+	case 4:
+		cout<<"\n";
+		break;	
+	default:
+		cout << "\nIngrese una opcion correcta\n\n";
+		break;
+	}
+
+}
+
+void modificarNick(string userb){
+	nodo* actual = new nodo();
+	actual = primero;
+	bool encontrado = false;
+	if(primero!=NULL){
+		do{
+			if(actual->nombreuser==userb){
+				cout << "\n Ingrese el nuevo Nick: ";
+				cin >> actual->nombreuser;
+				cout << "\n Para efectuar los cambios debe cerrar sesión e iniciar con el nuevo usuario\n\n";
+				encontrado = true;				
+			}
+			actual = actual->siguiente;
+		}while(actual!=primero && encontrado != true);	
+	}
+}
+
+void modificarEdad(int edad){
+	nodo* actual = new nodo();
+	actual = primero;
+	bool encontrado = false;
+	if(primero!=NULL){
+		do{
+			if(actual->edad==edad){
+				cout << "\n Ingrese la nueva Edad: ";
+				cin >> actual->edad;
+				cout << "\n Para efectuar los cambios debe volver a iniciar sesión\n\n";	
+				encontrado = true;				
+			}	
+			actual = actual->siguiente;
+		}while(actual!=primero && encontrado != true);	
+	}
+}
+
+
+void modificarContra(string contra){
+	nodo* actual = new nodo();
+	actual = primero;
+	bool encontrado = false;
+	if(primero!=NULL){
+		do{
+			if(actual->contra==contra){
+				cout << "\n Ingrese la nueva Contraseña: ";
+				cin >> actual->contra;
+				cout << "\n Para efectuar los cambios debe cerrar sesión e iniciar con la nueva contraseña\n\n";
+				encontrado = true;				
+			}
+			actual = actual->siguiente;
+		}while(actual!=primero && encontrado != true);	
+	}
+}
+
+void eliminarCuenta(string userbuscado){
+	nodo* actual = new nodo();
+	actual = primero;
+	nodo* anterior = new nodo();
+	anterior = NULL;
+	bool encontrado = false;
+	char opc;
+	cout<<"Desea eliminar su cuenta permanentemente [y/s] : " <<endl; 
+	cin>>opc;
+	if (opc == 'y'){
+		if(primero!=NULL){
+		do{
+			
+			if(actual->nombreuser==userbuscado){				
+				if(actual==primero){
+					primero = primero->siguiente;
+					primero->anterior = ultimo;
+					ultimo->siguiente = primero;
+				}else if(actual==ultimo){
+					ultimo = anterior;
+					ultimo->siguiente = primero;
+					primero->anterior = ultimo;
+				}else{
+					anterior->siguiente = actual->siguiente;
+					actual->siguiente->anterior = anterior;
+				}
+				cout << "\n La cuenta ha sido eliminada\n\n";
+				encontrado = true;	
+				//break;			
+			}
+			anterior = actual;
+			actual = actual->siguiente;
+		}while(actual!=primero && encontrado != true);		
+	}
+	}
+	if (opc == 's'){
+		cout<<"Salida"<<endl;
+		return;
+	}
+	else{
+		cout<<"Ingrese una opcion valida"<<endl;
+	}
+	
 }
