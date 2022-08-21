@@ -2,9 +2,12 @@
 #include <curses.h>
 #include<fstream>
 #include<string.h>
+#include<string>
 #include<stdlib.h>
+#include <sstream>
 #include "json/json.h"
 #include "jsoncpp.cpp"
+#include "SHA256.h"
 
 using namespace std;
 
@@ -15,12 +18,15 @@ void sub_login(string nombreuser, string contra,int edad);
 void reportes();
 void sub_reportes();
 void registro_usuario(string nombreuser, string contra,int monedas, int edad);
+void registro_usuarioJ(string nombreuser, string contra,int monedas, int edad);
 void lista_usuarios();
 void eliminarCuenta(string nombreuser);
 void editar_info(string nombreuser, int edad, string contra);
 void modificarNick(string nombreuser);
 void modificarEdad(int edad);
 void modificarContra(string contra);
+void GenerarGrafo();
+void Graficos();
 
 struct nodo
 {
@@ -72,14 +78,12 @@ void cargamasiva(){
 	string texto;
 	string nombreuser,contra,monedas,edad;
 	cout<<"Ingrese la ruta del archivo "<<endl;
-	//getline(cin,ruta);
-	//cin.ignore();
-	archivo.open("informacion.json", ios::in);
-	//archivo.open(ruta.c_str(), ios::in);
-
+	cin.ignore();
+	getline(cin,ruta);
+	//archivo.open("informacion.json", ios::in);
+	archivo.open(ruta.c_str(), ios::in);
 	if(archivo.fail()){
-		cout<<" No se pudo abrir el archivo";
-		exit(1);
+		cout<<"\nNo se pudo abrir el archivo\n"<<endl;
 	}
 
 	while (!archivo.eof())
@@ -103,7 +107,7 @@ void cargamasiva(){
 			std ::string monedasi = monedas;
 			int eddi = std::stoi(edadi);
 			int monedi = std::stoi(monedasi);
-			registro_usuario(nombreuser,contra,monedi,eddi);
+			registro_usuarioJ(nombreuser,contra,monedi,eddi);
     	}
 
 		const Json::Value& articulosJ = obj["articulos"]; 
@@ -127,15 +131,13 @@ void cargamasiva(){
 		break;
 		//cout << "\n Ancho: " << tutorialJ["ancho"].asString();
 		//cout << "\n Alto: " << tutorialJ["alto"].asString();
-		//getline(archivo,texto);
-		//archivo.close();
-
+		cout<<"Archivo cargado con exito"<<endl;
 	}
 
 	archivo.close();
-	cout<<"Archivo cargado con exito"<<endl;
-	return;
 	
+	return;
+
 }
 
 void registrousuario(){
@@ -150,7 +152,6 @@ void registrousuario(){
 	cout << "Ingresa la edad: "<<endl;
 	cin >> edad;
 	registro_usuario(nombreuser,contra,monedas, edad);
-	cout << "Registro exitoso" << '\n';
 	cout<<"\n";
 }
 
@@ -161,7 +162,8 @@ void login(){
 	bool encontrado = false;
 	string nodoBuscado;
 	string usuariob, contrab;
-	cout << " Ingrese su usuario: "<<endl;
+	char caracter;
+	cout << "Ingrese su usuario: "<<endl;
 	cin >> usuariob;
 	cout << "Ingrese su contraseña: "<<endl;
 	cin >> contrab;
@@ -210,6 +212,8 @@ void reportes(){
 		switch (opcestruct){
 		case 1:
 			lista_usuarios();
+			//GenerarGrafo();
+			//Graficos();
 			break;
 		case 2:
 			cout<<"Reporte de Articulos"<<endl;
@@ -276,29 +280,131 @@ void reportes(){
 	cout<<"\n";
 }
 
-void registro_usuario(string nombreuser, string contra, int monedas ,int edad){
-	nodo *nuevo = new nodo();
- 
-	nuevo->nombreuser = nombreuser;
-	nuevo->contra = contra;
-	nuevo->monedas = monedas;
-	nuevo->edad = edad;
- 
-	if (primero==NULL) {
-		primero=nuevo;
-		ultimo=nuevo;
-		primero -> siguiente=primero;
-		primero -> anterior=ultimo;
-	}else{
-		ultimo-> siguiente=nuevo;
-		nuevo-> anterior=ultimo;
-		nuevo-> siguiente=primero;
-		ultimo=nuevo;
-		primero-> anterior=ultimo;
+void registro_usuarioJ(string nombreuser, string contra, int monedas ,int edad){
+	nodo *actual = new nodo();
+	actual = primero;
+	bool encontrado = false;
+
+	if(primero != NULL){
+		do{
+			if(actual->nombreuser==nombreuser){
+				cout<<"\n";
+				cout<<"No se puede agregar porque ya existe un ususario con ese Nick"<<endl;
+				encontrado = true;				
+			}
+			actual = actual->siguiente;	
+		}while(actual!=primero && encontrado != true);
+	}
+	if(primero!= NULL  && encontrado==false){
+			if(actual->nombreuser!=nombreuser){
+				nodo *nuevo = new nodo();
+				nuevo->nombreuser = nombreuser;
+				nuevo->contra = contra;
+				nuevo->monedas = monedas;
+				nuevo->edad = edad;
+
+				if (primero==NULL) {
+					primero=nuevo;
+					ultimo=nuevo;
+					primero -> siguiente=primero;
+					primero -> anterior=ultimo;
+				}else{
+					ultimo-> siguiente=nuevo;
+					nuevo-> anterior=ultimo;
+					nuevo-> siguiente=primero;
+					ultimo=nuevo;
+					primero-> anterior=ultimo;
+				}
+				//cout<<"\nUsuarios registrados"<<endl;
+			}
+	}
+		
+	if(primero == NULL){
+		nodo *nuevo = new nodo();
+		nuevo->nombreuser = nombreuser;
+		nuevo->contra = contra;
+		nuevo->monedas = monedas;
+		nuevo->edad = edad;
+
+		if (primero==NULL) {
+			primero=nuevo;
+			ultimo=nuevo;
+			primero -> siguiente=primero;
+			primero -> anterior=ultimo;
+		}else{
+			ultimo-> siguiente=nuevo;
+			nuevo-> anterior=ultimo;
+			nuevo-> siguiente=primero;
+			ultimo=nuevo;
+			primero-> anterior=ultimo;
+		}
+		cout<<"\nUsuario registrado"<<endl;
 	}
 
 };
 
+void registro_usuario(string nombreuser, string contra, int monedas ,int edad){
+	nodo *actual = new nodo();
+	actual = primero;
+	bool encontrado = false;
+
+	if(primero != NULL){
+		do{
+			if(actual->nombreuser==nombreuser){
+				cout<<"\n";
+				cout<<"No se puede agregar porque ya existe un ususario con ese Nick"<<endl;
+				encontrado = true;				
+			}
+			actual = actual->siguiente;	
+		}while(actual!=primero && encontrado != true);
+	}
+	if(primero!= NULL  && encontrado==false){
+			if(actual->nombreuser!=nombreuser){
+				nodo *nuevo = new nodo();
+				nuevo->nombreuser = nombreuser;
+				nuevo->contra = contra;
+				nuevo->monedas = monedas;
+				nuevo->edad = edad;
+
+				if (primero==NULL) {
+					primero=nuevo;
+					ultimo=nuevo;
+					primero -> siguiente=primero;
+					primero -> anterior=ultimo;
+				}else{
+					ultimo-> siguiente=nuevo;
+					nuevo-> anterior=ultimo;
+					nuevo-> siguiente=primero;
+					ultimo=nuevo;
+					primero-> anterior=ultimo;
+				}
+				cout<<"\nUsuario registrado"<<endl;
+			}
+	}
+		
+	if(primero == NULL){
+		nodo *nuevo = new nodo();
+		nuevo->nombreuser = nombreuser;
+		nuevo->contra = contra;
+		nuevo->monedas = monedas;
+		nuevo->edad = edad;
+
+		if (primero==NULL) {
+			primero=nuevo;
+			ultimo=nuevo;
+			primero -> siguiente=primero;
+			primero -> anterior=ultimo;
+		}else{
+			ultimo-> siguiente=nuevo;
+			nuevo-> anterior=ultimo;
+			nuevo-> siguiente=primero;
+			ultimo=nuevo;
+			primero-> anterior=ultimo;
+		}
+		cout<<"\nUsuario registrado"<<endl;
+	}
+
+};
 
 void lista_usuarios() {
 	nodo *actual = new nodo();
@@ -316,7 +422,7 @@ void lista_usuarios() {
 
 void sub_login(string nombreuser, string contra,int edad){
 	int op1=0;
-
+	char prueba;
 	do {
 	cout<<"************ Usuario ***********"<<endl;
 	cout<<"* 1. Editar Informacion        *"<<endl;
@@ -324,7 +430,7 @@ void sub_login(string nombreuser, string contra,int edad){
     cout<<"* 3. Ver tutorial              *"<<endl;
     cout<<"* 4. Ver articulos de tienda   *"<<endl;
     cout<<"* 5. Realizar movimientos      *"<<endl;
-	cout<<"* 6. Salir al menu principal   *"<<endl;
+	cout<<"* 6. Cerrar sesión             *"<<endl;
 	cout<<"********************************"<<endl;
 	cin>>op1;
 	cout<<"\n";
@@ -339,6 +445,7 @@ void sub_login(string nombreuser, string contra,int edad){
             break;
 		case 2:
 			eliminarCuenta(nombreuser);
+			//return;
             break;
 		case 3:
 			cout<<"Ver tutorial"<<endl;
@@ -351,7 +458,7 @@ void sub_login(string nombreuser, string contra,int edad){
             cout<<"Movimientos"<<endl;
             break;
 		case 6:
-			cout << "\nRegresando\n";
+			cout << "\nSe cerró la sesión\n";
 			break;
 		default:
 			cout << "\nIngrese una opcion correcta\n\n";
@@ -450,10 +557,10 @@ void eliminarCuenta(string userbuscado){
 	nodo* anterior = new nodo();
 	anterior = NULL;
 	bool encontrado = false;
-	char opc;
+	string opc;
 	cout<<"Desea eliminar su cuenta permanentemente [y/s] : " <<endl; 
 	cin>>opc;
-	if (opc == 'y'){
+	if (opc == "y"){
 		if(primero!=NULL){
 		do{
 			
@@ -470,21 +577,103 @@ void eliminarCuenta(string userbuscado){
 					anterior->siguiente = actual->siguiente;
 					actual->siguiente->anterior = anterior;
 				}
-				cout << "\n La cuenta ha sido eliminada\n\n";
-				encontrado = true;	
-				//break;			
+				cout << "\nLa cuenta ha sido eliminada\n\n";
+				encontrado = true;		
 			}
 			anterior = actual;
 			actual = actual->siguiente;
 		}while(actual!=primero && encontrado != true);		
 	}
+	cout<<"Cerrando la sesión"<<endl;
+	cout<<"\n";
+	return;
 	}
-	if (opc == 's'){
+	if (opc == "s"){
 		cout<<"Salida"<<endl;
 		return;
 	}
 	else{
 		cout<<"Ingrese una opcion valida"<<endl;
 	}
-	
+}
+
+void Graficos(){
+	string dot = "";
+	dot = dot + "digraph G {\n";
+	dot = dot + "node[shape=box]";
+	dot = dot + "node[label = ""prueba""]";
+	//dot = dot + "nodo1[label=""nick: andre " "+" "\ncontra:prueba" "+" "\nedad:50" "+" "\nmonedas: 100""]"; 
+	//dot = dot + "nodo1[label = ""nick: andre" "+" "\ncontra: prueba" "+" "\nedad: 50" "+" "\nmonedas: 100""]";	
+	//dot
+/*	dot = dot + "nodo1[label = ""nick: andre" "+" "\ncontra: prueba" "+" "\nedad: 50" "+" "\nmonedas: 100""]";	
+	dot = dot + "nodo1 ->nodo2";	
+	dot = dot + "nodo2 ->nodo1";	
+	dot = dot + "nodo1[label = ""nick: andre" "+" "\ncontra: prueba" "+" "\nedad: 50" "+" "\nmonedas: 100""]";	 
+	dot = dot + "nodo2->nodo3";
+	dot = dot + "nodo3 -> nodo2";	
+	dot = dot + "nodo1[label = ""nick: andre" "+" "\ncontra: prueba" "+" "\nedad: 50" "+" "\nmonedas: 100""]";	
+	dot = dot + "nodo3->nodo4";	
+	dot = dot + "nodo4 ->nodo3";	
+	dot = dot + "nodo1 -> nodo4";		
+	dot = dot + "nodo4:w -> nodo1:w"; */
+	dot = dot + "}";	
+
+	ofstream file;
+    file.open("Pruebas.dot");
+    file << dot;
+    file.close();
+
+    //------->generar png
+    system(("dot -Tpng Pruebas.dot -o  Pruebas.png"));
+
+    //------>abrir archivo
+    system(("Pruebas.png"));
+}
+
+
+void GenerarGrafo() {
+	nodo* actual = new nodo();
+	actual = primero;
+    string dot = "";
+    dot = dot + "digraph G {\n";
+    dot = dot + "label=\"ListaDeImagenes\";\n";
+    dot = dot + "node [shape=box];\n";
+	//cout <<"| "<<"Nick: "<<actual->nombreuser<<" Contra: "<<actual->contra<<" Monedas: "<<actual->monedas<<" Edad: "<<actual->edad <<"| ";
+	//actual = actual -> siguiente;
+
+
+    dot = dot + "//agregar nodos\n";
+    while (actual != NULL) {
+        dot = dot + "N" + std::to_string(actual->monedas) + "[label=\"" + std::to_string(actual->edad) + "\"];\n";
+        actual = actual->siguiente;
+    }
+    dot = dot + "//Enlazar imagenes\n";
+    dot = dot + "{rank=same;\n";
+    actual = primero;
+    while (actual != NULL) {
+
+        dot = dot + "N" + std::to_string(actual->edad);
+        if (actual->siguiente != NULL) {
+            dot = dot + "->";
+        }
+        actual = actual->siguiente;
+    }
+
+    dot = dot + "}\n";
+    dot = dot + "}\n";
+
+    cout << dot;
+    
+     //------->escribir archivo
+    ofstream file;
+    file.open("Pruebas.dot");
+    file << dot;
+    file.close();
+
+    //------->generar png
+    system(("dot -Tpng Pruebas.dot -o  Pruebas.png"));
+
+    //------>abrir archivo
+    system(("Pruebas.png"));
+    
 }

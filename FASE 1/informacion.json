@@ -4,7 +4,9 @@
       { "nick": "luis", "password": "elpana", "monedas": "100", "edad": "19" },
       { "nick": "angel", "password": "siquea", "monedas": "50", "edad": "21" },
       { "nick": "pedro", "password": "pedrovm", "monedas": "350", "edad": "30" },
-      { "nick": "emilio", "password": "milo", "monedas": "50", "edad": "22" }
+      { "nick": "emilio", "password": "milo", "monedas": "50", "edad": "22" },
+      { "nick": "andre", "password": "prueba", "monedas": "210", "edad": "20" },
+      { "nick": "luis", "password": "prueba1", "monedas": "100", "edad": "19" }
     ],
     "articulos": [
       { "id": "1", "categoria": "legendario", "precio": "500", "nombre": "barco1", "src": "link1" },
