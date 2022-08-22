@@ -19,7 +19,9 @@ void reportes();
 void sub_reportes();
 void registro_usuario(string nombreuser, string contra,int monedas, int edad);
 void registro_usuarioJ(string nombreuser, string contra,int monedas, int edad);
+void registroTutorial(int alto, int ancho);
 void lista_usuarios();
+void lista_usuariosordenada();
 void eliminarCuenta(string nombreuser);
 void editar_info(string nombreuser, int edad, string contra);
 void modificarNick(string nombreuser);
@@ -28,20 +30,24 @@ void modificarContra(string contra);
 void GenerarGrafo();
 void Graficos();
 
-struct nodo
-{
+struct nodo{
 	string nombreuser, contra;
 	int  monedas,edad; 
 	nodo *anterior;
 	nodo * siguiente;
 } *primero=NULL, *ultimo=NULL;
 
-int main(int argc, char** argv) {
 
+struct nodoCola{
+	int  ancho,alto; 
+	nodo* siguienteCola;
+} *primeroCola, *ultimoCola;
+
+
+
+int main(int argc, char** argv) {
     int op=0;
-		
 do {
-		
 	cout<<"************* Menu *************"<<endl;
 	cout<<"* 1. Carga Masiva              *"<<endl;
     cout<<"* 2. Registrar Usuario         *"<<endl;
@@ -77,18 +83,18 @@ void cargamasiva(){
 	string ruta;
 	string texto;
 	string nombreuser,contra,monedas,edad;
+	string alt, anch;
 	cout<<"Ingrese la ruta del archivo "<<endl;
 	cin.ignore();
 	getline(cin,ruta);
-	//archivo.open("informacion.json", ios::in);
-	archivo.open(ruta.c_str(), ios::in);
+	archivo.open("informacion.json", ios::in);
+	//archivo.open(ruta.c_str(), ios::in);
 	if(archivo.fail()){
 		cout<<"\nNo se pudo abrir el archivo\n"<<endl;
 	}
 
 	while (!archivo.eof())
 	{
-
 		Json::Reader reader;
     	Json::Value obj;
     	reader.parse(archivo, obj); 
@@ -121,17 +127,26 @@ void cargamasiva(){
     	}
 
 		const Json::Value& tutorialJ = obj["tutorial"];
-		const Json::Value& movimientosJ = obj["movimientos"];
+		cout <<"\nAncho: "<<tutorialJ["ancho"].asString();
+		alt = tutorialJ["ancho"].asString();
+		cout<<"\nAlto: "<<tutorialJ["alto"].asString();
+		anch = tutorialJ["alto"].asString();
+		std ::string alto = alt;
+		std ::string ancho = anch;
+		int altoi = std::stoi(alto);
+		int anchoi = std::stoi(ancho);
+		//registroTutorial(altoi,anchoi);
+		cout<<"\nMovimientos: ";
 
+		const Json::Value& movimientosJ = tutorialJ["movimientos"];
 		for(int i = 0; i < movimientosJ.size(); i++){
-			cout << "\n X: " << movimientosJ[i]["x"].asString();
-			cout << "\n Y: " << movimientosJ[i]["y"].asString();
+			cout << "\nX: " << movimientosJ[i]["x"].asString();
+			cout << " Y: " << movimientosJ[i]["y"].asString();
 		}
-
+		cout<<"\n";
+		cout<<"\nArchivo cargado con exito\n"<<endl;
 		break;
-		//cout << "\n Ancho: " << tutorialJ["ancho"].asString();
-		//cout << "\n Alto: " << tutorialJ["alto"].asString();
-		cout<<"Archivo cargado con exito"<<endl;
+		
 	}
 
 	archivo.close();
@@ -141,6 +156,7 @@ void cargamasiva(){
 }
 
 void registrousuario(){
+	
 	string nombreuser, contra;
 	int monedas, edad;
 	cout << "Ingresa el nombre de usuario: "<<endl;
@@ -151,10 +167,12 @@ void registrousuario(){
 	cin >> monedas;
 	cout << "Ingresa la edad: "<<endl;
 	cin >> edad;
+	
 	registro_usuario(nombreuser,contra,monedas, edad);
+	string encriptado = SHA256::cifrar(contra);
+	cout<<"El sha es : "<<encriptado<<endl;
 	cout<<"\n";
 }
-
 
 void login(){
 	nodo* actual = new nodo();
@@ -167,6 +185,9 @@ void login(){
 	cin >> usuariob;
 	cout << "Ingrese su contraseña: "<<endl;
 	cin >> contrab;
+	string nuevo = SHA256::cifrar(contrab);
+	cout<<"El sha es : "<<nuevo<<endl;
+	cout<<"\n";
 	if(primero!=NULL){
 		do{
 			
@@ -187,8 +208,6 @@ void login(){
 		cout << "\n No existe el usuario en la lista\n\n";
 	}
 }
-
-
 
 void reportes(){
 	int opreport;
@@ -241,6 +260,8 @@ void reportes(){
 		{
 		case 1:
 			cout<<"lista usuarios de forma ascendente"<<endl;
+			lista_usuariosordenada();
+			//show();
 			break;
 		
 		case 2:
@@ -288,8 +309,6 @@ void registro_usuarioJ(string nombreuser, string contra, int monedas ,int edad){
 	if(primero != NULL){
 		do{
 			if(actual->nombreuser==nombreuser){
-				cout<<"\n";
-				cout<<"No se puede agregar porque ya existe un ususario con ese Nick"<<endl;
 				encontrado = true;				
 			}
 			actual = actual->siguiente;	
@@ -315,7 +334,6 @@ void registro_usuarioJ(string nombreuser, string contra, int monedas ,int edad){
 					ultimo=nuevo;
 					primero-> anterior=ultimo;
 				}
-				//cout<<"\nUsuarios registrados"<<endl;
 			}
 	}
 		
@@ -406,6 +424,25 @@ void registro_usuario(string nombreuser, string contra, int monedas ,int edad){
 
 };
 
+/*void registroTutorial(int alto, int ancho){
+	nodoCola* nuevoCola = new nodoCola();
+	//cout << " Ingrese el dato del nuevo Nodo: ";
+	//cin >> nuevo->dato;
+	nuevoCola->alto = alto;
+	nuevoCola->ancho = ancho;
+	//nuevo->ancho;
+	if(primeroCola==NULL){
+		primeroCola = nuevoCola;
+		primeroCola->siguienteCola = NULL;
+		ultimoCola = primeroCola;
+	}else{
+		ultimoCola->siguienteCola = nuevoCola;
+		nuevoCola->siguienteCola = NULL;
+		ultimoCola = nuevoCola;
+	}
+	cout << endl << " Nodo Ingresado " << endl << endl;
+}
+*/
 void lista_usuarios() {
 	nodo *actual = new nodo();
 	actual = primero;
@@ -418,6 +455,97 @@ void lista_usuarios() {
 		std::cout << "Lista vacia" << endl;
 	}
  
+}
+
+void lista_usuariosordenada() {
+	//nodo *actual = new nodo();
+	//actual = primero;
+
+/*	if(actual!=NULL){
+			nodo *auxiliar = actual->siguiente;
+			while(auxiliar!=NULL){
+				if(actual->edad > auxiliar->edad){
+					int auxiliar2 = auxiliar->edad; 
+					auxiliar->edad = actual->edad;
+					auxiliar->edad = auxiliar2;
+				}
+				auxiliar = auxiliar->siguiente;
+			}
+			actual = actual->siguiente;
+			//cout<<"Edad : "<<auxiliar->edad;
+			//cout<<"ciclo";
+	}else{
+		cout << "Lista vacia" << endl;
+	}
+*/
+/*	nodo *p = primero;
+    while(p != NULL){
+        nodo *j = p ->siguiente;
+        while(j != NULL){
+            if(p->edad > j->edad){
+                int aux = j->edad;
+                j->edad = p->edad;
+                p->edad = aux;
+            }
+            j = j->siguiente;
+        }
+        p = p->siguiente;
+    }
+
+	cout<<"Listo"<<endl;
+*/
+/*	nodo *actual = new nodo();
+	nodo *siguiente1;
+	//actual = primero;
+
+    //Nodo *actual, *siguiente;
+	int n;
+    if(actual != NULL)
+    {
+        actual = primero;
+        do
+        {
+            siguiente1 = actual->siguiente;
+            while(siguiente1 != actual)
+            {
+                if(actual->edad > siguiente1->edad)
+                {
+                    n = siguiente1->edad;
+                    siguiente1->edad = actual->edad;
+                    actual->edad = n;
+                }
+                siguiente1 = siguiente1->siguiente;
+            }
+            actual = actual->siguiente;
+            siguiente1 = actual->siguiente;
+        }
+        while(siguiente1 != actual);
+    }
+*/
+
+/*	while(primero!=NULL){
+	nodo *otro = primero->siguiente;
+		while(otro != NULL){
+			if(primero->edad > otro->edad){
+				int aux = otro->edad;
+				otro->edad = primero->edad;
+				otro->edad = aux;
+			}
+			otro = otro->siguiente;
+		}
+		primero = primero->siguiente;
+	cout<<"Edad: "<<otro->edad<<endl;
+	}
+*/	
+/*	if (primero!=NULL) {
+		do {
+			cout <<"| "<<"Nick: "<<actual->nombreuser<<" Contra: "<<actual->contra<<" Monedas: "<<actual->monedas<<" Edad: "<<actual->edad <<"| ";
+			actual = actual -> siguiente;
+		} while(actual!=primero);
+	}else{
+		std::cout << "Lista vacia" << endl;
+	}
+*/
 }
 
 void sub_login(string nombreuser, string contra,int edad){
@@ -601,7 +729,7 @@ void Graficos(){
 	string dot = "";
 	dot = dot + "digraph G {\n";
 	dot = dot + "node[shape=box]";
-	dot = dot + "node[label = ""prueba""]";
+	dot = dot + "nodo1[label = ""prueba""]";
 	//dot = dot + "nodo1[label=""nick: andre " "+" "\ncontra:prueba" "+" "\nedad:50" "+" "\nmonedas: 100""]"; 
 	//dot = dot + "nodo1[label = ""nick: andre" "+" "\ncontra: prueba" "+" "\nedad: 50" "+" "\nmonedas: 100""]";	
 	//dot

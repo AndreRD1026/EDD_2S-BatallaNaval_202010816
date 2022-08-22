@@ -5,13 +5,14 @@
       { "nick": "angel", "password": "siquea", "monedas": "50", "edad": "21" },
       { "nick": "pedro", "password": "pedrovm", "monedas": "350", "edad": "30" },
       { "nick": "emilio", "password": "milo", "monedas": "50", "edad": "22" },
-      { "nick": "andre", "password": "prueba", "monedas": "210", "edad": "20" },
-      { "nick": "luis", "password": "prueba1", "monedas": "100", "edad": "19" }
+      { "nick": "andre1", "password": "prueba", "monedas": "210", "edad": "20" },
+      { "nick": "luis1", "password": "prueba1", "monedas": "100", "edad": "19" }
     ],
     "articulos": [
       { "id": "1", "categoria": "legendario", "precio": "500", "nombre": "barco1", "src": "link1" },
       { "id": "2", "categoria": "epic", "precio": "250", "nombre": "barco2", "src": "link2" },
-      { "id": "3", "categoria": "basico", "precio": "100", "nombre": "barco3", "src": "link3" }
+      { "id": "3", "categoria": "basico", "precio": "100", "nombre": "barco3", "src": "link3" },
+      { "id": "4", "categoria": "epic", "precio": "250", "nombre": "barco4", "src": "link4" }
     ],
    "tutorial": {
       "ancho":"10",
