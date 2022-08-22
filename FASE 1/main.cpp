@@ -231,8 +231,7 @@ void reportes(){
 		switch (opcestruct){
 		case 1:
 			lista_usuarios();
-			//GenerarGrafo();
-			//Graficos();
+			Graficos();
 			break;
 		case 2:
 			cout<<"Reporte de Articulos"<<endl;
@@ -726,10 +725,29 @@ void eliminarCuenta(string userbuscado){
 }
 
 void Graficos(){
+	ifstream archivo;
+	nodo* actual = new nodo();
+	actual = primero;
+	int contador = 0;
+	string nombreNodo;
 	string dot = "";
 	dot = dot + "digraph G {\n";
 	dot = dot + "node[shape=box]";
-	dot = dot + "nodo1[label = ""prueba""]";
+	//dot = dot + "nodo1[label =\"Nick: "  + (actual->nombreuser) + "\nContra: " +(actual->contra) + "\nMonedas: " + to_string(actual->monedas) + "\nEdad: " + to_string(actual->edad) + "\" ""]"; Este es el bueno
+	if (primero!=NULL) {
+		do {
+			//nombreNodoCd="nodoCD"+str(contadorCd)
+			nombreNodo = "nodo"+to_string(contador);
+			//cout <<"| "<<"Nick: "<<actual->nombreuser<<" Contra: "<<actual->contra<<" Monedas: "<<actual->monedas<<" Edad: "<<actual->edad <<"| ";
+			dot = dot + nombreNodo + "[label =\"Nick: "  + (actual->nombreuser) + "\nContra: " +(actual->contra) + "\nMonedas: " + to_string(actual->monedas) + "\nEdad: " + to_string(actual->edad) + "\" ""]";
+			//dot = dot + "node ->" + nombreNodo;
+			actual = actual -> siguiente;
+			contador+=1;
+		} while(actual!=primero);
+	}
+	//dot = dot + "nodo1[label =\"Nick: "  + (actual->nombreuser) + "\nContra: " +(actual->contra) + "\nMonedas: " + to_string(actual->monedas) + "\nEdad: " + to_string(actual->edad) + "\" ""]";
+
+	//"[label=\"Departamento = "+departamento.attrib['departamento']+"\"] \n"
 	//dot = dot + "nodo1[label=""nick: andre " "+" "\ncontra:prueba" "+" "\nedad:50" "+" "\nmonedas: 100""]"; 
 	//dot = dot + "nodo1[label = ""nick: andre" "+" "\ncontra: prueba" "+" "\nedad: 50" "+" "\nmonedas: 100""]";	
 	//dot
@@ -747,15 +765,15 @@ void Graficos(){
 	dot = dot + "}";	
 
 	ofstream file;
-    file.open("Pruebas.dot");
+    file.open("ListaCircularDobleEnlazada.dot");
     file << dot;
     file.close();
 
     //------->generar png
-    system(("dot -Tpng Pruebas.dot -o  Pruebas.png"));
+    system(("dot -Tpng ListaCircularDobleEnlazada.dot -o  ListaCircularDobleEnlazada.png"));
 
     //------>abrir archivo
-    system(("Pruebas.png"));
+    //system(("ListaCircularDobleEnlazada.png"));
 }
 
 
@@ -772,7 +790,7 @@ void GenerarGrafo() {
 
     dot = dot + "//agregar nodos\n";
     while (actual != NULL) {
-        dot = dot + "N" + std::to_string(actual->monedas) + "[label=\"" + std::to_string(actual->edad) + "\"];\n";
+        dot = dot + "N" + to_string(actual->monedas) + "[label=\"" + to_string(actual->edad) + "\"];\n";
         actual = actual->siguiente;
     }
     dot = dot + "//Enlazar imagenes\n";
@@ -780,7 +798,7 @@ void GenerarGrafo() {
     actual = primero;
     while (actual != NULL) {
 
-        dot = dot + "N" + std::to_string(actual->edad);
+        dot = dot + "N" + to_string(actual->edad);
         if (actual->siguiente != NULL) {
             dot = dot + "->";
         }
