@@ -20,7 +20,8 @@
       { "id": "1", "categoria": "legendario", "precio": "500", "nombre": "barco1", "src": "link1" },
       { "id": "2", "categoria": "epic", "precio": "250", "nombre": "barco2", "src": "link2" },
       { "id": "3", "categoria": "basico", "precio": "100", "nombre": "barco3", "src": "link3" },
-      { "id": "4", "categoria": "epic", "precio": "250", "nombre": "barco4", "src": "link4" }
+      { "id": "4", "categoria": "epic", "precio": "250", "nombre": "barco4", "src": "link4" },
+      { "id": "5", "categoria": "epic", "precio": "250", "nombre": "barco4", "src": "link5" }
     ],
    "tutorial": {
       "ancho":"10",

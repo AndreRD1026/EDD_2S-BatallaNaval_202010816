@@ -19,9 +19,12 @@ void reportes();
 void sub_reportes();
 void registro_usuario(string nombreuser, string contra,int monedas, int edad, string contracifrada);
 void registro_usuarioJ(string nombreuser, string contra,int monedas, int edad, string contracifrada);
+void lista_articulos(int id, string categoriaarticulo,int precioarticulo, string nombrearticulo, string srcarticulo);
 void registroTutorial(int x, int y);
+void insertarPila(int movx, int movy);
 void verTutorial();
 void lista_usuarios();
+void verlista_articulos();
 void lista_usuariosordenada();
 void eliminarCuenta(string nombreuser);
 void editar_info(string nombreuser, int edad, string contra);
@@ -31,7 +34,10 @@ void modificarContra(string contra);
 void GenerarGrafo();
 void GraficoListaCDobleEnlace();
 void GraficoTutorial();
+void movimientos();
 void graficaPrueba();
+void desplegarPila();
+void GraficoMovimientos(string nombre);
 
 struct nodo{
 	string nombreuser, contra, contracifrada;
@@ -40,12 +46,28 @@ struct nodo{
 	nodo * siguiente;
 } *primero=NULL, *ultimo=NULL;
 
+struct NodoArticulos{
+	int id;
+    struct NodoCategoria *categoria;
+    NodoArticulos *siguiente;
+} *primeroAritulos, *ultimoArticulos;
+
+struct NodoCategoria{
+    string categoria, nombre, src;
+	int precio;
+    NodoCategoria *siguienteC;
+} *primeroCategoria, *ultimoCategoria;
+
 
 struct nodoCola{
 	int  x,y; 
 	nodoCola* siguienteCola;
 } *primeroCola, *ultimoCola;
 
+struct nodoPila{
+	int x,y;
+	nodoPila* siguientePila;
+} *primeroPila;
 
 
 int main(int argc, char** argv) {
@@ -86,6 +108,7 @@ void cargamasiva(){
 	string ruta;
 	string texto;
 	string nombreuser,contra,monedas,edad;
+	string idarticuloo, categoriarticulo,precioarticuloo,nombrearticulo,srcarticulo;
 	string alt, anch, x1, y1;
 	cout<<"Ingrese la ruta del archivo "<<endl;
 	cin.ignore();
@@ -122,12 +145,23 @@ void cargamasiva(){
 
 		const Json::Value& articulosJ = obj["articulos"]; 
 		for (int i = 0; i < articulosJ.size(); i++){
-        	cout << "\nID: " << articulosJ[i]["id"].asString();
-        	cout << "\nCategoria: " << articulosJ[i]["categoria"].asString();
-			cout << "\nPrecio: " << articulosJ[i]["precio"].asString();
-        	cout << "\nNombre: " << articulosJ[i]["nombre"].asString();
-			cout << "\nSRC: " << articulosJ[i]["src"].asString();
-        	cout << endl;
+        	//cout << "\nID: " << articulosJ[i]["id"].asString();
+			idarticuloo = articulosJ[i]["id"].asString();
+        	//cout << "\nCategoria: " << articulosJ[i]["categoria"].asString();
+			categoriarticulo = articulosJ[i]["categoria"].asString();
+			//cout << "\nPrecio: " << articulosJ[i]["precio"].asString();
+			precioarticuloo = articulosJ[i]["precio"].asString();
+			articulosJ[i]["precio"].asString();
+        	//cout << "\nNombre: " << articulosJ[i]["nombre"].asString();
+			nombrearticulo = articulosJ[i]["nombre"].asString();
+			//cout << "\nSRC: " << articulosJ[i]["src"].asString();
+			srcarticulo = articulosJ[i]["src"].asString();
+			std ::string iarticulo = idarticuloo;
+			std ::string precioarticul = precioarticuloo;
+			int precioarticulo = std::stoi(precioarticul);
+			int idarticulo = std::stoi(iarticulo);
+			lista_articulos(idarticulo, categoriarticulo,precioarticulo,nombrearticulo,srcarticulo);
+        	//cout << endl;
     	}
 
 		const Json::Value& tutorialJ = obj["tutorial"];
@@ -141,7 +175,6 @@ void cargamasiva(){
 		int y = std::stoi(alto);
 		registroTutorial(x,y);
 		//cout<<"\nMovimientos: ";
-
 		const Json::Value& movimientosJ = tutorialJ["movimientos"];
 		for(int i = 0; i < movimientosJ.size(); i++){
 			//cout << "\nX: " << movimientosJ[i]["x"].asString();
@@ -155,13 +188,9 @@ void cargamasiva(){
 		cout<<"\n";
 		cout<<"\nArchivo cargado con exito\n"<<endl;
 		break;
-		
 	}
-
 	archivo.close();
-	
 	return;
-
 }
 
 void registrousuario(){
@@ -246,6 +275,7 @@ void reportes(){
 			break;
 		case 2:
 			cout<<"Reporte de Articulos"<<endl;
+			verlista_articulos();
 			break;
 		case 3:
 			cout<<"Reporte de Tutorial"<<endl;
@@ -253,6 +283,8 @@ void reportes(){
 			break;
 		case 4:
 			cout<<"Reporte de Jugadas"<<endl;
+			//desplegarPila();
+			movimientos();
 			break;	
 		
 		default:
@@ -440,6 +472,88 @@ void registro_usuario(string nombreuser, string contra, int monedas ,int edad, s
 
 };
 
+
+void lista_articulos(int id,string categoriaarticulo, int precioarticulo, string nombrearticulo, string srcarticulo){
+  NodoArticulos * nuevoaritculos = new NodoArticulos();
+  nuevoaritculos->id = id;
+  NodoCategoria * nuevacategoria =  new NodoCategoria();
+  //persona1->cartera  = cartera;
+ 	nuevoaritculos->categoria = nuevacategoria;
+	nuevacategoria->categoria = categoriaarticulo;
+	nuevacategoria->precio = precioarticulo;
+	nuevacategoria->nombre = nombrearticulo;
+	nuevacategoria->src = srcarticulo;
+	//nuevoaritculos->siguiente = NULL;
+  if (primeroAritulos==NULL){
+		primeroAritulos = nuevoaritculos;
+		primeroCategoria = nuevacategoria;
+		//primeroAritulos = nuevacategoria;
+		primeroAritulos->siguiente = NULL;
+		primeroCategoria->siguienteC = NULL;
+		ultimoArticulos = primeroAritulos;
+		ultimoCategoria = primeroCategoria;
+  }else{
+	ultimoArticulos->siguiente = nuevoaritculos;
+	ultimoCategoria->siguienteC = nuevacategoria;
+	nuevoaritculos->siguiente = NULL;
+	nuevacategoria->siguienteC = NULL;
+	ultimoArticulos = nuevoaritculos;
+	ultimoCategoria = nuevacategoria;
+  }
+  
+  /* 
+	nuevoCola->x = x;
+	nuevoCola->y = y;
+	if(primeroCola==NULL){
+		primeroCola = nuevoCola;
+		primeroCola->siguienteCola = NULL;
+		ultimoCola = primeroCola;
+	}else{
+		ultimoCola->siguienteCola = nuevoCola;
+		nuevoCola->siguienteCola = NULL;
+		ultimoCola = nuevoCola;
+	}
+  
+  */
+
+  //cout<<"\nID Agregado: "<<aritculos->id<<" Categoria: "<<categoria->categoria<<" Precio: "<<categoria->precio<<" Nombre: "<<categoria->nombre<<" SRC: "<<categoria->src<<endl;
+  //cout<<"\nCategoria: "<<categoria->categoria<<endl;
+  //cout<<"Categorias :"<<categoria->categoria<<endl;
+}
+
+void verlista_articulos(){
+	NodoArticulos* articulos = new NodoArticulos();
+	NodoCategoria * categoria =  new NodoCategoria();
+	articulos = primeroAritulos;
+
+	//cout<<"Que imprime ? "<<articulos->id<<endl;
+	//cout<<"Categoria ? "<<categoria->categoria<<endl; 
+	//articulos = articulos->siguiente;
+	//articulos = articulos;
+	if(articulos!=NULL){
+		while(articulos!=NULL){
+			cout<<"ID: "<<articulos->id<<" Categoria: "<<categoria->categoria<<endl;
+			articulos = articulos->siguiente;
+			categoria = categoria->siguienteC;
+		}
+	}
+	
+}
+
+void lista_usuarios() {
+	nodo *actual = new nodo();
+	actual = primero;
+	if (primero!=NULL) {
+		do {
+			cout <<"| "<<"Nick: "<<actual->nombreuser<<" Contra: "<<actual->contra<<" Monedas: "<<actual->monedas<<" Edad: "<<actual->edad <<"| ";
+			actual = actual -> siguiente;
+		} while(actual!=primero);
+	}else{
+		std::cout << "Lista vacia" << endl;
+	}
+ 
+}
+
 void registroTutorial(int x, int y){
 	nodoCola* nuevoCola = new nodoCola();
 	nuevoCola->x = x;
@@ -454,6 +568,22 @@ void registroTutorial(int x, int y){
 		ultimoCola = nuevoCola;
 	}
 }
+
+void insertarPila(int movx, int movy){
+	nodoPila* nuevoPila = new nodoPila();
+	//cout << " Ingrese el dato que contendra el nuevo Nodo: ";
+	//cin >> nuevo->dato;
+
+	nuevoPila->x = movx;
+	nuevoPila->y = movy;
+	
+	
+	nuevoPila->siguientePila = primeroPila;
+	primeroPila = nuevoPila;
+	
+	//cout << endl << " Nodo Ingresado " << endl << endl;
+}
+
 
 void verTutorial(){
 	nodoCola* actualCola = new nodoCola();
@@ -476,19 +606,6 @@ void verTutorial(){
 	}
 }
 
-void lista_usuarios() {
-	nodo *actual = new nodo();
-	actual = primero;
-	if (primero!=NULL) {
-		do {
-			cout <<"| "<<"Nick: "<<actual->nombreuser<<" Contra: "<<actual->contra<<" Monedas: "<<actual->monedas<<" Edad: "<<actual->edad <<"| ";
-			actual = actual -> siguiente;
-		} while(actual!=primero);
-	}else{
-		std::cout << "Lista vacia" << endl;
-	}
- 
-}
 
 void lista_usuariosordenada() {
 	//nodo *actual = new nodo();
@@ -617,7 +734,8 @@ void sub_login(string nombreuser, string contra,int edad){
             cout<<"Tienda"<<endl;
             break;
 		case 5:
-            cout<<"Movimientos"<<endl;
+            cout<<"Realizar Movimientos"<<endl;
+			movimientos();
             break;
 		case 6:
 			cout << "\nSe cerró la sesión\n";
@@ -826,7 +944,7 @@ void GraficoListaCDobleEnlace(){
 	if (primero!=NULL) {
 		do {
 			nombreNodo = "nodo"+to_string(contador);
-			dot = dot + nombreNodo + "[label =\"Nick: "  + (actual->nombreuser) + "\nContra: " +(actual->contra) + "\nMonedas: " + to_string(actual->monedas) + "\nEdad: " + to_string(actual->edad) + "\" ""]" + "\n";
+			dot = dot + nombreNodo + "[label =\"Nick: "  + (actual->nombreuser) + "\nContra: " +(actual->contracifrada) + "\nMonedas: " + to_string(actual->monedas) + "\nEdad: " + to_string(actual->edad) + "\" ""]" + "\n";
 			if(actual->siguiente!=primero){
 					int auxnum = contador +1;
 					int prueba = contador2 -1;
@@ -848,12 +966,7 @@ void GraficoListaCDobleEnlace(){
     file.open("ListaCircularDobleEnlazada.dot");
     file << dot;
     file.close();
-
-    //------->generar png
     system(("dot -Tpng ListaCircularDobleEnlazada.dot -o  ListaCircularDobleEnlazada.png"));
-
-    //------>abrir archivo
-    //system(("ListaCircularDobleEnlazada.png"));
 }
 
 
@@ -889,11 +1002,103 @@ void GraficoTutorial(){
     file << dot;
     file.close();
 
-    //------->generar png
     system(("dot -Tpng ColadeMovimientos.dot -o  ColadeMovimientos.png"));
+}
 
-    //------>abrir archivo
-    //system(("ListaCircularDobleEnlazada.png"));
+
+void movimientos(){
+	int movx, movy;
+	int resp;
+	cout<<"Ingrese la coordenada X: ";
+	cin>>movx;
+	cout<<"Ingrese la coordenada Y: ";
+	cin>>movy;
+	insertarPila(movx,movy);
+
+	cout<<"\nMovimiento - "<<movx<<","<<movy<<endl;
+
+	cout<<"Desea realizar otro movimiento? "<<endl;
+	cout<<"1. SI"<<endl;
+	cout<<"2. NO"<<endl;
+	cin>>resp;
+	do{
+		switch (resp)
+	{
+	case 1:
+		cout<<"Ingrese la coordenada X: ";
+		cin>>movx;
+		cout<<"Ingrese la coordenada Y: ";
+		cin>>movy;
+		insertarPila(movx,movy);
+		cout<<"Desea realizar otro movimiento? "<<endl;
+		cout<<"1. SI"<<endl;
+		cout<<"2. NO"<<endl;
+		cin>>resp;
+		if(resp==2){
+		string nombremov;
+		cout<<"Nombre para guardar movimientos: ";
+		cin>>nombremov;
+		GraficoMovimientos(nombremov);
+		}
+		break;
+	case 2:
+		string nombremov;
+		cout<<"Nombre para guardar movimientos: ";
+		cin>>nombremov;
+		GraficoMovimientos(nombremov);
+	}
+	}while(resp!=2);
+	
+}
+
+void GraficoMovimientos(string nombresalida){
+	nodoPila* actualPila = new nodoPila();
+	//nuevoPila->siguientePila = primeroPila;
+	actualPila = primeroPila;
+	//primeroPila = nuevoPila;
+	int contador1 = 0;
+	string nombreNodo1, direccion1;
+	string dot = "";
+	dot = dot + "digraph G {\n";
+	dot = dot + "graph[nodesep=\"0.75\"]\n";
+	dot = dot + "labelloc=\"t\"\n";
+	dot = dot + "label=\"Lista de Pilas\" + \"\nListado de Jugadas\" + \"\nNombre Jugada: " + nombresalida + "\"\n";
+	dot = dot + "node[shape=box]" + "\n";
+	if (primeroPila!=NULL) {
+		do {
+			nombreNodo1 = "nodo"+to_string(contador1);
+			dot = dot + nombreNodo1 + "[label =\"X: "  + to_string(actualPila->x) + "\nY: " + to_string(actualPila->y) +"\" ""]" + "\n";
+			if(actualPila->siguientePila!=NULL){
+					int auxnum1 = contador1 +1;
+					direccion1 += nombreNodo1 + "-> nodo" + std::to_string(auxnum1) + "[dir=right];\n";
+				}		
+			actualPila = actualPila->siguientePila;
+			contador1++;
+		} while(actualPila!=NULL);
+	}
+	dot += nombreNodo1 + "\n";
+	dot +="{rank=same;\n" + direccion1 + "\n}";
+	dot = dot + "\n}";	
+
+	ofstream file;
+    file.open("ListadePilas.dot");
+    file << dot;
+    file.close();
+
+    system(("dot -Tpng ListadePilas.dot -o  ListadePilas.png"));
+}
+
+void desplegarPila(){
+	nodoPila* actualPila = new nodoPila();
+	actualPila = primeroPila;
+	if(primeroPila!=NULL){
+		while(actualPila!=NULL){
+			cout<< "X:" << actualPila->x<<" Y:"<<actualPila->y<<endl; 
+			actualPila = actualPila->siguientePila;
+		}
+	}else{
+		cout << endl << " La Pila se encuentra vacia" << endl << endl;
+	}
 }
 
 
