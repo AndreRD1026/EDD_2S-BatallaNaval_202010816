@@ -17,8 +17,8 @@ void login();
 void sub_login(string nombreuser, string contra,int edad);
 void reportes();
 void sub_reportes();
-void registro_usuario(string nombreuser, string contra,int monedas, int edad);
-void registro_usuarioJ(string nombreuser, string contra,int monedas, int edad);
+void registro_usuario(string nombreuser, string contra,int monedas, int edad, string contracifrada);
+void registro_usuarioJ(string nombreuser, string contra,int monedas, int edad, string contracifrada);
 void registroTutorial(int alto, int ancho);
 void lista_usuarios();
 void lista_usuariosordenada();
@@ -28,10 +28,11 @@ void modificarNick(string nombreuser);
 void modificarEdad(int edad);
 void modificarContra(string contra);
 void GenerarGrafo();
-void Graficos();
+void GraficoListaCDobleEnlace();
+void graficaPrueba();
 
 struct nodo{
-	string nombreuser, contra;
+	string nombreuser, contra, contracifrada;
 	int  monedas,edad; 
 	nodo *anterior;
 	nodo * siguiente;
@@ -104,6 +105,8 @@ void cargamasiva(){
 			nombreuser = usuariosJ[i]["nick"].asString();
         	//cout << "\nPass: " << usuariosJ[i]["password"].asString();
 			contra = usuariosJ[i]["password"].asString();
+			string encriptado = SHA256::cifrar(contra);
+			//cout<<"El cifrado sha es : "<<encriptado<<endl;
 			//cout << "\nMonedas: " << usuariosJ[i]["monedas"].asString();
 			monedas = usuariosJ[i]["monedas"].asString();
         	//cout << "\nEdad: " << usuariosJ[i]["edad"].asString();
@@ -113,7 +116,7 @@ void cargamasiva(){
 			std ::string monedasi = monedas;
 			int eddi = std::stoi(edadi);
 			int monedi = std::stoi(monedasi);
-			registro_usuarioJ(nombreuser,contra,monedi,eddi);
+			registro_usuarioJ(nombreuser,contra,monedi,eddi,encriptado);
     	}
 
 		const Json::Value& articulosJ = obj["articulos"]; 
@@ -163,14 +166,14 @@ void registrousuario(){
 	cin >> nombreuser;
 	cout << "Ingresa la contraseña: "<<endl;
 	cin >> contra;
-	cout << "Ingresa las monedas actual: "<<endl;
-	cin >> monedas;
+	//cout << "Ingresa las monedas actual: "<<endl;
+	//cin >> monedas;
+	monedas = 0;
 	cout << "Ingresa la edad: "<<endl;
 	cin >> edad;
-	
-	registro_usuario(nombreuser,contra,monedas, edad);
 	string encriptado = SHA256::cifrar(contra);
-	cout<<"El sha es : "<<encriptado<<endl;
+	//cout<<"El cifrado sha es : "<<encriptado<<endl;
+	registro_usuario(nombreuser,contra,monedas, edad,encriptado);
 	cout<<"\n";
 }
 
@@ -185,13 +188,14 @@ void login(){
 	cin >> usuariob;
 	cout << "Ingrese su contraseña: "<<endl;
 	cin >> contrab;
-	string nuevo = SHA256::cifrar(contrab);
-	cout<<"El sha es : "<<nuevo<<endl;
+	string cifrada = SHA256::cifrar(contrab);
+	//cout<<"El cifrado sha es : "<<cifrada<<endl;
+	
 	cout<<"\n";
 	if(primero!=NULL){
 		do{
-			
-			if(actual->nombreuser==usuariob && actual->contra==contrab ){
+			//cout<<"El cifrado sha a comparar es : "<<actual->contracifrada<<endl;
+			if(actual->nombreuser==usuariob && actual->contracifrada==cifrada){
 				encontrado = true;	
 				cout<<" Datos correctos"<<endl;
 				sub_login(actual->nombreuser, actual->contra,actual-> edad);
@@ -230,8 +234,9 @@ void reportes(){
 
 		switch (opcestruct){
 		case 1:
-			lista_usuarios();
-			Graficos();
+			//lista_usuarios();
+			cout<<"Grafica generada\n"<<endl;
+			GraficoListaCDobleEnlace();
 			break;
 		case 2:
 			cout<<"Reporte de Articulos"<<endl;
@@ -300,7 +305,7 @@ void reportes(){
 	cout<<"\n";
 }
 
-void registro_usuarioJ(string nombreuser, string contra, int monedas ,int edad){
+void registro_usuarioJ(string nombreuser, string contra, int monedas ,int edad, string contracifrada){
 	nodo *actual = new nodo();
 	actual = primero;
 	bool encontrado = false;
@@ -320,6 +325,7 @@ void registro_usuarioJ(string nombreuser, string contra, int monedas ,int edad){
 				nuevo->contra = contra;
 				nuevo->monedas = monedas;
 				nuevo->edad = edad;
+				nuevo->contracifrada = contracifrada;
 
 				if (primero==NULL) {
 					primero=nuevo;
@@ -342,6 +348,7 @@ void registro_usuarioJ(string nombreuser, string contra, int monedas ,int edad){
 		nuevo->contra = contra;
 		nuevo->monedas = monedas;
 		nuevo->edad = edad;
+		nuevo->contracifrada = contracifrada;
 
 		if (primero==NULL) {
 			primero=nuevo;
@@ -360,7 +367,7 @@ void registro_usuarioJ(string nombreuser, string contra, int monedas ,int edad){
 
 };
 
-void registro_usuario(string nombreuser, string contra, int monedas ,int edad){
+void registro_usuario(string nombreuser, string contra, int monedas ,int edad, string contracifrada){
 	nodo *actual = new nodo();
 	actual = primero;
 	bool encontrado = false;
@@ -382,6 +389,7 @@ void registro_usuario(string nombreuser, string contra, int monedas ,int edad){
 				nuevo->contra = contra;
 				nuevo->monedas = monedas;
 				nuevo->edad = edad;
+				nuevo->contracifrada = contracifrada;
 
 				if (primero==NULL) {
 					primero=nuevo;
@@ -405,6 +413,7 @@ void registro_usuario(string nombreuser, string contra, int monedas ,int edad){
 		nuevo->contra = contra;
 		nuevo->monedas = monedas;
 		nuevo->edad = edad;
+		nuevo->contracifrada = contracifrada;
 
 		if (primero==NULL) {
 			primero=nuevo;
@@ -626,6 +635,8 @@ void editar_info(string nombreuser, int edad, string contra){
 
 }
 
+
+/* 
 void modificarNick(string userb){
 	nodo* actual = new nodo();
 	actual = primero;
@@ -641,6 +652,55 @@ void modificarNick(string userb){
 			actual = actual->siguiente;
 		}while(actual!=primero && encontrado != true);	
 	}
+}
+*/
+
+
+void modificarNick(string userb){
+	nodo* actual = new nodo();
+	string nuevouser;
+	actual = primero;
+	bool encontrado = false;
+	//if(primero!=NULL){
+		cout<<"\nIngrese el nuevo Nick: ";
+		cin >> nuevouser;
+		do{
+			//if(actual->nombreuser==userb){
+				if(actual->nombreuser==nuevouser){
+					cout<<"Nick repetido\n";
+					encontrado=true;
+					break;
+				}
+				//cout << "\n Ingrese el nuevo Nick: ";
+				//cin >> actual->nombreuser;
+				//cout << "\n Para efectuar los cambios debe cerrar sesión e iniciar con el nuevo usuario\n\n";
+				//encontrado = true;				
+			//}
+			actual = actual->siguiente;
+		}while(actual!=primero && encontrado != true);
+
+	//actual->nombreuser = userb;
+	//userb = nuevouser;
+	//actual->nombreuser = nuevouser;
+
+	//}
+
+/*		do{
+			
+			if(actual->nombreuser==nuevouser){
+				cout<<"El nick ingresado ya existe\n";
+				encontrado = true;
+				return;
+			}
+			if(actual->nombreuser!=nuevouser){
+				//cout<<"Llega\n";
+				actual->nombreuser = nuevouser;
+				encontrado = false;
+			}
+		actual = actual->siguiente;	
+		}while(actual!=primero && encontrado != true);	
+		
+	} */
 }
 
 void modificarEdad(int edad){
@@ -724,45 +784,39 @@ void eliminarCuenta(string userbuscado){
 	}
 }
 
-void Graficos(){
-	ifstream archivo;
+void GraficoListaCDobleEnlace(){
 	nodo* actual = new nodo();
 	actual = primero;
 	int contador = 0;
-	string nombreNodo;
+	int contador2 = 0;
+	string nombreNodo, direccion;
 	string dot = "";
 	dot = dot + "digraph G {\n";
-	dot = dot + "node[shape=box]";
+	dot = dot + "graph[nodesep=\"0.75\"]\n";
+	dot = dot + "labelloc=\"t\"\n";
+	dot = dot + "label=\"Lista Circular doblemente enlazada\"\n";
+	dot = dot + "node[shape=box]" + "\n";
 	//dot = dot + "nodo1[label =\"Nick: "  + (actual->nombreuser) + "\nContra: " +(actual->contra) + "\nMonedas: " + to_string(actual->monedas) + "\nEdad: " + to_string(actual->edad) + "\" ""]"; Este es el bueno
 	if (primero!=NULL) {
 		do {
-			//nombreNodoCd="nodoCD"+str(contadorCd)
 			nombreNodo = "nodo"+to_string(contador);
-			//cout <<"| "<<"Nick: "<<actual->nombreuser<<" Contra: "<<actual->contra<<" Monedas: "<<actual->monedas<<" Edad: "<<actual->edad <<"| ";
-			dot = dot + nombreNodo + "[label =\"Nick: "  + (actual->nombreuser) + "\nContra: " +(actual->contra) + "\nMonedas: " + to_string(actual->monedas) + "\nEdad: " + to_string(actual->edad) + "\" ""]";
-			//dot = dot + "node ->" + nombreNodo;
+			dot = dot + nombreNodo + "[label =\"Nick: "  + (actual->nombreuser) + "\nContra: " +(actual->contra) + "\nMonedas: " + to_string(actual->monedas) + "\nEdad: " + to_string(actual->edad) + "\" ""]" + "\n";
+			if(actual->siguiente!=primero){
+					int auxnum = contador +1;
+					int prueba = contador2 -1;
+					direccion += nombreNodo + "-> nodo" + std::to_string(auxnum) + "[dir=both];\n";
+				}else{
+					int auxnum = contador + 1;
+					direccion += nombreNodo + ":n" + "-> nodo" + std::to_string(0) + ";\n";
+					direccion += "nodo" +std::to_string(0) + ":s" + "->"  + nombreNodo + ";\n";
+				}			
 			actual = actual -> siguiente;
-			contador+=1;
+			contador++;
 		} while(actual!=primero);
 	}
-	//dot = dot + "nodo1[label =\"Nick: "  + (actual->nombreuser) + "\nContra: " +(actual->contra) + "\nMonedas: " + to_string(actual->monedas) + "\nEdad: " + to_string(actual->edad) + "\" ""]";
-
-	//"[label=\"Departamento = "+departamento.attrib['departamento']+"\"] \n"
-	//dot = dot + "nodo1[label=""nick: andre " "+" "\ncontra:prueba" "+" "\nedad:50" "+" "\nmonedas: 100""]"; 
-	//dot = dot + "nodo1[label = ""nick: andre" "+" "\ncontra: prueba" "+" "\nedad: 50" "+" "\nmonedas: 100""]";	
-	//dot
-/*	dot = dot + "nodo1[label = ""nick: andre" "+" "\ncontra: prueba" "+" "\nedad: 50" "+" "\nmonedas: 100""]";	
-	dot = dot + "nodo1 ->nodo2";	
-	dot = dot + "nodo2 ->nodo1";	
-	dot = dot + "nodo1[label = ""nick: andre" "+" "\ncontra: prueba" "+" "\nedad: 50" "+" "\nmonedas: 100""]";	 
-	dot = dot + "nodo2->nodo3";
-	dot = dot + "nodo3 -> nodo2";	
-	dot = dot + "nodo1[label = ""nick: andre" "+" "\ncontra: prueba" "+" "\nedad: 50" "+" "\nmonedas: 100""]";	
-	dot = dot + "nodo3->nodo4";	
-	dot = dot + "nodo4 ->nodo3";	
-	dot = dot + "nodo1 -> nodo4";		
-	dot = dot + "nodo4:w -> nodo1:w"; */
-	dot = dot + "}";	
+	dot += nombreNodo + "\n";
+	dot +="{rank=same;\n" + direccion + "\n}";
+	dot = dot + "\n}";	
 
 	ofstream file;
     file.open("ListaCircularDobleEnlazada.dot");
