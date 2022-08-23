@@ -19,7 +19,8 @@ void reportes();
 void sub_reportes();
 void registro_usuario(string nombreuser, string contra,int monedas, int edad, string contracifrada);
 void registro_usuarioJ(string nombreuser, string contra,int monedas, int edad, string contracifrada);
-void registroTutorial(int alto, int ancho);
+void registroTutorial(int x, int y);
+void verTutorial();
 void lista_usuarios();
 void lista_usuariosordenada();
 void eliminarCuenta(string nombreuser);
@@ -29,6 +30,7 @@ void modificarEdad(int edad);
 void modificarContra(string contra);
 void GenerarGrafo();
 void GraficoListaCDobleEnlace();
+void GraficoTutorial();
 void graficaPrueba();
 
 struct nodo{
@@ -40,8 +42,8 @@ struct nodo{
 
 
 struct nodoCola{
-	int  ancho,alto; 
-	nodo* siguienteCola;
+	int  x,y; 
+	nodoCola* siguienteCola;
 } *primeroCola, *ultimoCola;
 
 
@@ -84,7 +86,7 @@ void cargamasiva(){
 	string ruta;
 	string texto;
 	string nombreuser,contra,monedas,edad;
-	string alt, anch;
+	string alt, anch, x1, y1;
 	cout<<"Ingrese la ruta del archivo "<<endl;
 	cin.ignore();
 	getline(cin,ruta);
@@ -111,7 +113,6 @@ void cargamasiva(){
 			monedas = usuariosJ[i]["monedas"].asString();
         	//cout << "\nEdad: " << usuariosJ[i]["edad"].asString();
 			edad = usuariosJ[i]["edad"].asString();
-        	cout << endl;
 			std ::string edadi = edad;
 			std ::string monedasi = monedas;
 			int eddi = std::stoi(edadi);
@@ -130,21 +131,26 @@ void cargamasiva(){
     	}
 
 		const Json::Value& tutorialJ = obj["tutorial"];
-		cout <<"\nAncho: "<<tutorialJ["ancho"].asString();
-		alt = tutorialJ["ancho"].asString();
-		cout<<"\nAlto: "<<tutorialJ["alto"].asString();
-		anch = tutorialJ["alto"].asString();
-		std ::string alto = alt;
+		//cout <<"\nAncho: "<<tutorialJ["ancho"].asString();
+		anch = tutorialJ["ancho"].asString();
+		//cout<<"\nAlto: "<<tutorialJ["alto"].asString();
+		alt = tutorialJ["alto"].asString();
 		std ::string ancho = anch;
-		int altoi = std::stoi(alto);
-		int anchoi = std::stoi(ancho);
-		//registroTutorial(altoi,anchoi);
-		cout<<"\nMovimientos: ";
+		std ::string alto = alt;
+		int x = std::stoi(ancho);
+		int y = std::stoi(alto);
+		registroTutorial(x,y);
+		//cout<<"\nMovimientos: ";
 
 		const Json::Value& movimientosJ = tutorialJ["movimientos"];
 		for(int i = 0; i < movimientosJ.size(); i++){
-			cout << "\nX: " << movimientosJ[i]["x"].asString();
-			cout << " Y: " << movimientosJ[i]["y"].asString();
+			//cout << "\nX: " << movimientosJ[i]["x"].asString();
+			x1 = movimientosJ[i]["x"].asString();
+			//cout << " Y: " << movimientosJ[i]["y"].asString();
+			y1 = movimientosJ[i]["y"].asString();
+		int x = std::stoi(x1);
+		int y = std::stoi(y1);
+		registroTutorial(x,y);
 		}
 		cout<<"\n";
 		cout<<"\nArchivo cargado con exito\n"<<endl;
@@ -243,6 +249,7 @@ void reportes(){
 			break;
 		case 3:
 			cout<<"Reporte de Tutorial"<<endl;
+			GraficoTutorial();
 			break;
 		case 4:
 			cout<<"Reporte de Jugadas"<<endl;
@@ -264,7 +271,8 @@ void reportes(){
 		{
 		case 1:
 			cout<<"lista usuarios de forma ascendente"<<endl;
-			lista_usuariosordenada();
+			//lista_usuariosordenada();
+			graficaPrueba();
 			//show();
 			break;
 		
@@ -362,7 +370,7 @@ void registro_usuarioJ(string nombreuser, string contra, int monedas ,int edad, 
 			ultimo=nuevo;
 			primero-> anterior=ultimo;
 		}
-		cout<<"\nUsuario registrado"<<endl;
+		//cout<<"\nUsuario registrado"<<endl;
 	}
 
 };
@@ -432,13 +440,10 @@ void registro_usuario(string nombreuser, string contra, int monedas ,int edad, s
 
 };
 
-/*void registroTutorial(int alto, int ancho){
+void registroTutorial(int x, int y){
 	nodoCola* nuevoCola = new nodoCola();
-	//cout << " Ingrese el dato del nuevo Nodo: ";
-	//cin >> nuevo->dato;
-	nuevoCola->alto = alto;
-	nuevoCola->ancho = ancho;
-	//nuevo->ancho;
+	nuevoCola->x = x;
+	nuevoCola->y = y;
 	if(primeroCola==NULL){
 		primeroCola = nuevoCola;
 		primeroCola->siguienteCola = NULL;
@@ -448,9 +453,29 @@ void registro_usuario(string nombreuser, string contra, int monedas ,int edad, s
 		nuevoCola->siguienteCola = NULL;
 		ultimoCola = nuevoCola;
 	}
-	cout << endl << " Nodo Ingresado " << endl << endl;
 }
-*/
+
+void verTutorial(){
+	nodoCola* actualCola = new nodoCola();
+	cout<<"   Tablero\n";
+	actualCola = primeroCola->siguienteCola;
+	if(primeroCola!=NULL){
+		cout<<"\tAncho: " << primeroCola->x<<"\n"; 
+		cout<<"\tAlto: "<<primeroCola->y<<"\n";
+		cout<<"   Movimientos: "<<endl;
+		cout<<"\t";
+		while(actualCola!=NULL){
+			//cout << endl << "Ancho: " << actualCola->ancho << " Alto: "<<actualCola->alto;
+			
+			cout<< "(" << actualCola->x<<","<<actualCola->y<< ")"<<"->";
+			actualCola = actualCola->siguienteCola;
+		}
+		cout<<"\n";
+	}else{
+		cout << endl << " La cola se encuentra Vacia " << endl << endl;
+	}
+}
+
 void lista_usuarios() {
 	nodo *actual = new nodo();
 	actual = primero;
@@ -584,7 +609,8 @@ void sub_login(string nombreuser, string contra,int edad){
 			//return;
             break;
 		case 3:
-			cout<<"Ver tutorial"<<endl;
+			cout<<"\nTutorial"<<endl;
+			verTutorial();
 			break;
                         
         case 4:
@@ -831,6 +857,46 @@ void GraficoListaCDobleEnlace(){
 }
 
 
+void GraficoTutorial(){
+	nodoCola* actualCola = new nodoCola();
+	actualCola = primeroCola->siguienteCola;
+	int contador1 = 0;
+	string nombreNodo1, direccion1;
+	string dot = "";
+	dot = dot + "digraph G {\n";
+	dot = dot + "graph[nodesep=\"0.75\"]\n";
+	dot = dot + "labelloc=\"t\"\n";
+	dot = dot + "label=\"Cola de Movimientos\" + \"\nDimensiones del Tablero\" + \"\nANCHO: " +to_string(primeroCola->x)+ "\nLARGO: " + to_string(primeroCola->y)+ "\"\n";
+	dot = dot + "node[shape=box]" + "\n";
+	if (primeroCola!=NULL) {
+		do {
+			nombreNodo1 = "nodo"+to_string(contador1);
+			dot = dot + nombreNodo1 + "[label =\"X: "  + to_string(actualCola->x) + "\nY: " + to_string(actualCola->y) +"\" ""]" + "\n";
+			if(actualCola->siguienteCola!=NULL){
+					int auxnum1 = contador1 +1;
+					direccion1 += nombreNodo1 + "-> nodo" + std::to_string(auxnum1) + "[dir=right];\n";
+				}		
+			actualCola = actualCola->siguienteCola;
+			contador1++;
+		} while(actualCola!=NULL);
+	}
+	dot += nombreNodo1 + "\n";
+	dot +="{rank=same;\n" + direccion1 + "\n}";
+	dot = dot + "\n}";	
+
+	ofstream file;
+    file.open("ColadeMovimientos.dot");
+    file << dot;
+    file.close();
+
+    //------->generar png
+    system(("dot -Tpng ColadeMovimientos.dot -o  ColadeMovimientos.png"));
+
+    //------>abrir archivo
+    //system(("ListaCircularDobleEnlazada.png"));
+}
+
+
 void GenerarGrafo() {
 	nodo* actual = new nodo();
 	actual = primero;
@@ -876,4 +942,53 @@ void GenerarGrafo() {
     //------>abrir archivo
     system(("Pruebas.png"));
     
+}
+
+void graficaPrueba(){
+
+	nodo* actual = new nodo();
+	actual = primero;
+	int auxi,auxi2;
+
+	if(primero!=NULL){
+		do{
+			nodo* aux = actual->siguiente;
+			while(aux!=NULL){
+				if(actual->edad > aux->edad){
+					auxi = aux->edad;
+					aux->edad = actual->edad;
+					actual->edad = auxi;
+					cout<<"Edad1: " <<auxi<<endl;
+				}else{
+					auxi2 = aux->edad;
+					aux->edad = actual->edad;
+					aux = actual->siguiente;
+					actual->edad = auxi2;
+					cout<<"Edad2: "<<auxi2<<endl;
+					//break;
+				}
+					
+			aux = aux->siguiente;
+		actual = actual->siguiente;
+		//cout<<"Edad: "<<aux->siguiente<<endl;
+					//break;
+					
+			}
+			//aux = aux->siguiente;
+		}while(actual->siguiente!=primero);
+	}
+
+/*	while(p != NULL){
+        nodo *j = p ->siguiente;
+        while(j != NULL){
+            if(p->edad > j->edad){
+                int aux = j->edad;
+                j->edad = p->edad;
+                p->edad = aux;
+            }
+            j = j->siguiente;
+        }
+        p = p->siguiente;
+    }
+*/
 }

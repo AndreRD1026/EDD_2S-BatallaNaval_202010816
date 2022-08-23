@@ -1,20 +1,20 @@
 {
     "usuarios": [
       { "nick": "andre", "password": "card", "monedas": "200", "edad": "20" },
-      { "nick": "luis", "password": "elpana", "monedas": "100", "edad": "19" },
+      { "nick": "luis", "password": "elpana", "monedas": "100", "edad": "40" },
       { "nick": "angel", "password": "siquea", "monedas": "50", "edad": "21" },
-      { "nick": "pedro", "password": "pedrovm", "monedas": "350", "edad": "30" },
+      { "nick": "pedro", "password": "pedrovm", "monedas": "350", "edad": "10" },
       { "nick": "emilio", "password": "milo", "monedas": "50", "edad": "22" },
-      { "nick": "andre1", "password": "prueba", "monedas": "210", "edad": "20" },
-      { "nick": "luis1", "password": "prueba1", "monedas": "100", "edad": "19" },
-      { "nick": "diego", "password": "cano44", "monedas": "500", "edad": "21" },
-      { "nick": "harold", "password": "haroldito", "monedas": "300", "edad": "22" },
-      { "nick": "enrique", "password": "pedrovm", "monedas": "350", "edad": "30" },
-      { "nick": "juan", "password": "milo", "monedas": "50", "edad": "22" },
-      { "nick": "ludwing", "password": "prueba", "monedas": "210", "edad": "20" },
-      { "nick": "pablo_quan", "password": "prueba1", "monedas": "100", "edad": "19" },
-      { "nick": "marcos1", "password": "cano44", "monedas": "500", "edad": "21" },
-      { "nick": "rada", "password": "rafiux1", "monedas": "300", "edad": "22" }
+      { "nick": "andre1", "password": "prueba", "monedas": "210", "edad": "24" },
+      { "nick": "luis1", "password": "prueba1", "monedas": "100", "edad": "26" },
+      { "nick": "diego", "password": "cano44", "monedas": "500", "edad": "23" },
+      { "nick": "harold", "password": "haroldito", "monedas": "300", "edad": "49" },
+      { "nick": "enrique", "password": "pedrovm", "monedas": "350", "edad": "35" },
+      { "nick": "juan", "password": "milo", "monedas": "50", "edad": "27" },
+      { "nick": "ludwing", "password": "prueba", "monedas": "210", "edad": "28" },
+      { "nick": "pablo_quan", "password": "prueba1", "monedas": "100", "edad": "5" },
+      { "nick": "marcos1", "password": "cano44", "monedas": "500", "edad": "41" },
+      { "nick": "rada", "password": "rafiux1", "monedas": "300", "edad": "7" }
     ],
     "articulos": [
       { "id": "1", "categoria": "legendario", "precio": "500", "nombre": "barco1", "src": "link1" },
