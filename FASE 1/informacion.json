@@ -21,7 +21,12 @@
       { "id": "2", "categoria": "epic", "precio": "250", "nombre": "barco2", "src": "link2" },
       { "id": "3", "categoria": "basico", "precio": "100", "nombre": "barco3", "src": "link3" },
       { "id": "4", "categoria": "epic", "precio": "250", "nombre": "barco4", "src": "link4" },
-      { "id": "5", "categoria": "epic", "precio": "250", "nombre": "barco4", "src": "link5" }
+      { "id": "2", "categoria": "epic", "precio": "250", "nombre": "barco5", "src": "link5" },
+      { "id": "6", "categoria": "raro", "precio": "500", "nombre": "barco6", "src": "link6" },
+      { "id": "7", "categoria": "mitico", "precio": "250", "nombre": "barco7", "src": "link7" },
+      { "id": "8", "categoria": "especial", "precio": "100", "nombre": "barco8", "src": "link8" },
+      { "id": "9", "categoria": "raro", "precio": "250", "nombre": "barco9", "src": "link9" },
+      { "id": "10", "categoria": "mitico", "precio": "250", "nombre": "barco10", "src": "link10" }
     ],
    "tutorial": {
       "ancho":"10",

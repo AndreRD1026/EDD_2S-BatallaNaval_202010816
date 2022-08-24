@@ -14,17 +14,16 @@ using namespace std;
 void cargamasiva();
 void registrousuario();
 void login();
-void sub_login(string nombreuser, string contra,int edad);
+void sub_login(string nombreuser, string contra,int edad, int monedas);
 void reportes();
 void sub_reportes();
 void registro_usuario(string nombreuser, string contra,int monedas, int edad, string contracifrada);
 void registro_usuarioJ(string nombreuser, string contra,int monedas, int edad, string contracifrada);
-void lista_articulos(int id, string categoriaarticulo,int precioarticulo, string nombrearticulo, string srcarticulo);
+void registro_articulos(string categoriaarticulo, string nombrearticulo, int precioarticulo, int idarticulo, string srcarticulo);
 void registroTutorial(int x, int y);
 void insertarPila(int movx, int movy);
 void verTutorial();
 void lista_usuarios();
-void verlista_articulos();
 void lista_usuariosordenada();
 void eliminarCuenta(string nombreuser);
 void editar_info(string nombreuser, int edad, string contra);
@@ -34,10 +33,15 @@ void modificarContra(string contra);
 void GenerarGrafo();
 void GraficoListaCDobleEnlace();
 void GraficoTutorial();
-void movimientos();
+void movimientos(string nombreuser);
 void graficaPrueba();
 void desplegarPila();
-void GraficoMovimientos(string nombre);
+void GraficoMovimientos(string nombreuser, string salida);
+void Mostrar_Tienda(int monedas);
+void ordenarPrecioASC();
+void GraficoListadeListas();
+void vaciarPila();
+
 
 struct nodo{
 	string nombreuser, contra, contracifrada;
@@ -47,17 +51,17 @@ struct nodo{
 } *primero=NULL, *ultimo=NULL;
 
 struct NodoArticulos{
-	int id;
-    struct NodoCategoria *categoria;
-    NodoArticulos *siguiente;
-} *primeroAritulos, *ultimoArticulos;
+	int idArticulo, precioArticulo;
+    string nombreArticulo,SRCArticulo;    
+    NodoArticulos* siguienteArtic;
+}*primeroArticulos, *ultimoArticulos;
 
 struct NodoCategoria{
-    string categoria, nombre, src;
-	int precio;
-    NodoCategoria *siguienteC;
-} *primeroCategoria, *ultimoCategoria;
-
+    string categoria;
+    int indice;
+    NodoCategoria* siguienteCA;
+    NodoArticulos* abajo;
+}*primeroCategoria, *ultimoCategoria;
 
 struct nodoCola{
 	int  x,y; 
@@ -68,6 +72,9 @@ struct nodoPila{
 	int x,y;
 	nodoPila* siguientePila;
 } *primeroPila;
+
+bool esRepetido(string _categoria);
+bool esRepetido1(int _id);
 
 
 int main(int argc, char** argv) {
@@ -99,6 +106,7 @@ do {
 			break;
 		default:
 			cout << "\nIngrese una opcion correcta\n\n";
+			break;
 		}	
     }while (op!=5);
 }
@@ -160,7 +168,7 @@ void cargamasiva(){
 			std ::string precioarticul = precioarticuloo;
 			int precioarticulo = std::stoi(precioarticul);
 			int idarticulo = std::stoi(iarticulo);
-			lista_articulos(idarticulo, categoriarticulo,precioarticulo,nombrearticulo,srcarticulo);
+			registro_articulos(categoriarticulo,nombrearticulo,precioarticulo,idarticulo,srcarticulo);
         	//cout << endl;
     	}
 
@@ -233,7 +241,7 @@ void login(){
 			if(actual->nombreuser==usuariob && actual->contracifrada==cifrada){
 				encontrado = true;	
 				cout<<" Datos correctos"<<endl;
-				sub_login(actual->nombreuser, actual->contra,actual-> edad);
+				sub_login(actual->nombreuser, actual->contra,actual-> edad, actual->monedas);
 			}
 			
 			actual = actual->siguiente;
@@ -275,7 +283,7 @@ void reportes(){
 			break;
 		case 2:
 			cout<<"Reporte de Articulos"<<endl;
-			verlista_articulos();
+			GraficoListadeListas();
 			break;
 		case 3:
 			cout<<"Reporte de Tutorial"<<endl;
@@ -283,8 +291,7 @@ void reportes(){
 			break;
 		case 4:
 			cout<<"Reporte de Jugadas"<<endl;
-			//desplegarPila();
-			movimientos();
+			//movimientos();
 			break;	
 		
 		default:
@@ -327,6 +334,7 @@ void reportes(){
 		{
 		case 1:
 			cout<<"lista articulos de forma precio ascendente"<<endl;
+			ordenarPrecioASC();
 			break;
 		
 		case 2:
@@ -471,75 +479,7 @@ void registro_usuario(string nombreuser, string contra, int monedas ,int edad, s
 	}
 
 };
-
-
-void lista_articulos(int id,string categoriaarticulo, int precioarticulo, string nombrearticulo, string srcarticulo){
-  NodoArticulos * nuevoaritculos = new NodoArticulos();
-  nuevoaritculos->id = id;
-  NodoCategoria * nuevacategoria =  new NodoCategoria();
-  //persona1->cartera  = cartera;
- 	nuevoaritculos->categoria = nuevacategoria;
-	nuevacategoria->categoria = categoriaarticulo;
-	nuevacategoria->precio = precioarticulo;
-	nuevacategoria->nombre = nombrearticulo;
-	nuevacategoria->src = srcarticulo;
-	//nuevoaritculos->siguiente = NULL;
-  if (primeroAritulos==NULL){
-		primeroAritulos = nuevoaritculos;
-		primeroCategoria = nuevacategoria;
-		//primeroAritulos = nuevacategoria;
-		primeroAritulos->siguiente = NULL;
-		primeroCategoria->siguienteC = NULL;
-		ultimoArticulos = primeroAritulos;
-		ultimoCategoria = primeroCategoria;
-  }else{
-	ultimoArticulos->siguiente = nuevoaritculos;
-	ultimoCategoria->siguienteC = nuevacategoria;
-	nuevoaritculos->siguiente = NULL;
-	nuevacategoria->siguienteC = NULL;
-	ultimoArticulos = nuevoaritculos;
-	ultimoCategoria = nuevacategoria;
-  }
   
-  /* 
-	nuevoCola->x = x;
-	nuevoCola->y = y;
-	if(primeroCola==NULL){
-		primeroCola = nuevoCola;
-		primeroCola->siguienteCola = NULL;
-		ultimoCola = primeroCola;
-	}else{
-		ultimoCola->siguienteCola = nuevoCola;
-		nuevoCola->siguienteCola = NULL;
-		ultimoCola = nuevoCola;
-	}
-  
-  */
-
-  //cout<<"\nID Agregado: "<<aritculos->id<<" Categoria: "<<categoria->categoria<<" Precio: "<<categoria->precio<<" Nombre: "<<categoria->nombre<<" SRC: "<<categoria->src<<endl;
-  //cout<<"\nCategoria: "<<categoria->categoria<<endl;
-  //cout<<"Categorias :"<<categoria->categoria<<endl;
-}
-
-void verlista_articulos(){
-	NodoArticulos* articulos = new NodoArticulos();
-	NodoCategoria * categoria =  new NodoCategoria();
-	articulos = primeroAritulos;
-
-	//cout<<"Que imprime ? "<<articulos->id<<endl;
-	//cout<<"Categoria ? "<<categoria->categoria<<endl; 
-	//articulos = articulos->siguiente;
-	//articulos = articulos;
-	if(articulos!=NULL){
-		while(articulos!=NULL){
-			cout<<"ID: "<<articulos->id<<" Categoria: "<<categoria->categoria<<endl;
-			articulos = articulos->siguiente;
-			categoria = categoria->siguienteC;
-		}
-	}
-	
-}
-
 void lista_usuarios() {
 	nodo *actual = new nodo();
 	actual = primero;
@@ -571,19 +511,13 @@ void registroTutorial(int x, int y){
 
 void insertarPila(int movx, int movy){
 	nodoPila* nuevoPila = new nodoPila();
-	//cout << " Ingrese el dato que contendra el nuevo Nodo: ";
-	//cin >> nuevo->dato;
-
 	nuevoPila->x = movx;
 	nuevoPila->y = movy;
-	
-	
+		
 	nuevoPila->siguientePila = primeroPila;
 	primeroPila = nuevoPila;
 	
-	//cout << endl << " Nodo Ingresado " << endl << endl;
 }
-
 
 void verTutorial(){
 	nodoCola* actualCola = new nodoCola();
@@ -594,9 +528,7 @@ void verTutorial(){
 		cout<<"\tAlto: "<<primeroCola->y<<"\n";
 		cout<<"   Movimientos: "<<endl;
 		cout<<"\t";
-		while(actualCola!=NULL){
-			//cout << endl << "Ancho: " << actualCola->ancho << " Alto: "<<actualCola->alto;
-			
+		while(actualCola!=NULL){			
 			cout<< "(" << actualCola->x<<","<<actualCola->y<< ")"<<"->";
 			actualCola = actualCola->siguienteCola;
 		}
@@ -605,7 +537,6 @@ void verTutorial(){
 		cout << endl << " La cola se encuentra Vacia " << endl << endl;
 	}
 }
-
 
 void lista_usuariosordenada() {
 	//nodo *actual = new nodo();
@@ -698,7 +629,7 @@ void lista_usuariosordenada() {
 */
 }
 
-void sub_login(string nombreuser, string contra,int edad){
+void sub_login(string nombreuser, string contra,int edad, int monedas){
 	int op1=0;
 	char prueba;
 	do {
@@ -732,10 +663,11 @@ void sub_login(string nombreuser, string contra,int edad){
                         
         case 4:
             cout<<"Tienda"<<endl;
+			Mostrar_Tienda(monedas);
             break;
 		case 5:
             cout<<"Realizar Movimientos"<<endl;
-			movimientos();
+			movimientos(nombreuser);
             break;
 		case 6:
 			cout << "\nSe cerró la sesión\n";
@@ -969,7 +901,6 @@ void GraficoListaCDobleEnlace(){
     system(("dot -Tpng ListaCircularDobleEnlazada.dot -o  ListaCircularDobleEnlazada.png"));
 }
 
-
 void GraficoTutorial(){
 	nodoCola* actualCola = new nodoCola();
 	actualCola = primeroCola->siguienteCola;
@@ -987,7 +918,7 @@ void GraficoTutorial(){
 			dot = dot + nombreNodo1 + "[label =\"X: "  + to_string(actualCola->x) + "\nY: " + to_string(actualCola->y) +"\" ""]" + "\n";
 			if(actualCola->siguienteCola!=NULL){
 					int auxnum1 = contador1 +1;
-					direccion1 += nombreNodo1 + "-> nodo" + std::to_string(auxnum1) + "[dir=right];\n";
+					direccion1 += nombreNodo1 + "-> nodo" + std::to_string(auxnum1) + "[dir=back];\n";
 				}		
 			actualCola = actualCola->siguienteCola;
 			contador1++;
@@ -1006,7 +937,7 @@ void GraficoTutorial(){
 }
 
 
-void movimientos(){
+void movimientos(string nombreuser){
 	int movx, movy;
 	int resp;
 	cout<<"Ingrese la coordenada X: ";
@@ -1038,24 +969,23 @@ void movimientos(){
 		string nombremov;
 		cout<<"Nombre para guardar movimientos: ";
 		cin>>nombremov;
-		GraficoMovimientos(nombremov);
+		GraficoMovimientos(nombreuser,nombremov);
 		}
 		break;
 	case 2:
 		string nombremov;
 		cout<<"Nombre para guardar movimientos: ";
 		cin>>nombremov;
-		GraficoMovimientos(nombremov);
+		GraficoMovimientos(nombreuser,nombremov);
 	}
 	}while(resp!=2);
 	
 }
 
-void GraficoMovimientos(string nombresalida){
+
+void GraficoMovimientos(string nombreuser,string nombresalida){
 	nodoPila* actualPila = new nodoPila();
-	//nuevoPila->siguientePila = primeroPila;
 	actualPila = primeroPila;
-	//primeroPila = nuevoPila;
 	int contador1 = 0;
 	string nombreNodo1, direccion1;
 	string dot = "";
@@ -1070,7 +1000,7 @@ void GraficoMovimientos(string nombresalida){
 			dot = dot + nombreNodo1 + "[label =\"X: "  + to_string(actualPila->x) + "\nY: " + to_string(actualPila->y) +"\" ""]" + "\n";
 			if(actualPila->siguientePila!=NULL){
 					int auxnum1 = contador1 +1;
-					direccion1 += nombreNodo1 + "-> nodo" + std::to_string(auxnum1) + "[dir=right];\n";
+					direccion1 += nombreNodo1 + "-> nodo" + std::to_string(auxnum1) + "[dir=back];\n";
 				}		
 			actualPila = actualPila->siguientePila;
 			contador1++;
@@ -1081,12 +1011,38 @@ void GraficoMovimientos(string nombresalida){
 	dot = dot + "\n}";	
 
 	ofstream file;
-    file.open("ListadePilas.dot");
+	string nombredot = "ListadePilas_" + nombreuser + ".dot";
+    file.open(nombredot);
     file << dot;
     file.close();
-
-    system(("dot -Tpng ListadePilas.dot -o  ListadePilas.png"));
+	string salida = "dot -Tpng " +nombredot+ " -o  ListadePilas_"+nombreuser + ".png";
+	system((salida.c_str()));
+	vaciarPila();
 }
+
+void vaciarPila(){
+	nodoPila* actualPila = new nodoPila();
+	actualPila = primeroPila;
+	nodoPila* anteriorPila = new nodoPila();
+	anteriorPila = NULL;
+	bool encontrado = false;
+	if(primeroPila!=NULL){
+		while(actualPila!=NULL && encontrado != true){				
+				if(actualPila == primeroPila){
+					primeroPila = primeroPila->siguientePila;
+				}else{
+					anteriorPila->siguientePila = actualPila->siguientePila;
+				}
+				//cout << endl << " Nodo Eliminado" << endl << endl;
+			anteriorPila = actualPila;
+			actualPila = actualPila->siguientePila;
+		}
+	}else{
+		//cout << endl << " La Pila se encuentra vacia" << endl << endl;
+		cout<<"\n";
+	}	
+}
+
 
 void desplegarPila(){
 	nodoPila* actualPila = new nodoPila();
@@ -1151,6 +1107,7 @@ void GenerarGrafo() {
 
 void graficaPrueba(){
 
+
 	nodo* actual = new nodo();
 	actual = primero;
 	int auxi,auxi2;
@@ -1197,3 +1154,283 @@ void graficaPrueba(){
     }
 */
 }
+
+void registro_articulos(string categoria, string nombre, int precio, int id, string srcarticulo){
+    NodoCategoria* nodoCategoria = new NodoCategoria();
+    nodoCategoria->categoria = categoria;
+    NodoCategoria* aux = new NodoCategoria();
+
+    NodoArticulos* nodoArticulos = new NodoArticulos();
+    nodoArticulos->nombreArticulo = nombre;
+    nodoArticulos->precioArticulo = precio;
+    nodoArticulos->idArticulo= id;
+	nodoArticulos->SRCArticulo = srcarticulo;
+
+    aux = primeroCategoria;
+	//nodoArticulos = primeroArticulos;
+	
+	bool encontrado = false;
+
+	if(primeroCategoria == NULL){
+        nodoCategoria->indice++;
+        primeroCategoria = nodoCategoria;
+        ultimoCategoria = nodoCategoria;
+        
+            primeroCategoria->abajo = nodoArticulos;
+            primeroArticulos = nodoArticulos;
+            ultimoArticulos = nodoArticulos;
+    }else{
+        if(!esRepetido(nodoCategoria->categoria)){
+        NodoCategoria* temp = new NodoCategoria();
+        temp = primeroCategoria;
+        int aux = 1;
+            while (temp!=NULL)
+            {
+                aux++;
+                temp = temp->siguienteCA;
+            }
+            nodoCategoria->indice = aux;
+            
+            ultimoCategoria->siguienteCA = nodoCategoria;
+            ultimoCategoria = nodoCategoria;
+
+            ultimoCategoria->abajo = nodoArticulos;
+            primeroArticulos = nodoArticulos;
+            ultimoArticulos = nodoArticulos;
+        }else{
+            ultimoArticulos->siguienteArtic = nodoArticulos;
+            ultimoArticulos = nodoArticulos;
+        }
+    }
+
+
+	/* 
+	if(primeroCategoria == NULL){
+        nodoCategoria->indice++;
+        primeroCategoria = nodoCategoria;
+        ultimoCategoria = nodoCategoria;
+        
+            primeroCategoria->abajo = nodoArticulos;
+            primeroArticulos = nodoArticulos;
+            ultimoArticulos = nodoArticulos;
+    }else{
+        if(!esRepetido(nodoCategoria->categoria)){
+        NodoCategoria* temp = new NodoCategoria();
+        temp = primeroCategoria;
+        int aux = 1;
+            while (temp!=NULL)
+            {
+                aux++;
+                temp = temp->siguienteCA;
+            }
+            nodoCategoria->indice = aux;
+            
+            ultimoCategoria->siguienteCA = nodoCategoria;
+            ultimoCategoria = nodoCategoria;
+
+            ultimoCategoria->abajo = nodoArticulos;
+            primeroArticulos = nodoArticulos;
+            ultimoArticulos = nodoArticulos;
+        }else{
+            ultimoArticulos->siguienteArtic = nodoArticulos;
+            ultimoArticulos = nodoArticulos;
+        }
+    }
+	
+	*/
+}
+
+bool esRepetido(string _categoria){
+    NodoCategoria* actualCategoria = new NodoCategoria();
+    bool repetido = false;
+    actualCategoria = primeroCategoria;
+    if(primeroCategoria!=NULL){
+        while(actualCategoria!=NULL){
+            if(_categoria==actualCategoria->categoria){
+                repetido = true;
+                break;
+            }
+            actualCategoria = actualCategoria->siguienteCA;
+        }
+    }
+    return repetido;
+}
+
+bool esRepetido1(int _id){
+    NodoArticulos* actualArticulo = new NodoArticulos();
+    bool repetido = false;
+    actualArticulo = primeroArticulos;
+    if(primeroArticulos!=NULL){
+        while(actualArticulo!=NULL){
+            if(_id==actualArticulo->idArticulo){
+                repetido = true;
+                break;
+            }
+            actualArticulo = actualArticulo->siguienteArtic;
+        }
+    }
+    return true;
+}
+
+void Mostrar_Tienda(int monedas){
+	NodoCategoria* aux1 = new NodoCategoria();
+    aux1 = primeroCategoria;
+
+    NodoArticulos* aux2 = new NodoArticulos();
+    cout<<"\t\t\tTotal Tokens: "<<monedas<<endl;
+	cout<<"ID "<<" Nombre"<<"\tCategoria"<<" Precio"<<endl;
+    while(aux1!=NULL){		
+        aux2 = aux1->abajo;
+        while (aux2!=NULL)
+        {
+			cout<<aux2->idArticulo<<"  "<<aux2->nombreArticulo<<"\t"<<aux1->categoria<<"\t"<<aux2->precioArticulo<<endl;
+            aux2 = aux2->siguienteArtic;
+        }
+        aux1 = aux1->siguienteCA;
+
+    }
+}
+
+void ordenarPrecioASC(){
+/*
+	NodoArticulos *p = primeroArticulos;
+    while(p != NULL){
+        NodoArticulos *j = p ->siguienteArtic;
+        while(j != NULL){
+            if(p->precioArticulo > j->precioArticulo){
+                int aux = j->precioArticulo;
+                j->precioArticulo = p->precioArticulo;
+                p->precioArticulo = aux;
+				cout<<"Llega?";
+				//cout<<"Salida : "<<p->precioArticulo;
+            }
+            j = j->siguienteArtic;
+        }
+        p = p->siguienteArtic;
+    }
+	cout<<"Listo"<<endl;
+*/
+
+	//NodoArticulos *actual = primeroArticulos;
+	NodoArticulos *nodo1 = new NodoArticulos();
+	NodoArticulos *actual, *siguiente;
+    int n;
+    if(nodo1 != NULL)
+    {
+        actual = nodo1;
+        do
+        {
+            siguiente = actual->siguienteArtic;
+            while(siguiente != nodo1)
+            {
+                if(actual->precioArticulo > siguiente->precioArticulo)
+                {
+                    n = siguiente->precioArticulo;
+                    siguiente->precioArticulo = actual->precioArticulo;
+                    actual->precioArticulo = n;
+                }
+                siguiente = siguiente->siguienteArtic;
+            }
+            actual = actual->siguienteArtic;
+            siguiente = actual->siguienteArtic;
+        }
+        while(siguiente != nodo1);
+    }
+
+
+
+
+/*	nodo *p = primero;
+    while(p != NULL){
+        nodo *j = p ->siguiente;
+        while(j != NULL){
+            if(p->edad > j->edad){
+                int aux = j->edad;
+                j->edad = p->edad;
+                p->edad = aux;
+            }
+            j = j->siguiente;
+        }
+        p = p->siguiente;
+    }
+
+	cout<<"Listo"<<endl;
+*/
+}
+
+void GraficoListadeListas(){
+		NodoCategoria* actualCategoria = new NodoCategoria();
+		NodoArticulos* templist = new NodoArticulos();
+		actualCategoria = primeroCategoria;
+		string dot = "";
+		dot = dot + "digraph G{\n";
+		dot = dot + "graph[nodesep=\"0.75\"]\n";
+		dot = dot + "labelloc=\"t\"\n";
+		dot = dot + "label=\"Lista de Listas\"\n";
+		dot = dot + "node[shape=box];\n";
+		dot = dot + "rankdir = \"LR\" ";
+		string enlaces = "";
+    	string conexionPrimero = "";
+    	string nodos = "";
+    	int numeronodo = 1;
+		while (actualCategoria != NULL) {
+			dot = dot +
+			"\n    H" 
+			+ to_string(actualCategoria->indice) +
+			"[label = \"Categoria: " +
+			actualCategoria->categoria +
+			"\" "+  "  width = 2 , group = 1 ];\n";		
+			templist = actualCategoria->abajo;		
+			if (templist != NULL) {
+				enlaces += "    H" + to_string(actualCategoria->indice) + " -> H" + to_string(actualCategoria->indice) + "C" + to_string(numeronodo);
+				nodos += "\n    { rank = same; H" + to_string(actualCategoria->indice) + "; ";
+		
+				while (templist != NULL) {
+					dot = dot +
+						"    H" +
+						to_string(actualCategoria->indice) +
+						"C" +
+						to_string(numeronodo) +
+						"[label =\" " +
+						"Id: " + to_string(templist->idArticulo) +
+						"\nNombre: "+templist->nombreArticulo+
+						"\nPrecio: "+to_string(templist->precioArticulo)+
+						"\"" +  " width = 2, group = 1 ];\n";
+						nodos += "H" + to_string(actualCategoria->indice) + "C" + to_string(numeronodo) + ";";
+						
+						if (templist->siguienteArtic != NULL) {
+							enlaces +=
+							"    H" +
+									to_string(actualCategoria->indice) +
+									"C" +
+									to_string(numeronodo) +
+									" ->H" +
+									to_string(actualCategoria->indice) +
+									"C" +
+									to_string((numeronodo+1)) +
+									"\n";				
+							}
+							templist = templist->siguienteArtic;
+							numeronodo++;
+						}			
+						nodos += "}";
+						dot = dot + enlaces;
+						dot = dot + nodos;
+						enlaces = "";
+						nodos = "";
+					}
+					if (actualCategoria->siguienteCA !=  NULL) {
+						conexionPrimero +=
+							"    H" + to_string(actualCategoria->indice) + " -> H" + to_string(actualCategoria->siguienteCA->indice) + "\n";
+					}
+					actualCategoria = actualCategoria->siguienteCA;
+				}
+				dot = dot + conexionPrimero;
+				dot = dot + "\n}";
+	ofstream file;
+    file.open("ListadeListas.dot");
+    file<<dot;
+    file.close();
+    system(("dot -Tpng ListadeListas.dot -o  ListadeListas.png"));
+
+} 
