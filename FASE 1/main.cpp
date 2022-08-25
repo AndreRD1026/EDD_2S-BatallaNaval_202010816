@@ -11,6 +11,8 @@
 
 using namespace std;
 
+
+void MenuPrincipal();
 void cargamasiva();
 void registrousuario();
 void login();
@@ -19,7 +21,7 @@ void reportes();
 void sub_reportes();
 void registro_usuario(string nombreuser, string contra,int monedas, int edad, string contracifrada);
 void registro_usuarioJ(string nombreuser, string contra,int monedas, int edad, string contracifrada);
-void registro_articulos(string categoriaarticulo, string nombrearticulo, int precioarticulo, int idarticulo, string srcarticulo);
+void registro_articulos(string categoriaarticulo, string nombrearticulo, int precioarticulo, string idarticulo, string srcarticulo);
 void registroTutorial(int x, int y);
 void insertarPila(int movx, int movy);
 void verTutorial();
@@ -30,29 +32,33 @@ void editar_info(string nombreuser, int edad, string contra);
 void modificarNick(string nombreuser);
 void modificarEdad(int edad);
 void modificarContra(string contra);
-void GenerarGrafo();
 void GraficoListaCDobleEnlace();
 void GraficoTutorial();
 void movimientos(string nombreuser);
-void graficaPrueba();
 void desplegarPila();
 void GraficoMovimientos(string nombreuser, string salida);
 void Mostrar_Tienda(int monedas);
 void ordenarPrecioASC();
+void ordenarPrecioDESC();
 void GraficoListadeListas();
 void vaciarPila();
+void ordenarUsuarioASC();
+void ordenarUsuarioDESC();
+
+std:: string userlogin;
+std:: string nombrejugada;
 
 
 struct nodo{
 	string nombreuser, contra, contracifrada;
 	int  monedas,edad; 
 	nodo *anterior;
-	nodo * siguiente;
+	nodo *siguiente;
 } *primero=NULL, *ultimo=NULL;
 
 struct NodoArticulos{
-	int idArticulo, precioArticulo;
-    string nombreArticulo,SRCArticulo;    
+	int precioArticulo;
+    string idArticulo,nombreArticulo,SRCArticulo;    
     NodoArticulos* siguienteArtic;
 }*primeroArticulos, *ultimoArticulos;
 
@@ -73,13 +79,17 @@ struct nodoPila{
 	nodoPila* siguientePila;
 } *primeroPila;
 
-bool esRepetido(string _categoria);
-bool esRepetido1(int _id);
-
+bool CategoriaRepetida(string _categoria);
 
 int main(int argc, char** argv) {
-    int op=0;
-do {
+
+	MenuPrincipal();
+}
+
+
+void MenuPrincipal(){
+	    int op=0;
+	do {
 	cout<<"************* Menu *************"<<endl;
 	cout<<"* 1. Carga Masiva              *"<<endl;
     cout<<"* 2. Registrar Usuario         *"<<endl;
@@ -121,8 +131,8 @@ void cargamasiva(){
 	cout<<"Ingrese la ruta del archivo "<<endl;
 	cin.ignore();
 	getline(cin,ruta);
-	archivo.open("informacion.json", ios::in);
-	//archivo.open(ruta.c_str(), ios::in);
+	//archivo.open("informacion.json", ios::in);
+	archivo.open(ruta.c_str(), ios::in);
 	if(archivo.fail()){
 		cout<<"\nNo se pudo abrir el archivo\n"<<endl;
 	}
@@ -164,11 +174,11 @@ void cargamasiva(){
 			nombrearticulo = articulosJ[i]["nombre"].asString();
 			//cout << "\nSRC: " << articulosJ[i]["src"].asString();
 			srcarticulo = articulosJ[i]["src"].asString();
-			std ::string iarticulo = idarticuloo;
+			//std ::string iarticulo = idarticuloo;
 			std ::string precioarticul = precioarticuloo;
 			int precioarticulo = std::stoi(precioarticul);
-			int idarticulo = std::stoi(iarticulo);
-			registro_articulos(categoriarticulo,nombrearticulo,precioarticulo,idarticulo,srcarticulo);
+			//int idarticulo = std::stoi(iarticulo);
+			registro_articulos(categoriarticulo,nombrearticulo,precioarticulo,idarticuloo,srcarticulo);
         	//cout << endl;
     	}
 
@@ -240,31 +250,33 @@ void login(){
 			//cout<<"El cifrado sha a comparar es : "<<actual->contracifrada<<endl;
 			if(actual->nombreuser==usuariob && actual->contracifrada==cifrada){
 				encontrado = true;	
-				cout<<" Datos correctos"<<endl;
+				cout<<"Inicio de sesión correctos"<<endl;
+				userlogin = actual->nombreuser;
 				sub_login(actual->nombreuser, actual->contra,actual-> edad, actual->monedas);
 			}
-			
 			actual = actual->siguiente;
 		}while(actual!=primero && encontrado != true);
 		
 		if(!encontrado){
-			cout << "\n Usuario o contraseña incorrectos\n\n";
+			cout << "\nUsuario o contraseña incorrectos\n\n";
 		}
 		
 	}else{
-		cout << "\n No existe el usuario en la lista\n\n";
+		cout << "\nNo existe el usuario en la lista\n\n";
 	}
 }
 
 void reportes(){
 	int opreport;
 	cout<<"\n";
-	cout<<"Opcion reportes"<<endl;
+	cout<<"************** Menu reportes **************"<<endl;
 	cout<<"1. Estructuras Utilizadas"<<endl;
 	cout<<"2. Listado de usuarios ordenados por edad"<<endl;
 	cout<<"3. Listado de articulos ordenados por precio"<<endl;
+	cout<<"4. Regresar al menu principal"<<endl;
+	cout<<"*****************************************"<<endl;
 	cin >> opreport;
-
+	cout<<"\n";
 	switch (opreport)
 	{
 	case 1:
@@ -273,29 +285,28 @@ void reportes(){
 		cout<<"2. Lista Articulos"<<endl;
 		cout<<"3. Tutorial"<<endl;
 		cout<<"4. Listado de Jugadas"<<endl;
+		cout<<"5. Regresar al menu principal"<<endl;
 		cin>> opcestruct;
-
+		cout<<"\n";
 		switch (opcestruct){
 		case 1:
-			//lista_usuarios();
-			cout<<"Grafica generada\n"<<endl;
 			GraficoListaCDobleEnlace();
 			break;
 		case 2:
-			cout<<"Reporte de Articulos"<<endl;
 			GraficoListadeListas();
 			break;
 		case 3:
-			cout<<"Reporte de Tutorial"<<endl;
 			GraficoTutorial();
 			break;
 		case 4:
-			cout<<"Reporte de Jugadas"<<endl;
-			//movimientos();
+			GraficoMovimientos(userlogin,nombrejugada);
+			break;
+		case 5:
+			cout<<"\n";
+			return;
 			break;	
-		
 		default:
-			cout<<"Reporte error"<<endl;
+			cout<<"\nIngrese una opcion correcta\n"<<endl;
 			break;
 		}
 		break;
@@ -304,23 +315,31 @@ void reportes(){
 	int ordenl;
 		cout<<"1. Orden Ascendente"<<endl;
 		cout<<"2. Orden Descendente"<<endl;
+		cout<<"3. Regresar al menu principal"<<endl;
 		cin>> ordenl;
-
+		cout<<"\n";
 		switch (ordenl)
 		{
 		case 1:
-			cout<<"lista usuarios de forma ascendente"<<endl;
-			//lista_usuariosordenada();
-			graficaPrueba();
-			//show();
+			cout<<"lista usuarios de forma ascendente\n"<<endl;
+			ordenarUsuarioASC();
+			return;
 			break;
+			
 		
 		case 2:
-			cout<<"lista usuarios de forma descendente"<<endl;
+			cout<<"lista usuarios de forma descendente\n"<<endl;
+			ordenarUsuarioDESC();
+			return;
 			break;
+
 	
-		default:
+		case 3:
 			cout<<"\n";
+			return;
+			break;
+		default:
+			cout<<"\nIngrese una opcion correcta\n";
 			break;
 		}
 	
@@ -328,25 +347,35 @@ void reportes(){
 	int ordenp;
 		cout<<"1. Orden Ascendente"<<endl;
 		cout<<"2. Orden Descendente"<<endl;
+		cout<<"3. Regresar al menu principal"<<endl;
 		cin>> ordenp;
 
 		switch (ordenp)
 		{
 		case 1:
 			cout<<"lista articulos de forma precio ascendente"<<endl;
-			ordenarPrecioASC();
+			//ordenarPrecioASC();
+			return;
 			break;
 		
 		case 2:
 			cout<<"lista usuarios de forma precio descendente"<<endl;
+			return;
 			break;
-	
-		default:
+		case 3:
 			cout<<"\n";
+			return;
+			break;
+		default:
+			cout<<"Ingrese una opcion correcta\n";
 			break;
 		}
-	
+	case 4:
+		cout<<"\n";
+		return;
+		break;
 	default:
+		cout<<"\nIngrese una opcion correcta\n";
 		break;
 	}
 	
@@ -388,8 +417,7 @@ void registro_usuarioJ(string nombreuser, string contra, int monedas ,int edad, 
 					primero-> anterior=ultimo;
 				}
 			}
-	}
-		
+	}	
 	if(primero == NULL){
 		nodo *nuevo = new nodo();
 		nuevo->nombreuser = nombreuser;
@@ -476,6 +504,7 @@ void registro_usuario(string nombreuser, string contra, int monedas ,int edad, s
 			primero-> anterior=ultimo;
 		}
 		cout<<"\nUsuario registrado"<<endl;
+		//bubble_sort();
 	}
 
 };
@@ -528,11 +557,17 @@ void verTutorial(){
 		cout<<"\tAlto: "<<primeroCola->y<<"\n";
 		cout<<"   Movimientos: "<<endl;
 		cout<<"\t";
-		while(actualCola!=NULL){			
-			cout<< "(" << actualCola->x<<","<<actualCola->y<< ")"<<"->";
+		while(actualCola!=NULL){
+			if(actualCola!= ultimoCola){
+				cout<< "(" << actualCola->x<<","<<actualCola->y<< ")<-";
+			}
+			else if(actualCola == ultimoCola){
+				cout<< "(" << actualCola->x<<","<<actualCola->y<< ")";
+			}			
+			
 			actualCola = actualCola->siguienteCola;
 		}
-		cout<<"\n";
+		cout<<"\n\n";
 	}else{
 		cout << endl << " La cola se encuentra Vacia " << endl << endl;
 	}
@@ -647,14 +682,13 @@ void sub_login(string nombreuser, string contra,int edad, int monedas){
 		case 1:
 			cout<<"Datos del Usuario"<<endl;
 			cout<<"Nick -> "<< nombreuser <<endl;
-			cout<<"Contraseña -> "<< contra <<endl;
 			cout<<"Edad -> "<< edad <<endl;
+			cout<<"Contraseña -> "<< contra <<endl;
 			cout<<"\n";
 			editar_info(nombreuser, edad, contra);
             break;
 		case 2:
 			eliminarCuenta(nombreuser);
-			//return;
             break;
 		case 3:
 			cout<<"\nTutorial"<<endl;
@@ -662,7 +696,6 @@ void sub_login(string nombreuser, string contra,int edad, int monedas){
 			break;
                         
         case 4:
-            cout<<"Tienda"<<endl;
 			Mostrar_Tienda(monedas);
             break;
 		case 5:
@@ -708,11 +741,8 @@ void editar_info(string nombreuser, int edad, string contra){
 		cout << "\nIngrese una opcion correcta\n\n";
 		break;
 	}
-
 }
 
-
-/* 
 void modificarNick(string userb){
 	nodo* actual = new nodo();
 	actual = primero;
@@ -728,55 +758,6 @@ void modificarNick(string userb){
 			actual = actual->siguiente;
 		}while(actual!=primero && encontrado != true);	
 	}
-}
-*/
-
-
-void modificarNick(string userb){
-	nodo* actual = new nodo();
-	string nuevouser;
-	actual = primero;
-	bool encontrado = false;
-	//if(primero!=NULL){
-		cout<<"\nIngrese el nuevo Nick: ";
-		cin >> nuevouser;
-		do{
-			//if(actual->nombreuser==userb){
-				if(actual->nombreuser==nuevouser){
-					cout<<"Nick repetido\n";
-					encontrado=true;
-					break;
-				}
-				//cout << "\n Ingrese el nuevo Nick: ";
-				//cin >> actual->nombreuser;
-				//cout << "\n Para efectuar los cambios debe cerrar sesión e iniciar con el nuevo usuario\n\n";
-				//encontrado = true;				
-			//}
-			actual = actual->siguiente;
-		}while(actual!=primero && encontrado != true);
-
-	//actual->nombreuser = userb;
-	//userb = nuevouser;
-	//actual->nombreuser = nuevouser;
-
-	//}
-
-/*		do{
-			
-			if(actual->nombreuser==nuevouser){
-				cout<<"El nick ingresado ya existe\n";
-				encontrado = true;
-				return;
-			}
-			if(actual->nombreuser!=nuevouser){
-				//cout<<"Llega\n";
-				actual->nombreuser = nuevouser;
-				encontrado = false;
-			}
-		actual = actual->siguiente;	
-		}while(actual!=primero && encontrado != true);	
-		
-	} */
 }
 
 void modificarEdad(int edad){
@@ -800,12 +781,17 @@ void modificarEdad(int edad){
 void modificarContra(string contra){
 	nodo* actual = new nodo();
 	actual = primero;
+	string cambiocontra;
 	bool encontrado = false;
 	if(primero!=NULL){
 		do{
 			if(actual->contra==contra){
 				cout << "\n Ingrese la nueva Contraseña: ";
-				cin >> actual->contra;
+				cin>>cambiocontra;
+				//cin >> actual->contra;
+				string encriptado = SHA256::cifrar(cambiocontra);
+				actual->contracifrada = encriptado;
+				actual->contra = cambiocontra;
 				cout << "\n Para efectuar los cambios debe cerrar sesión e iniciar con la nueva contraseña\n\n";
 				encontrado = true;				
 			}
@@ -826,7 +812,6 @@ void eliminarCuenta(string userbuscado){
 	if (opc == "y"){
 		if(primero!=NULL){
 		do{
-			
 			if(actual->nombreuser==userbuscado){				
 				if(actual==primero){
 					primero = primero->siguiente;
@@ -849,10 +834,10 @@ void eliminarCuenta(string userbuscado){
 	}
 	cout<<"Cerrando la sesión"<<endl;
 	cout<<"\n";
-	return;
+	MenuPrincipal();
 	}
 	if (opc == "s"){
-		cout<<"Salida"<<endl;
+		cout<<"\nRegresando\n"<<endl;
 		return;
 	}
 	else{
@@ -866,13 +851,16 @@ void GraficoListaCDobleEnlace(){
 	int contador = 0;
 	int contador2 = 0;
 	string nombreNodo, direccion;
+
+	if(actual==NULL){
+		cout<<"No se puede graficar porque no existen datos en la lista"<<endl;
+	}else{
 	string dot = "";
 	dot = dot + "digraph G {\n";
 	dot = dot + "graph[nodesep=\"0.75\"]\n";
 	dot = dot + "labelloc=\"t\"\n";
 	dot = dot + "label=\"Lista Circular doblemente enlazada\"\n";
 	dot = dot + "node[shape=box]" + "\n";
-	//dot = dot + "nodo1[label =\"Nick: "  + (actual->nombreuser) + "\nContra: " +(actual->contra) + "\nMonedas: " + to_string(actual->monedas) + "\nEdad: " + to_string(actual->edad) + "\" ""]"; Este es el bueno
 	if (primero!=NULL) {
 		do {
 			nombreNodo = "nodo"+to_string(contador);
@@ -898,13 +886,18 @@ void GraficoListaCDobleEnlace(){
     file.open("ListaCircularDobleEnlazada.dot");
     file << dot;
     file.close();
-    system(("dot -Tpng ListaCircularDobleEnlazada.dot -o  ListaCircularDobleEnlazada.png"));
+    system(("dot -Tpng ListaCircularDobleEnlazada.dot -o  GraficoUsuarios.png"));
+	cout<<"\nReporte Usuario Generado\n"<<endl;
+	}
 }
 
 void GraficoTutorial(){
 	nodoCola* actualCola = new nodoCola();
-	actualCola = primeroCola->siguienteCola;
+	if(primeroCola==NULL){
+		cout<<"No se puede graficar porque no existen datos en la cola"<<endl;
+	}else{
 	int contador1 = 0;
+	actualCola = primeroCola->siguienteCola;
 	string nombreNodo1, direccion1;
 	string dot = "";
 	dot = dot + "digraph G {\n";
@@ -933,9 +926,10 @@ void GraficoTutorial(){
     file << dot;
     file.close();
 
-    system(("dot -Tpng ColadeMovimientos.dot -o  ColadeMovimientos.png"));
+    system(("dot -Tpng ColadeMovimientos.dot -o  GraficoTutorial.png"));
+	cout<<"\nReporte de Tutorial Generado\n"<<endl;
+	}
 }
-
 
 void movimientos(string nombreuser){
 	int movx, movy;
@@ -969,30 +963,35 @@ void movimientos(string nombreuser){
 		string nombremov;
 		cout<<"Nombre para guardar movimientos: ";
 		cin>>nombremov;
-		GraficoMovimientos(nombreuser,nombremov);
+		nombrejugada = nombremov;
+		cout<<"Se ha guardado la jugada\n";
 		}
 		break;
 	case 2:
 		string nombremov;
 		cout<<"Nombre para guardar movimientos: ";
 		cin>>nombremov;
-		GraficoMovimientos(nombreuser,nombremov);
+		nombrejugada = nombremov;
+		cout<<"Se ha guardado la jugada\n";
 	}
 	}while(resp!=2);
 	
 }
-
 
 void GraficoMovimientos(string nombreuser,string nombresalida){
 	nodoPila* actualPila = new nodoPila();
 	actualPila = primeroPila;
 	int contador1 = 0;
 	string nombreNodo1, direccion1;
+
+	if(actualPila==NULL){
+		cout<<"No se puede graficar porque no existen datos en la pila"<<endl;
+	}else{
 	string dot = "";
 	dot = dot + "digraph G {\n";
 	dot = dot + "graph[nodesep=\"0.75\"]\n";
 	dot = dot + "labelloc=\"t\"\n";
-	dot = dot + "label=\"Lista de Pilas\" + \"\nListado de Jugadas\" + \"\nNombre Jugada: " + nombresalida + "\"\n";
+	dot = dot + "label=\"Lista de Pilas\" + \"\nListado de Jugadas\" + \"\nNick: "+ userlogin + "\nNombre Jugada: " + nombresalida + "\"\n";
 	dot = dot + "node[shape=box]" + "\n";
 	if (primeroPila!=NULL) {
 		do {
@@ -1015,9 +1014,11 @@ void GraficoMovimientos(string nombreuser,string nombresalida){
     file.open(nombredot);
     file << dot;
     file.close();
-	string salida = "dot -Tpng " +nombredot+ " -o  ListadePilas_"+nombreuser + ".png";
+	string salida = "dot -Tpng " +nombredot+ " -o  GraficoMovimientos_"+nombreuser + ".png";
 	system((salida.c_str()));
 	vaciarPila();
+	cout<<"\nReporte de Jugadas Generado\n"<<endl;
+	}
 }
 
 void vaciarPila(){
@@ -1033,16 +1034,13 @@ void vaciarPila(){
 				}else{
 					anteriorPila->siguientePila = actualPila->siguientePila;
 				}
-				//cout << endl << " Nodo Eliminado" << endl << endl;
 			anteriorPila = actualPila;
 			actualPila = actualPila->siguientePila;
 		}
 	}else{
-		//cout << endl << " La Pila se encuentra vacia" << endl << endl;
 		cout<<"\n";
 	}	
 }
-
 
 void desplegarPila(){
 	nodoPila* actualPila = new nodoPila();
@@ -1057,105 +1055,7 @@ void desplegarPila(){
 	}
 }
 
-
-void GenerarGrafo() {
-	nodo* actual = new nodo();
-	actual = primero;
-    string dot = "";
-    dot = dot + "digraph G {\n";
-    dot = dot + "label=\"ListaDeImagenes\";\n";
-    dot = dot + "node [shape=box];\n";
-	//cout <<"| "<<"Nick: "<<actual->nombreuser<<" Contra: "<<actual->contra<<" Monedas: "<<actual->monedas<<" Edad: "<<actual->edad <<"| ";
-	//actual = actual -> siguiente;
-
-
-    dot = dot + "//agregar nodos\n";
-    while (actual != NULL) {
-        dot = dot + "N" + to_string(actual->monedas) + "[label=\"" + to_string(actual->edad) + "\"];\n";
-        actual = actual->siguiente;
-    }
-    dot = dot + "//Enlazar imagenes\n";
-    dot = dot + "{rank=same;\n";
-    actual = primero;
-    while (actual != NULL) {
-
-        dot = dot + "N" + to_string(actual->edad);
-        if (actual->siguiente != NULL) {
-            dot = dot + "->";
-        }
-        actual = actual->siguiente;
-    }
-
-    dot = dot + "}\n";
-    dot = dot + "}\n";
-
-    cout << dot;
-    
-     //------->escribir archivo
-    ofstream file;
-    file.open("Pruebas.dot");
-    file << dot;
-    file.close();
-
-    //------->generar png
-    system(("dot -Tpng Pruebas.dot -o  Pruebas.png"));
-
-    //------>abrir archivo
-    system(("Pruebas.png"));
-    
-}
-
-void graficaPrueba(){
-
-
-	nodo* actual = new nodo();
-	actual = primero;
-	int auxi,auxi2;
-
-	if(primero!=NULL){
-		do{
-			nodo* aux = actual->siguiente;
-			while(aux!=NULL){
-				if(actual->edad > aux->edad){
-					auxi = aux->edad;
-					aux->edad = actual->edad;
-					actual->edad = auxi;
-					cout<<"Edad1: " <<auxi<<endl;
-				}else{
-					auxi2 = aux->edad;
-					aux->edad = actual->edad;
-					aux = actual->siguiente;
-					actual->edad = auxi2;
-					cout<<"Edad2: "<<auxi2<<endl;
-					//break;
-				}
-					
-			aux = aux->siguiente;
-		actual = actual->siguiente;
-		//cout<<"Edad: "<<aux->siguiente<<endl;
-					//break;
-					
-			}
-			//aux = aux->siguiente;
-		}while(actual->siguiente!=primero);
-	}
-
-/*	while(p != NULL){
-        nodo *j = p ->siguiente;
-        while(j != NULL){
-            if(p->edad > j->edad){
-                int aux = j->edad;
-                j->edad = p->edad;
-                p->edad = aux;
-            }
-            j = j->siguiente;
-        }
-        p = p->siguiente;
-    }
-*/
-}
-
-void registro_articulos(string categoria, string nombre, int precio, int id, string srcarticulo){
+void registro_articulos(string categoria, string nombre, int precio, string id, string srcarticulo){
     NodoCategoria* nodoCategoria = new NodoCategoria();
     nodoCategoria->categoria = categoria;
     NodoCategoria* aux = new NodoCategoria();
@@ -1167,8 +1067,6 @@ void registro_articulos(string categoria, string nombre, int precio, int id, str
 	nodoArticulos->SRCArticulo = srcarticulo;
 
     aux = primeroCategoria;
-	//nodoArticulos = primeroArticulos;
-	
 	bool encontrado = false;
 
 	if(primeroCategoria == NULL){
@@ -1180,7 +1078,7 @@ void registro_articulos(string categoria, string nombre, int precio, int id, str
             primeroArticulos = nodoArticulos;
             ultimoArticulos = nodoArticulos;
     }else{
-        if(!esRepetido(nodoCategoria->categoria)){
+        if(!CategoriaRepetida(nodoCategoria->categoria)){
         NodoCategoria* temp = new NodoCategoria();
         temp = primeroCategoria;
         int aux = 1;
@@ -1202,45 +1100,9 @@ void registro_articulos(string categoria, string nombre, int precio, int id, str
             ultimoArticulos = nodoArticulos;
         }
     }
-
-
-	/* 
-	if(primeroCategoria == NULL){
-        nodoCategoria->indice++;
-        primeroCategoria = nodoCategoria;
-        ultimoCategoria = nodoCategoria;
-        
-            primeroCategoria->abajo = nodoArticulos;
-            primeroArticulos = nodoArticulos;
-            ultimoArticulos = nodoArticulos;
-    }else{
-        if(!esRepetido(nodoCategoria->categoria)){
-        NodoCategoria* temp = new NodoCategoria();
-        temp = primeroCategoria;
-        int aux = 1;
-            while (temp!=NULL)
-            {
-                aux++;
-                temp = temp->siguienteCA;
-            }
-            nodoCategoria->indice = aux;
-            
-            ultimoCategoria->siguienteCA = nodoCategoria;
-            ultimoCategoria = nodoCategoria;
-
-            ultimoCategoria->abajo = nodoArticulos;
-            primeroArticulos = nodoArticulos;
-            ultimoArticulos = nodoArticulos;
-        }else{
-            ultimoArticulos->siguienteArtic = nodoArticulos;
-            ultimoArticulos = nodoArticulos;
-        }
-    }
-	
-	*/
 }
 
-bool esRepetido(string _categoria){
+bool CategoriaRepetida(string _categoria){
     NodoCategoria* actualCategoria = new NodoCategoria();
     bool repetido = false;
     actualCategoria = primeroCategoria;
@@ -1256,112 +1118,14 @@ bool esRepetido(string _categoria){
     return repetido;
 }
 
-bool esRepetido1(int _id){
-    NodoArticulos* actualArticulo = new NodoArticulos();
-    bool repetido = false;
-    actualArticulo = primeroArticulos;
-    if(primeroArticulos!=NULL){
-        while(actualArticulo!=NULL){
-            if(_id==actualArticulo->idArticulo){
-                repetido = true;
-                break;
-            }
-            actualArticulo = actualArticulo->siguienteArtic;
-        }
-    }
-    return true;
-}
-
-void Mostrar_Tienda(int monedas){
-	NodoCategoria* aux1 = new NodoCategoria();
-    aux1 = primeroCategoria;
-
-    NodoArticulos* aux2 = new NodoArticulos();
-    cout<<"\t\t\tTotal Tokens: "<<monedas<<endl;
-	cout<<"ID "<<" Nombre"<<"\tCategoria"<<" Precio"<<endl;
-    while(aux1!=NULL){		
-        aux2 = aux1->abajo;
-        while (aux2!=NULL)
-        {
-			cout<<aux2->idArticulo<<"  "<<aux2->nombreArticulo<<"\t"<<aux1->categoria<<"\t"<<aux2->precioArticulo<<endl;
-            aux2 = aux2->siguienteArtic;
-        }
-        aux1 = aux1->siguienteCA;
-
-    }
-}
-
-void ordenarPrecioASC(){
-/*
-	NodoArticulos *p = primeroArticulos;
-    while(p != NULL){
-        NodoArticulos *j = p ->siguienteArtic;
-        while(j != NULL){
-            if(p->precioArticulo > j->precioArticulo){
-                int aux = j->precioArticulo;
-                j->precioArticulo = p->precioArticulo;
-                p->precioArticulo = aux;
-				cout<<"Llega?";
-				//cout<<"Salida : "<<p->precioArticulo;
-            }
-            j = j->siguienteArtic;
-        }
-        p = p->siguienteArtic;
-    }
-	cout<<"Listo"<<endl;
-*/
-
-	//NodoArticulos *actual = primeroArticulos;
-	NodoArticulos *nodo1 = new NodoArticulos();
-	NodoArticulos *actual, *siguiente;
-    int n;
-    if(nodo1 != NULL)
-    {
-        actual = nodo1;
-        do
-        {
-            siguiente = actual->siguienteArtic;
-            while(siguiente != nodo1)
-            {
-                if(actual->precioArticulo > siguiente->precioArticulo)
-                {
-                    n = siguiente->precioArticulo;
-                    siguiente->precioArticulo = actual->precioArticulo;
-                    actual->precioArticulo = n;
-                }
-                siguiente = siguiente->siguienteArtic;
-            }
-            actual = actual->siguienteArtic;
-            siguiente = actual->siguienteArtic;
-        }
-        while(siguiente != nodo1);
-    }
-
-
-
-
-/*	nodo *p = primero;
-    while(p != NULL){
-        nodo *j = p ->siguiente;
-        while(j != NULL){
-            if(p->edad > j->edad){
-                int aux = j->edad;
-                j->edad = p->edad;
-                p->edad = aux;
-            }
-            j = j->siguiente;
-        }
-        p = p->siguiente;
-    }
-
-	cout<<"Listo"<<endl;
-*/
-}
-
 void GraficoListadeListas(){
 		NodoCategoria* actualCategoria = new NodoCategoria();
 		NodoArticulos* templist = new NodoArticulos();
 		actualCategoria = primeroCategoria;
+
+		if(primeroCategoria==NULL){
+			cout<<"No se puede graficar porque no existen datos en la lista"<<endl;
+		}else{
 		string dot = "";
 		dot = dot + "digraph G{\n";
 		dot = dot + "graph[nodesep=\"0.75\"]\n";
@@ -1392,7 +1156,7 @@ void GraficoListadeListas(){
 						"C" +
 						to_string(numeronodo) +
 						"[label =\" " +
-						"Id: " + to_string(templist->idArticulo) +
+						"Id: " + templist->idArticulo +
 						"\nNombre: "+templist->nombreArticulo+
 						"\nPrecio: "+to_string(templist->precioArticulo)+
 						"\"" +  " width = 2, group = 1 ];\n";
@@ -1432,5 +1196,196 @@ void GraficoListadeListas(){
     file<<dot;
     file.close();
     system(("dot -Tpng ListadeListas.dot -o  ListadeListas.png"));
+	cout<<"Reporte de Articulos Generado"<<endl;
+	}
 
 } 
+
+void Mostrar_Tienda(int monedas){
+	NodoCategoria* aux1 = new NodoCategoria();
+    aux1 = primeroCategoria;
+
+    NodoArticulos* aux2 = new NodoArticulos();
+    cout<<"\t\t\t\tTotal Tokens: "<<monedas<<endl;
+	cout<<"Tienda"<<endl;
+	cout << "  "<< left << setw( 10 ) << "ID"<< " "<< left << setw( 20 ) << "Nombre"<< "   "<< left << setw( 12 ) << "Categoria"<< " "<< left << setw( 15 ) << "Precio"<< " "<<endl;
+    while(aux1!=NULL){		
+        aux2 = aux1->abajo;
+        while (aux2!=NULL)
+        {
+			cout << "  "<< left << setw( 10 ) <<aux2->idArticulo<< " "<< left << setw( 20 ) << aux2->nombreArticulo<< "   "<< left << setw( 12 ) << aux1->categoria<< " "<< left << setw( 12 ) <<aux2->precioArticulo<< " "<<endl;
+            aux2 = aux2->siguienteArtic;
+        }
+        aux1 = aux1->siguienteCA;
+
+    }
+	cout<<"\n";
+}
+
+void ordenarPrecioASC(){
+/*
+	NodoArticulos *p = primeroArticulos;
+    while(p != NULL){
+        NodoArticulos *j = p ->siguienteArtic;
+        while(j != NULL){
+            if(p->precioArticulo > j->precioArticulo){
+                int aux = j->precioArticulo;
+                j->precioArticulo = p->precioArticulo;
+                p->precioArticulo = aux;
+				cout<<"Llega?";
+				//cout<<"Salida : "<<p->precioArticulo;
+            }
+            j = j->siguienteArtic;
+        }
+        p = p->siguienteArtic;
+    }
+	cout<<"Listo"<<endl;
+*/
+
+	//NodoArticulos *actual = primeroArticulos;
+
+
+	
+	NodoArticulos *nodo1 = new NodoArticulos();
+	NodoArticulos *actual, *siguiente;
+    int n;
+    if(nodo1 != NULL)
+    {
+        actual = nodo1;
+        do
+        {
+            siguiente = actual->siguienteArtic;
+            while(siguiente != nodo1)
+            {
+                if(actual->precioArticulo > siguiente->precioArticulo)
+                {
+                    n = siguiente->precioArticulo;
+                    siguiente->precioArticulo = actual->precioArticulo;
+                    actual->precioArticulo = n;
+                }
+                siguiente = siguiente->siguienteArtic;
+            }
+            actual = actual->siguienteArtic;
+            siguiente = actual->siguienteArtic;
+        }
+        while(siguiente != nodo1);
+    }
+}
+
+void ListaUsuarioASC(nodo *cabeza)
+{
+	nodo *inicio = cabeza;
+
+	cout << "  "<< left << setw( 15 ) << "NICK"<< " "<< left << setw( 12 ) << "Monedas"<< "   "<< left << setw( 12 ) << "Edad"<< " "<< left << setw( 15 ) << "Contra"<< " "<<endl;	
+	while(inicio)
+	{
+		cout << "  "<< left << setw( 15 ) <<inicio->nombreuser<< " "<< left << setw( 12 ) << inicio->monedas<< "   "<< left << setw( 12 ) << inicio->edad<< " "<< left << setw( 12 ) <<inicio->contracifrada<< " "<<endl;
+		inicio = inicio->siguiente;
+		if(inicio == primero){
+			break;
+		}
+	}
+	cout<<"\n\n";
+}
+
+void ListaUsuarioDESC(nodo *cabeza)
+{
+	nodo *inicio = cabeza;
+
+	cout << "  "<< left << setw( 15 ) << "NICK"<< " "<< left << setw( 12 ) << "Monedas"<< "   "<< left << setw( 12 ) << "Edad"<< " "<< left << setw( 15 ) << "Contra"<< " "<<endl;	
+	while(inicio)
+	{
+		cout << "  "<< left << setw( 15 ) <<inicio->nombreuser<< " "<< left << setw( 12 ) << inicio->monedas<< "   "<< left << setw( 12 ) << inicio->edad<< " "<< left << setw( 12 ) <<inicio->contracifrada<< " "<<endl;
+		inicio = inicio->siguiente;
+		if(inicio == primero){
+			break;
+		}
+	}
+	cout<<"\n\n";
+}
+
+void intercambioASC(nodo *lado_izq, nodo *lado_der){
+	string nombreus = lado_izq->nombreuser;
+	string contraa = lado_izq->contra;
+	string contraci = lado_izq->contracifrada;
+	int temp = lado_izq->edad;
+	int mone = lado_izq->monedas;
+	lado_izq->edad = lado_der -> edad;
+	lado_izq->nombreuser = lado_der -> nombreuser;
+	lado_izq->contra = lado_der -> contra;
+	lado_izq->contracifrada = lado_der -> contracifrada;
+	lado_izq->monedas = lado_der -> monedas;
+	lado_der -> edad = temp;
+	lado_der -> nombreuser = nombreus;
+	lado_der -> contra = contraa;
+	lado_der -> contracifrada = contraci;
+	lado_der -> monedas = mone;
+}
+
+void intercambioDESC(nodo *lado_izq, nodo *lado_der){
+	string nombreus = lado_izq->nombreuser;
+	string contraa = lado_izq->contra;
+	string contraci = lado_izq->contracifrada;
+	int temp = lado_izq->edad;
+	int mone = lado_izq->monedas;
+	lado_izq->edad = lado_der -> edad;
+	lado_izq->nombreuser = lado_der -> nombreuser;
+	lado_izq->contra = lado_der -> contra;
+	lado_izq->contracifrada = lado_der -> contracifrada;
+	lado_izq->monedas = lado_der -> monedas;
+	lado_der -> edad = temp;
+	lado_der -> nombreuser = nombreus;
+	lado_der -> contra = contraa;
+	lado_der -> contracifrada = contraci;
+	lado_der -> monedas = mone;
+}
+
+void ordenarUsuarioASC(){
+	nodo* cabeza = new nodo();
+	cabeza = primero;
+	int cambiopos;
+
+	nodo* lado_izq;
+	nodo* lado_der;
+	if(primero!=NULL){
+		do{	
+		cambiopos = 0;
+		lado_izq = cabeza;
+		while(lado_izq->siguiente != primero){
+
+			if (lado_izq->edad > lado_izq->siguiente->edad){
+				intercambioASC(lado_izq, lado_izq->siguiente); 
+                cambiopos = 1; 
+			}
+			lado_izq = lado_izq->siguiente;
+			lado_der = lado_izq;
+		}
+	}while(cambiopos);
+		ListaUsuarioASC(cabeza);
+	}
+}
+
+void ordenarUsuarioDESC(){
+	nodo* cabeza = new nodo();
+	cabeza = primero;
+	int cambiopos;
+
+	nodo* lado_izq;
+	nodo* lado_der;
+	if(primero!=NULL){
+		do{	
+		cambiopos = 0;
+		lado_izq = cabeza;
+		while(lado_izq->siguiente != primero){
+
+			if (lado_izq->edad < lado_izq->siguiente->edad){
+				intercambioASC(lado_izq, lado_izq->siguiente); 
+                cambiopos = 1; 
+			}
+			lado_izq = lado_izq->siguiente;
+			lado_der = lado_izq;
+		}
+	}while(cambiopos);
+		ListaUsuarioASC(cabeza);
+	}
+}

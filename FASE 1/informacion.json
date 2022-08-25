@@ -14,26 +14,29 @@
       { "nick": "ludwing", "password": "prueba", "monedas": "210", "edad": "28" },
       { "nick": "pablo_quan", "password": "prueba1", "monedas": "100", "edad": "5" },
       { "nick": "marcos1", "password": "cano44", "monedas": "500", "edad": "41" },
-      { "nick": "rada", "password": "rafiux1", "monedas": "300", "edad": "7" }
+      { "nick": "rada", "password": "rafiux1", "monedas": "300", "edad": "7" },
+      { "nick": "rada12", "password": "rafiux1", "monedas": "300", "edad": "15" }
     ],
     "articulos": [
       { "id": "1", "categoria": "legendario", "precio": "500", "nombre": "barco1", "src": "link1" },
-      { "id": "2", "categoria": "epic", "precio": "250", "nombre": "barco2", "src": "link2" },
+      { "id": "2", "categoria": "epic", "precio": "400", "nombre": "barco2", "src": "link2" },
       { "id": "3", "categoria": "basico", "precio": "100", "nombre": "barco3", "src": "link3" },
-      { "id": "4", "categoria": "epic", "precio": "250", "nombre": "barco4", "src": "link4" },
-      { "id": "2", "categoria": "epic", "precio": "250", "nombre": "barco5", "src": "link5" },
-      { "id": "6", "categoria": "raro", "precio": "500", "nombre": "barco6", "src": "link6" },
-      { "id": "7", "categoria": "mitico", "precio": "250", "nombre": "barco7", "src": "link7" },
-      { "id": "8", "categoria": "especial", "precio": "100", "nombre": "barco8", "src": "link8" },
-      { "id": "9", "categoria": "raro", "precio": "250", "nombre": "barco9", "src": "link9" },
-      { "id": "10", "categoria": "mitico", "precio": "250", "nombre": "barco10", "src": "link10" }
+      { "id": "4", "categoria": "epic", "precio": "300", "nombre": "barco4", "src": "link4" },
+      { "id": "2", "categoria": "epic", "precio": "350", "nombre": "barco5", "src": "link5" },
+      { "id": "6", "categoria": "raro", "precio": "540", "nombre": "barco6", "src": "link6" },
+      { "id": "7", "categoria": "mitico", "precio": "150", "nombre": "barco7", "src": "link7" },
+      { "id": "8", "categoria": "especial", "precio": "120", "nombre": "barco8", "src": "link8" },
+      { "id": "9", "categoria": "raro", "precio": "255", "nombre": "barco9", "src": "link9" },
+      { "id": "10", "categoria": "mitico", "precio": "270", "nombre": "barco10", "src": "link10" }
     ],
    "tutorial": {
-      "ancho":"10",
+      "ancho":"20",
       "alto":"30",
       "movimientos":[
           { "x": "1", "y": "6" },
           { "x": "3", "y": "9" },
-          { "x": "5", "y": "1" }
+          { "x": "5", "y": "1" },
+          { "x": "8", "y": "3" },
+          { "x": "1", "y": "0" }
   ] }
   }
