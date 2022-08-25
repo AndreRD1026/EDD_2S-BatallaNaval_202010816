@@ -42,6 +42,7 @@ void ordenarPrecioASC();
 void ordenarPrecioDESC();
 void GraficoListadeListas();
 void vaciarPila();
+void SumaPuntosJugada(string nombreuser);
 void ordenarUsuarioASC();
 void ordenarUsuarioDESC();
 
@@ -933,12 +934,16 @@ void GraficoTutorial(){
 
 void movimientos(string nombreuser){
 	int movx, movy;
+	int contadormov = 0;
 	int resp;
+	cout<<"\t\t\nTokens: "<<contadormov<<endl;
+	cout<<"Realizar movimientos\n";
 	cout<<"Ingrese la coordenada X: ";
 	cin>>movx;
 	cout<<"Ingrese la coordenada Y: ";
 	cin>>movy;
 	insertarPila(movx,movy);
+	SumaPuntosJugada(nombreuser);
 
 	cout<<"\nMovimiento - "<<movx<<","<<movy<<endl;
 
@@ -950,11 +955,15 @@ void movimientos(string nombreuser){
 		switch (resp)
 	{
 	case 1:
+		contadormov +=1;
+		cout<<"\t\t\nTokens: +"<<contadormov<<endl;
+		cout<<"Realizar movimientos\n";
 		cout<<"Ingrese la coordenada X: ";
 		cin>>movx;
 		cout<<"Ingrese la coordenada Y: ";
 		cin>>movy;
 		insertarPila(movx,movy);
+		SumaPuntosJugada(nombreuser);
 		cout<<"Desea realizar otro movimiento? "<<endl;
 		cout<<"1. SI"<<endl;
 		cout<<"2. NO"<<endl;
@@ -1041,6 +1050,27 @@ void vaciarPila(){
 		cout<<"\n";
 	}	
 }
+
+void SumaPuntosJugada(string user){
+	nodo* actualJugada = new nodo();
+	bool encontrado = false;
+	int jugada = 1;
+	actualJugada = primero;
+	if(primero!=NULL){
+		do{
+			if(actualJugada->nombreuser==user){
+				encontrado = true;
+				actualJugada->monedas = actualJugada->monedas + jugada;
+				break;
+			}else{
+				encontrado = false;
+			}
+			actualJugada = actualJugada->siguiente;
+			}while(actualJugada!=primero && encontrado!=true);
+		}else{
+			cout<<"No encontrado\n";
+		}
+	}
 
 void desplegarPila(){
 	nodoPila* actualPila = new nodoPila();
