@@ -1,6 +1,4 @@
 #include "ListaCircular.h"
-//#include "json/json.h"
-//#include "jsoncpp.cpp"
 #include "SHA256.h"
 #include <iostream>
 

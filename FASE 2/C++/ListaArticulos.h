@@ -23,30 +23,7 @@ public:
     bool CategoriaRepetida(string _categoria);
     void Mostrar_Tienda(int monedas);
     void GraficoListadeListas();
-    //void registro_usuario(string nombreuser, string contra, int monedas ,int edad, string contracifrada);
-    //void registro_usuarioJ(string nombreuser, string contra, int monedas ,int edad, string contracifrada);
 
 private:
 };
 #endif
-
-/*
-
-struct NodoCategoria{
-    string categoria;
-    int indice;
-    NodoCategoria* siguienteCA;
-    NodoArticulos* abajo;
-}*primeroCategoria, *ultimoCategoria;
-
-*/
-
-/* 
-
-struct NodoArticulos{
-	int precioArticulo;
-    string idArticulo,nombreArticulo,SRCArticulo;    
-    NodoArticulos* siguienteArtic;
-}*primeroArticulos, *ultimoArticulos;
-
-*/

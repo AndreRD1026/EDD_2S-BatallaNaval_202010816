@@ -30,12 +30,6 @@ void eliminarCuenta(string userbuscado);
 void movimientos(string nombreuser);
 void vaciarPila();
 void SumaPuntosJugada(string user);
-//void registro_articulos(string categoriaarticulo, string nombrearticulo, int precioarticulo, string idarticulo, string srcarticulo);
-//void GraficoMovimientos(string nombreuser, string salida);
-//void Mostrar_Tienda(int monedas);
-//void ordenarPrecioASC();
-//void ordenarPrecioDESC();
-//void GraficoListadeListas();
 
 std:: string userlogin;
 std:: string nombrejugada;
