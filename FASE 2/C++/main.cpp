@@ -8,33 +8,23 @@
 #include "json/json.h"
 #include "jsoncpp.cpp"
 #include "SHA256.h"
-#include "ListaCircular.h"
-//#include "ListaCircular.cpp"
+//#include "ListaCircular.h"
+#include "ListaCircular.cpp"
 #include <cstdlib>
 
 using namespace std;
 
-
 void MenuPrincipal();
 void cargamasiva();
 void registrousuario();
-//void login();
-//void sub_login(string nombreuser, string contra,int edad, int monedas);
 //void reportes();
 //void sub_reportes();
-//void registro_usuario(string nombreuser, string contra,int monedas, int edad, string contracifrada);
-//void registro_usuarioJ(string nombreuser, string contra,int monedas, int edad, string contracifrada);
 //void registro_articulos(string categoriaarticulo, string nombrearticulo, int precioarticulo, string idarticulo, string srcarticulo);
 //void registroTutorial(int x, int y);
 //void insertarPila(int movx, int movy);
 //void verTutorial();
 //void lista_usuarios();
 //void lista_usuariosordenada();
-//void eliminarCuenta(string nombreuser);
-//void editar_info(string nombreuser, int edad, string contra);
-//void modificarNick(string nombreuser);
-//void modificarEdad(int edad);
-//void modificarContra(string contra);
 //void GraficoListaCDobleEnlace();
 //void GraficoTutorial();
 //void movimientos(string nombreuser);
@@ -60,7 +50,7 @@ void registrousuario();
 	nodo *siguiente;
 } *primero=NULL, *ultimo=NULL; */
 
-//ListaCircular Listausuarios;
+ListaCircular Listausuarios;
 
 int main(int argc, char** argv) {
 
@@ -85,14 +75,16 @@ void MenuPrincipal(){
 			cargamasiva();
             break;
 		case 2:
+            cout<<"\n";
 			registrousuario();
             break;
 		case 3:
-			cout<<"\n";
+            Listausuarios.login();
 			break;
         case 4:
 			cout<<"\n";
             //reportes();
+            Listausuarios.lista_usuarios();
             break;
 		case 5:
 			cout << "\nFin del programa\n";
@@ -105,7 +97,7 @@ void MenuPrincipal(){
 }
 
 void registrousuario(){
-	ListaCircular Listausuarios;
+	//ListaCircular Listausuarios;
 	string nombreuser, contra;
 	int monedas, edad;
 	cout << "Ingresa el nombre de usuario: "<<endl;
@@ -127,7 +119,7 @@ void registrousuario(){
 
 
 void cargamasiva(){
-	ListaCircular Listausuarios;
+	//ListaCircular Listausuarios;
     ifstream archivo;
     string ruta;
     string texto;

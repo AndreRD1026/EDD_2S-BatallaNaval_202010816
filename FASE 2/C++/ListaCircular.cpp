@@ -1,6 +1,6 @@
 #include "ListaCircular.h"
-#include "json/json.h"
-#include "jsoncpp.cpp"
+//#include "json/json.h"
+//#include "jsoncpp.cpp"
 #include "SHA256.h"
 #include <iostream>
 
@@ -133,6 +133,7 @@ void ListaCircular::registro_usuarioJ(string nombreuser, string contra, int mone
 
 }
 
+
 void ListaCircular::lista_usuarios() {
     nodoUsuarios *actual = new nodoUsuarios();
     actual = primero;
@@ -184,7 +185,6 @@ void ListaCircular::login(){
 }
 
 
-
 void ListaCircular::sub_login(string nombreuser, string contra,int edad, int monedas){
     int op1=0;
     char prueba;
@@ -209,6 +209,7 @@ void ListaCircular::sub_login(string nombreuser, string contra,int edad, int mon
             editar_info(nombreuser, edad, contra);
             break;
         case 2:
+            //cout<<"Eliminar cuenta\n";
             eliminarCuenta(nombreuser);
             break;
         case 3:
@@ -217,7 +218,7 @@ void ListaCircular::sub_login(string nombreuser, string contra,int edad, int mon
             break;
                         
         case 4:
-			cout<<"\n";
+			cout<<"Tienda\n";
             //Mostrar_Tienda(monedas);
             break;
         case 5:
@@ -265,7 +266,6 @@ void ListaCircular::editar_info(string nombreuser, int edad, string contra){
     }
 }
 
-
 void ListaCircular::modificarNick(string userb){
     nodoUsuarios* actual = new nodoUsuarios();
     actual = primero;
@@ -299,7 +299,6 @@ void ListaCircular::modificarEdad(int edad){
         }while(actual!=primero && encontrado != true);  
     }
 }
-
 
 void ListaCircular::modificarContra(string contra){
     nodoUsuarios* actual = new nodoUsuarios();
