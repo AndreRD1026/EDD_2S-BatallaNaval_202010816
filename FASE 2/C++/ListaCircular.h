@@ -17,13 +17,13 @@ public:
     void registro_usuario(string nombreuser, string contra, int monedas ,int edad, string contracifrada);
     void registro_usuarioJ(string nombreuser, string contra, int monedas ,int edad, string contracifrada);
     void lista_usuarios();
-    void login();
-    void sub_login(string nombreuser, string contra,int edad, int monedas);
-    void editar_info(string nombreuser, int edad, string contra);
-    void modificarNick(string userb);
-    void modificarEdad(int edad);
-    void modificarContra(string contra);
-    void eliminarCuenta(string userbuscado);
+    void GraficoListaCDobleEnlace();
+    void ordenarUsuarioASC();
+    void ordenarUsuarioDESC();
+    void ListaUsuarioASC(nodoUsuarios *cabeza);
+    void ListaUsuarioDESC(nodoUsuarios *cabeza);
+    void intercambioASC(nodoUsuarios *lado_izq, nodoUsuarios *lado_der);
+    void intercambioDESC(nodoUsuarios *lado_izq, nodoUsuarios *lado_der);
 private:
 };
 #endif

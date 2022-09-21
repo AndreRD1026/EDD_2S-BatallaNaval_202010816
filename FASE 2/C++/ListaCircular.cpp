@@ -133,7 +133,6 @@ void ListaCircular::registro_usuarioJ(string nombreuser, string contra, int mone
 
 }
 
-
 void ListaCircular::lista_usuarios() {
     nodoUsuarios *actual = new nodoUsuarios();
     actual = primero;
@@ -148,221 +147,166 @@ void ListaCircular::lista_usuarios() {
  
 }
 
-void ListaCircular::login(){
-    nodoUsuarios* actual = new nodoUsuarios();
-    actual = primero;
-    bool encontrado = false;
-    string nodoBuscado;
-    string usuariob, contrab;
-    char caracter;
-    cout << "Ingrese su usuario: "<<endl;
-    cin >> usuariob;
-    cout << "Ingrese su contraseña: "<<endl;
-    cin >> contrab;
-    string cifrada = SHA256::cifrar(contrab);
-    //cout<<"El cifrado sha es : "<<cifrada<<endl;
-    
-    cout<<"\n";
-    if(primero!=NULL){
-        do{
-            //cout<<"El cifrado sha a comparar es : "<<actual->contracifrada<<endl;
-            if(actual->nombreuser==usuariob && actual->contracifrada==cifrada){
-                encontrado = true;  
-                cout<<"Inicio de sesión correctos"<<endl;
-                userlogin = actual->nombreuser;
-                sub_login(actual->nombreuser, actual->contra,actual-> edad, actual->monedas);
-            }
-            actual = actual->siguiente;
-        }while(actual!=primero && encontrado != true);
-        
-        if(!encontrado){
-            cout << "\nUsuario o contraseña incorrectos\n\n";
-        }
-        
-    }else{
-        cout << "\nNo existe el usuario en la lista\n\n";
-    }
+void ListaCircular:: GraficoListaCDobleEnlace(){
+	nodoUsuarios* actual = new nodoUsuarios();
+	actual = primero;
+	int contador = 0;
+	int contador2 = 0;
+	string nombreNodo, direccion;
+
+	if(actual==NULL){
+		cout<<"No se puede graficar porque no existen datos en la lista"<<endl;
+	}else{
+	string dot = "";
+	dot = dot + "digraph G {\n";
+	dot = dot + "graph[nodesep=\"0.75\"]\n";
+	dot = dot + "labelloc=\"t\"\n";
+	dot = dot + "label=\"Lista Circular doblemente enlazada\"\n";
+	dot = dot + "node[shape=box]" + "\n";
+	if (primero!=NULL) {
+		do {
+			nombreNodo = "nodo"+to_string(contador);
+			dot = dot + nombreNodo + "[label =\"Nick: "  + (actual->nombreuser) + "\nContra: " +(actual->contracifrada) + "\nMonedas: " + to_string(actual->monedas) + "\nEdad: " + to_string(actual->edad) + "\" ""]" + "\n";
+			if(actual->siguiente!=primero){
+					int auxnum = contador +1;
+					int prueba = contador2 -1;
+					direccion += nombreNodo + "-> nodo" + std::to_string(auxnum) + "[dir=both];\n";
+				}else{
+					int auxnum = contador + 1;
+					direccion += nombreNodo + ":n" + "-> nodo" + std::to_string(0) + ";\n";
+					direccion += "nodo" +std::to_string(0) + ":s" + "->"  + nombreNodo + ";\n";
+				}			
+			actual = actual -> siguiente;
+			contador++;
+		} while(actual!=primero);
+	}
+	dot += nombreNodo + "\n";
+	dot +="{rank=same;\n" + direccion + "\n}";
+	dot = dot + "\n}";	
+
+	ofstream file;
+    file.open("ListaCircularDobleEnlazada.dot");
+    file << dot;
+    file.close();
+    system(("dot -Tpng ListaCircularDobleEnlazada.dot -o  GraficoUsuarios.png"));
+	cout<<"\nReporte Usuario Generado\n"<<endl;
+	}
+}
+
+void ListaCircular::ordenarUsuarioASC(){
+	nodoUsuarios* cabeza = new nodoUsuarios();
+	cabeza = primero;
+	int cambiopos;
+
+	nodoUsuarios* lado_izq;
+	nodoUsuarios* lado_der;
+	if(primero!=NULL){
+		do{	
+		cambiopos = 0;
+		lado_izq = cabeza;
+		while(lado_izq->siguiente != primero){
+
+			if (lado_izq->edad > lado_izq->siguiente->edad){
+				intercambioASC(lado_izq, lado_izq->siguiente); 
+                cambiopos = 1; 
+			}
+			lado_izq = lado_izq->siguiente;
+			lado_der = lado_izq;
+		}
+	}while(cambiopos);
+		ListaUsuarioASC(cabeza);
+	}
+}
+
+void ListaCircular:: intercambioASC(nodoUsuarios *lado_izq, nodoUsuarios *lado_der){
+	string nombreus = lado_izq->nombreuser;
+	string contraa = lado_izq->contra;
+	string contraci = lado_izq->contracifrada;
+	int temp = lado_izq->edad;
+	int mone = lado_izq->monedas;
+	lado_izq->edad = lado_der -> edad;
+	lado_izq->nombreuser = lado_der -> nombreuser;
+	lado_izq->contra = lado_der -> contra;
+	lado_izq->contracifrada = lado_der -> contracifrada;
+	lado_izq->monedas = lado_der -> monedas;
+	lado_der -> edad = temp;
+	lado_der -> nombreuser = nombreus;
+	lado_der -> contra = contraa;
+	lado_der -> contracifrada = contraci;
+	lado_der -> monedas = mone;
+}
+
+void ListaCircular:: ListaUsuarioASC(nodoUsuarios *cabeza) {
+	nodoUsuarios *inicio = cabeza;
+
+	cout << "  "<< left << setw( 15 ) << "NICK"<< " "<< left << setw( 12 ) << "Monedas"<< "   "<< left << setw( 12 ) << "Edad"<< " "<< left << setw( 15 ) << "Contra"<< " "<<endl;	
+	while(inicio)
+	{
+		cout << "  "<< left << setw( 15 ) <<inicio->nombreuser<< " "<< left << setw( 12 ) << inicio->monedas<< "   "<< left << setw( 12 ) << inicio->edad<< " "<< left << setw( 12 ) <<inicio->contracifrada<< " "<<endl;
+		inicio = inicio->siguiente;
+		if(inicio == primero){
+			break;
+		}
+	}
+	cout<<"\n\n";
 }
 
 
-void ListaCircular::sub_login(string nombreuser, string contra,int edad, int monedas){
-    int op1=0;
-    char prueba;
-    do {
-    cout<<"************ Usuario ***********"<<endl;
-    cout<<"* 1. Editar Informacion        *"<<endl;
-    cout<<"* 2. Eliminar Cuenta           *"<<endl;
-    cout<<"* 3. Ver tutorial              *"<<endl;
-    cout<<"* 4. Ver articulos de tienda   *"<<endl;
-    cout<<"* 5. Realizar movimientos      *"<<endl;
-    cout<<"* 6. Cerrar sesión             *"<<endl;
-    cout<<"********************************"<<endl;
-    cin>>op1;
-    cout<<"\n";
-    switch(op1){
-        case 1:
-            cout<<"Datos del Usuario"<<endl;
-            cout<<"Nick -> "<< nombreuser <<endl;
-            cout<<"Edad -> "<< edad <<endl;
-            cout<<"Contraseña -> "<< contra <<endl;
-            cout<<"\n";
-            editar_info(nombreuser, edad, contra);
-            break;
-        case 2:
-            //cout<<"Eliminar cuenta\n";
-            eliminarCuenta(nombreuser);
-            break;
-        case 3:
-            cout<<"\nTutorial"<<endl;
-            //verTutorial();
-            break;
-                        
-        case 4:
-			cout<<"Tienda\n";
-            //Mostrar_Tienda(monedas);
-            break;
-        case 5:
-            cout<<"Realizar Movimientos"<<endl;
-            //movimientos(nombreuser);
-            break;
-        case 6:
-            cout << "\nSe cerró la sesión\n";
-            break;
-        default:
-            cout << "\nIngrese una opcion correcta\n\n";
-        }   
-    }while (op1!=6);
+void ListaCircular:: ordenarUsuarioDESC(){
+	nodoUsuarios* cabeza = new nodoUsuarios();
+	cabeza = primero;
+	int cambiopos;
+
+	nodoUsuarios* lado_izq;
+	nodoUsuarios* lado_der;
+	if(primero!=NULL){
+		do{	
+		cambiopos = 0;
+		lado_izq = cabeza;
+		while(lado_izq->siguiente != primero){
+
+			if (lado_izq->edad < lado_izq->siguiente->edad){
+				intercambioDESC(lado_izq, lado_izq->siguiente); 
+                cambiopos = 1; 
+			}
+			lado_izq = lado_izq->siguiente;
+			lado_der = lado_izq;
+		}
+	}while(cambiopos);
+		ListaUsuarioDESC(cabeza);
+	}
 }
 
-void ListaCircular::editar_info(string nombreuser, int edad, string contra){
-    int opcio;
-    cout<<"\n";
-    cout<<"Elija lo que quiere editar: "<<endl;
-    cout<<"1. Editar Nick"<<endl;
-    cout<<"2. Editar Edad"<<endl;
-    cout<<"3. Editar Contraseña"<<endl;
-    cout<<"4. Regresar"<<endl;
-    cin>>opcio;
-
-    switch (opcio){
-    case 1:
-        cout<<"Opcion 1";
-        modificarNick(nombreuser);
-        break;
-    case 2:
-        cout<<"Opcion 2";
-        modificarEdad(edad);
-        break;
-    case 3:
-        cout<<"Opcion 3";
-        modificarContra(contra);
-        break;
-    case 4:
-        cout<<"\n";
-        break;  
-    default:
-        cout << "\nIngrese una opcion correcta\n\n";
-        break;
-    }
+void ListaCircular:: intercambioDESC(nodoUsuarios *lado_izq, nodoUsuarios *lado_der){
+	string nombreus = lado_izq->nombreuser;
+	string contraa = lado_izq->contra;
+	string contraci = lado_izq->contracifrada;
+	int temp = lado_izq->edad;
+	int mone = lado_izq->monedas;
+	lado_izq->edad = lado_der -> edad;
+	lado_izq->nombreuser = lado_der -> nombreuser;
+	lado_izq->contra = lado_der -> contra;
+	lado_izq->contracifrada = lado_der -> contracifrada;
+	lado_izq->monedas = lado_der -> monedas;
+	lado_der -> edad = temp;
+	lado_der -> nombreuser = nombreus;
+	lado_der -> contra = contraa;
+	lado_der -> contracifrada = contraci;
+	lado_der -> monedas = mone;
 }
 
-void ListaCircular::modificarNick(string userb){
-    nodoUsuarios* actual = new nodoUsuarios();
-    actual = primero;
-    bool encontrado = false;
-    if(primero!=NULL){
-        do{
-            if(actual->nombreuser==userb){
-                cout << "\n Ingrese el nuevo Nick: ";
-                cin >> actual->nombreuser;
-                cout << "\n Para efectuar los cambios debe cerrar sesión e iniciar con el nuevo usuario\n\n";
-                encontrado = true;              
-            }
-            actual = actual->siguiente;
-        }while(actual!=primero && encontrado != true);  
-    }
-}
+void ListaCircular:: ListaUsuarioDESC(nodoUsuarios *cabeza)
+{
+	nodoUsuarios *inicio = cabeza;
 
-void ListaCircular::modificarEdad(int edad){
-    nodoUsuarios* actual = new nodoUsuarios();
-    actual = primero;
-    bool encontrado = false;
-    if(primero!=NULL){
-        do{
-            if(actual->edad==edad){
-                cout << "\n Ingrese la nueva Edad: ";
-                cin >> actual->edad;
-                cout << "\n Para efectuar los cambios debe volver a iniciar sesión\n\n";    
-                encontrado = true;              
-            }   
-            actual = actual->siguiente;
-        }while(actual!=primero && encontrado != true);  
-    }
-}
-
-void ListaCircular::modificarContra(string contra){
-    nodoUsuarios* actual = new nodoUsuarios();
-    actual = primero;
-    string cambiocontra;
-    bool encontrado = false;
-    if(primero!=NULL){
-        do{
-            if(actual->contra==contra){
-                cout << "\n Ingrese la nueva Contraseña: ";
-                cin>>cambiocontra;
-                //cin >> actual->contra;
-                string encriptado = SHA256::cifrar(cambiocontra);
-                actual->contracifrada = encriptado;
-                actual->contra = cambiocontra;
-                cout << "\n Para efectuar los cambios debe cerrar sesión e iniciar con la nueva contraseña\n\n";
-                encontrado = true;              
-            }
-            actual = actual->siguiente;
-        }while(actual!=primero && encontrado != true);  
-    }
-}
-
-void ListaCircular::eliminarCuenta(string userbuscado){
-    nodoUsuarios* actual = new nodoUsuarios();
-    actual = primero;
-    nodoUsuarios* anterior = new nodoUsuarios();
-    anterior = NULL;
-    bool encontrado = false;
-    string opc;
-    cout<<"Desea eliminar su cuenta permanentemente [y/s] : " <<endl; 
-    cin>>opc;
-    if (opc == "y"){
-        if(primero!=NULL){
-        do{
-            if(actual->nombreuser==userbuscado){                
-                if(actual==primero){
-                    primero = primero->siguiente;
-                    primero->anterior = ultimo;
-                    ultimo->siguiente = primero;
-                }else if(actual==ultimo){
-                    ultimo = anterior;
-                    ultimo->siguiente = primero;
-                    primero->anterior = ultimo;
-                }else{
-                    anterior->siguiente = actual->siguiente;
-                    actual->siguiente->anterior = anterior;
-                }
-                cout << "\nLa cuenta ha sido eliminada\n\n";
-                encontrado = true;      
-            }
-            anterior = actual;
-            actual = actual->siguiente;
-        }while(actual!=primero && encontrado != true);      
-    }
-    cout<<"Cerrando la sesión"<<endl;
-    cout<<"\n";
-    //MenuPrincipal();
-    }
-    if (opc == "s"){
-        cout<<"\nRegresando\n"<<endl;
-        return;
-    }
-    else{
-        cout<<"Ingrese una opcion valida"<<endl;
-    }
+	cout << "  "<< left << setw( 15 ) << "NICK"<< " "<< left << setw( 12 ) << "Monedas"<< "   "<< left << setw( 12 ) << "Edad"<< " "<< left << setw( 15 ) << "Contra"<< " "<<endl;	
+	while(inicio)
+	{
+		cout << "  "<< left << setw( 15 ) <<inicio->nombreuser<< " "<< left << setw( 12 ) << inicio->monedas<< "   "<< left << setw( 12 ) << inicio->edad<< " "<< left << setw( 12 ) <<inicio->contracifrada<< " "<<endl;
+		inicio = inicio->siguiente;
+		if(inicio == primero){
+			break;
+		}
+	}
+	cout<<"\n\n";
 }

@@ -8,8 +8,8 @@
 #include "json/json.h"
 #include "jsoncpp.cpp"
 #include "SHA256.h"
-//#include "ListaCircular.h"
 #include "ListaCircular.cpp"
+#include "ListaTutorial.cpp"
 #include <cstdlib>
 
 using namespace std;
@@ -17,16 +17,16 @@ using namespace std;
 void MenuPrincipal();
 void cargamasiva();
 void registrousuario();
-//void reportes();
-//void sub_reportes();
+void reportes();
+void login();
+void sub_login(string nombreuser, string contra,int edad, int monedas);
+void editar_info(string nombreuser, int edad, string contra);
+void modificarNick(string userb);
+void modificarEdad(int edad);
+void modificarContra(string contra);
+void eliminarCuenta(string userbuscado);
 //void registro_articulos(string categoriaarticulo, string nombrearticulo, int precioarticulo, string idarticulo, string srcarticulo);
-//void registroTutorial(int x, int y);
 //void insertarPila(int movx, int movy);
-//void verTutorial();
-//void lista_usuarios();
-//void lista_usuariosordenada();
-//void GraficoListaCDobleEnlace();
-//void GraficoTutorial();
 //void movimientos(string nombreuser);
 //void desplegarPila();
 //void GraficoMovimientos(string nombreuser, string salida);
@@ -36,21 +36,12 @@ void registrousuario();
 //void GraficoListadeListas();
 //void vaciarPila();
 //void SumaPuntosJugada(string nombreuser);
-//void ordenarUsuarioASC();
-//void ordenarUsuarioDESC();
 
 //std:: string userlogin;
 //std:: string nombrejugada;
 
-
-/*struct nodo{
-	string nombreuser, contra, contracifrada;
-	int  monedas,edad; 
-	nodo *anterior;
-	nodo *siguiente;
-} *primero=NULL, *ultimo=NULL; */
-
 ListaCircular Listausuarios;
+ListaTutorial ListaCola;
 
 int main(int argc, char** argv) {
 
@@ -79,12 +70,11 @@ void MenuPrincipal(){
 			registrousuario();
             break;
 		case 3:
-            Listausuarios.login();
+            //Listausuarios.login();
+            login();
 			break;
         case 4:
-			cout<<"\n";
-            //reportes();
-            Listausuarios.lista_usuarios();
+            reportes();
             break;
 		case 5:
 			cout << "\nFin del programa\n";
@@ -111,8 +101,6 @@ void registrousuario(){
 	cin >> edad;
 	string encriptado = SHA256::cifrar(contra);
 	//cout<<"El cifrado sha es : "<<encriptado<<endl;
-	//registro_usuario(nombreuser,contra,monedas, edad,encriptado);
-	//probando.registro_usuario(nombreuser,contra,monedas, edad,encriptado);
 	Listausuarios.registro_usuario(nombreuser,contra,monedas,edad,encriptado);
 	cout<<"\n";
 }
@@ -190,6 +178,7 @@ void cargamasiva(){
         int x = std::stoi(ancho);
         int y = std::stoi(alto);
         //registroTutorial(x,y);
+        ListaCola.registroTutorial(x,y);
         //cout<<"\nMovimientos: ";
         const Json::Value& movimientosJ = tutorialJ["movimientos"];
         for(int i = 0; i < movimientosJ.size(); i++){
@@ -200,6 +189,7 @@ void cargamasiva(){
         int x = std::stoi(x1);
         int y = std::stoi(y1);
         //registroTutorial(x,y);
+        ListaCola.registroTutorial(x,y);
         }
         cout<<"\n";
         cout<<"\nArchivo cargado con exito\n"<<endl;
@@ -207,4 +197,343 @@ void cargamasiva(){
     }
     archivo.close();
     return;
+}
+
+void reportes(){
+	int opreport;
+	cout<<"\n";
+	cout<<"************** Menu reportes **************"<<endl;
+	cout<<"1. Estructuras Utilizadas"<<endl;
+	cout<<"2. Listado de usuarios ordenados por edad"<<endl;
+	cout<<"3. Listado de articulos ordenados por precio"<<endl;
+	cout<<"4. Regresar al menu principal"<<endl;
+	cout<<"*****************************************"<<endl;
+	cin >> opreport;
+	cout<<"\n";
+	switch (opreport)
+	{
+	case 1:
+	int opcestruct;
+		cout<<"1. Lista Usuarios"<<endl;
+		cout<<"2. Lista Articulos"<<endl;
+		cout<<"3. Tutorial"<<endl;
+		cout<<"4. Listado de Jugadas"<<endl;
+		cout<<"5. Regresar al menu principal"<<endl;
+		cin>> opcestruct;
+		cout<<"\n";
+		switch (opcestruct){
+		case 1:
+            Listausuarios.GraficoListaCDobleEnlace();
+			//GraficoListaCDobleEnlace();
+			break;
+		case 2:
+            cout<<"Lista de listas\n";
+			//GraficoListadeListas();
+			break;
+		case 3:
+            ListaCola.GraficoTutorial();
+            //cout<<"Tutorial\n";
+			break;
+		case 4:
+            cout<<"Movimientos\n";
+			//GraficoMovimientos(userlogin,nombrejugada);
+			break;
+		case 5:
+			cout<<"\n";
+			return;
+			break;	
+		default:
+			cout<<"\nIngrese una opcion correcta\n"<<endl;
+			break;
+		}
+		break;
+	
+	case 2:
+	int ordenl;
+		cout<<"1. Orden Ascendente"<<endl;
+		cout<<"2. Orden Descendente"<<endl;
+		cout<<"3. Regresar al menu principal"<<endl;
+		cin>> ordenl;
+		cout<<"\n";
+		switch (ordenl)
+		{
+		case 1:
+			cout<<"lista usuarios de forma ascendente\n"<<endl;
+            Listausuarios.ordenarUsuarioASC();
+			return;
+			break;
+			
+		
+		case 2:
+			cout<<"lista usuarios de forma descendente\n"<<endl;
+            Listausuarios.ordenarUsuarioDESC();
+			return;
+			break;
+
+	
+		case 3:
+			cout<<"\n";
+			return;
+			break;
+		default:
+			cout<<"\nIngrese una opcion correcta\n";
+			break;
+		}
+	
+	case 3:
+	int ordenp;
+		cout<<"1. Orden Ascendente"<<endl;
+		cout<<"2. Orden Descendente"<<endl;
+		cout<<"3. Regresar al menu principal"<<endl;
+		cin>> ordenp;
+
+		switch (ordenp)
+		{
+		case 1:
+			cout<<"lista articulos de forma precio ascendente"<<endl;
+			//ordenarPrecioASC();
+			return;
+			break;
+		
+		case 2:
+			cout<<"lista usuarios de forma precio descendente"<<endl;
+			return;
+			break;
+		case 3:
+			cout<<"\n";
+			return;
+			break;
+		default:
+			cout<<"Ingrese una opcion correcta\n";
+			break;
+		}
+	case 4:
+		cout<<"\n";
+		return;
+		break;
+	default:
+		cout<<"\nIngrese una opcion correcta\n";
+		break;
+	}
+	
+	cout<<"\n";
+}
+
+void login(){
+    nodoUsuarios* actual = new nodoUsuarios();
+    actual = Listausuarios.primero;
+    bool encontrado = false;
+    string nodoBuscado;
+    string usuariob, contrab;
+    char caracter;
+    cout << "Ingrese su usuario: "<<endl;
+    cin >> usuariob;
+    cout << "Ingrese su contraseña: "<<endl;
+    cin >> contrab;
+    string cifrada = SHA256::cifrar(contrab);
+    //cout<<"El cifrado sha es : "<<cifrada<<endl;
+    
+    cout<<"\n";
+    if(Listausuarios.primero!=NULL){
+        do{
+            //cout<<"El cifrado sha a comparar es : "<<actual->contracifrada<<endl;
+            if(actual->nombreuser==usuariob && actual->contracifrada==cifrada){
+                encontrado = true;  
+                cout<<"Inicio de sesión correctos"<<endl;
+                userlogin = actual->nombreuser;
+                sub_login(actual->nombreuser, actual->contra,actual-> edad, actual->monedas);
+            }
+            actual = actual->siguiente;
+        }while(actual!=Listausuarios.primero && encontrado != true);
+        
+        if(!encontrado){
+            cout << "\nUsuario o contraseña incorrectos\n\n";
+        }
+        
+    }else{
+        cout << "\nNo existe el usuario en la lista\n\n";
+    }
+}
+
+
+void sub_login(string nombreuser, string contra,int edad, int monedas){
+    int op1=0;
+    char prueba;
+    do {
+    cout<<"************ Usuario ***********"<<endl;
+    cout<<"* 1. Editar Informacion        *"<<endl;
+    cout<<"* 2. Eliminar Cuenta           *"<<endl;
+    cout<<"* 3. Ver tutorial              *"<<endl;
+    cout<<"* 4. Ver articulos de tienda   *"<<endl;
+    cout<<"* 5. Realizar movimientos      *"<<endl;
+    cout<<"* 6. Cerrar sesión             *"<<endl;
+    cout<<"********************************"<<endl;
+    cin>>op1;
+    cout<<"\n";
+    switch(op1){
+        case 1:
+            cout<<"Datos del Usuario"<<endl;
+            cout<<"Nick -> "<< nombreuser <<endl;
+            cout<<"Edad -> "<< edad <<endl;
+            cout<<"Contraseña -> "<< contra <<endl;
+            cout<<"\n";
+            editar_info(nombreuser, edad, contra);
+            break;
+        case 2:
+            cout<<"Eliminar\n";
+            eliminarCuenta(nombreuser);
+            break;
+        case 3:
+            cout<<"\nTutorial"<<endl;
+            ListaCola.verTutorial();
+            break;
+                        
+        case 4:
+            cout<<"Tienda\n";
+            //Mostrar_Tienda(monedas);
+            break;
+        case 5:
+            cout<<"Realizar Movimientos"<<endl;
+            //movimientos(nombreuser);
+            break;
+        case 6:
+            cout << "\nSe cerró la sesión\n";
+            break;
+        default:
+            cout << "\nIngrese una opcion correcta\n\n";
+        }   
+    }while (op1!=6);
+}
+
+void editar_info(string nombreuser, int edad, string contra){
+    int opcio;
+    cout<<"\n";
+    cout<<"Elija lo que quiere editar: "<<endl;
+    cout<<"1. Editar Nick"<<endl;
+    cout<<"2. Editar Edad"<<endl;
+    cout<<"3. Editar Contraseña"<<endl;
+    cout<<"4. Regresar"<<endl;
+    cin>>opcio;
+
+    switch (opcio){
+    case 1:
+        cout<<"Opcion 1";
+        modificarNick(nombreuser);
+        break;
+    case 2:
+        cout<<"Opcion 2";
+        modificarEdad(edad);
+        break;
+    case 3:
+        cout<<"Opcion 3";
+        modificarContra(contra);
+        break;
+    case 4:
+        cout<<"\n";
+        break;  
+    default:
+        cout << "\nIngrese una opcion correcta\n\n";
+        break;
+    }
+}
+
+void modificarNick(string userb){
+    nodoUsuarios* actual = new nodoUsuarios();
+    actual = Listausuarios.primero;
+    bool encontrado = false;
+    if(Listausuarios.primero!=NULL){
+        do{
+            if(actual->nombreuser==userb){
+                cout << "\n Ingrese el nuevo Nick: ";
+                cin >> actual->nombreuser;
+                cout << "\n Para efectuar los cambios debe cerrar sesión e iniciar con el nuevo usuario\n\n";
+                encontrado = true;              
+            }
+            actual = actual->siguiente;
+        }while(actual!=Listausuarios.primero && encontrado != true);  
+    }
+}
+
+void modificarEdad(int edad){
+    nodoUsuarios* actual = new nodoUsuarios();
+    actual = Listausuarios.primero;
+    bool encontrado = false;
+    if(Listausuarios.primero!=NULL){
+        do{
+            if(actual->edad==edad){
+                cout << "\n Ingrese la nueva Edad: ";
+                cin >> actual->edad;
+                cout << "\n Para efectuar los cambios debe volver a iniciar sesión\n\n";    
+                encontrado = true;              
+            }   
+            actual = actual->siguiente;
+        }while(actual!=Listausuarios.primero && encontrado != true);  
+    }
+}
+
+void modificarContra(string contra){
+    nodoUsuarios* actual = new nodoUsuarios();
+    actual = Listausuarios.primero;
+    string cambiocontra;
+    bool encontrado = false;
+    if(Listausuarios.primero!=NULL){
+        do{
+            if(actual->contra==contra){
+                cout << "\n Ingrese la nueva Contraseña: ";
+                cin>>cambiocontra;
+                //cin >> actual->contra;
+                string encriptado = SHA256::cifrar(cambiocontra);
+                actual->contracifrada = encriptado;
+                actual->contra = cambiocontra;
+                cout << "\n Para efectuar los cambios debe cerrar sesión e iniciar con la nueva contraseña\n\n";
+                encontrado = true;              
+            }
+            actual = actual->siguiente;
+        }while(actual!=Listausuarios.primero && encontrado != true);  
+    }
+}
+
+void eliminarCuenta(string userbuscado){
+    nodoUsuarios* actual = new nodoUsuarios();
+    actual = Listausuarios.primero;
+    nodoUsuarios* anterior = new nodoUsuarios();
+    anterior = NULL;
+    bool encontrado = false;
+    string opc;
+    cout<<"Desea eliminar su cuenta permanentemente [y/s] : " <<endl; 
+    cin>>opc;
+    if (opc == "y"){
+        if(Listausuarios.primero!=NULL){
+        do{
+            if(actual->nombreuser==userbuscado){                
+                if(actual==Listausuarios.primero){
+                    Listausuarios.primero = Listausuarios.primero->siguiente;
+                    Listausuarios.primero->anterior = Listausuarios.ultimo;
+                    Listausuarios.ultimo->siguiente = Listausuarios.primero;
+                }else if(actual==Listausuarios.ultimo){
+                    Listausuarios.ultimo = anterior;
+                    Listausuarios.ultimo->siguiente = Listausuarios.primero;
+                    Listausuarios.primero->anterior = Listausuarios.ultimo;
+                }else{
+                    anterior->siguiente = actual->siguiente;
+                    actual->siguiente->anterior = anterior;
+                }
+                cout << "\nLa cuenta ha sido eliminada\n\n";
+                encontrado = true;      
+            }
+            anterior = actual;
+            actual = actual->siguiente;
+        }while(actual!=Listausuarios.primero && encontrado != true);      
+    }
+    cout<<"Cerrando la sesión"<<endl;
+    cout<<"\n";
+    MenuPrincipal();
+    }
+    if (opc == "s"){
+        cout<<"\nRegresando\n"<<endl;
+        return;
+    }
+    else{
+        cout<<"Ingrese una opcion valida"<<endl;
+    }
 }
