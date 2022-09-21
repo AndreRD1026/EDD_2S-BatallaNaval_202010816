@@ -10,6 +10,7 @@
 #include "SHA256.h"
 #include "ListaCircular.cpp"
 #include "ListaTutorial.cpp"
+#include "ListaArticulos.cpp"
 #include "ListaPila.cpp"
 #include <cstdlib>
 
@@ -42,6 +43,7 @@ std:: string nombrejugada;
 ListaCircular Listausuarios;
 ListaTutorial ListaCola;
 ListaPila ListaMovimientos;
+ListaArticulos ListaArt;
 
 int main(int argc, char** argv) {
 
@@ -107,7 +109,6 @@ void registrousuario(){
 
 
 void cargamasiva(){
-	//ListaCircular Listausuarios;
     ifstream archivo;
     string ruta;
     string texto;
@@ -165,6 +166,7 @@ void cargamasiva(){
             int precioarticulo = std::stoi(precioarticul);
             //int idarticulo = std::stoi(iarticulo);
             //registro_articulos(categoriarticulo,nombrearticulo,precioarticulo,idarticuloo,srcarticulo);
+            ListaArt.registro_articulos(categoriarticulo,nombrearticulo,precioarticulo,idarticuloo,srcarticulo);
             //cout << endl;
         }
 
@@ -225,7 +227,7 @@ void reportes(){
 			break;
 		case 2:
             cout<<"Lista de listas\n";
-			//GraficoListadeListas();
+            ListaArt.GraficoListadeListas();
 			break;
 		case 3:
             ListaCola.GraficoTutorial();
@@ -386,7 +388,7 @@ void sub_login(string nombreuser, string contra,int edad, int monedas){
                         
         case 4:
             cout<<"Tienda\n";
-            //Mostrar_Tienda(monedas);
+            ListaArt.Mostrar_Tienda(monedas);
             break;
         case 5:
             cout<<"Realizar Movimientos"<<endl;
