@@ -10,6 +10,7 @@
 #include "SHA256.h"
 #include "ListaCircular.cpp"
 #include "ListaTutorial.cpp"
+#include "ListaPila.cpp"
 #include <cstdlib>
 
 using namespace std;
@@ -25,23 +26,22 @@ void modificarNick(string userb);
 void modificarEdad(int edad);
 void modificarContra(string contra);
 void eliminarCuenta(string userbuscado);
+void movimientos(string nombreuser);
+void vaciarPila();
+void SumaPuntosJugada(string user);
 //void registro_articulos(string categoriaarticulo, string nombrearticulo, int precioarticulo, string idarticulo, string srcarticulo);
-//void insertarPila(int movx, int movy);
-//void movimientos(string nombreuser);
-//void desplegarPila();
 //void GraficoMovimientos(string nombreuser, string salida);
 //void Mostrar_Tienda(int monedas);
 //void ordenarPrecioASC();
 //void ordenarPrecioDESC();
 //void GraficoListadeListas();
-//void vaciarPila();
-//void SumaPuntosJugada(string nombreuser);
 
-//std:: string userlogin;
-//std:: string nombrejugada;
+std:: string userlogin;
+std:: string nombrejugada;
 
 ListaCircular Listausuarios;
 ListaTutorial ListaCola;
+ListaPila ListaMovimientos;
 
 int main(int argc, char** argv) {
 
@@ -177,7 +177,6 @@ void cargamasiva(){
         std ::string alto = alt;
         int x = std::stoi(ancho);
         int y = std::stoi(alto);
-        //registroTutorial(x,y);
         ListaCola.registroTutorial(x,y);
         //cout<<"\nMovimientos: ";
         const Json::Value& movimientosJ = tutorialJ["movimientos"];
@@ -188,7 +187,6 @@ void cargamasiva(){
             y1 = movimientosJ[i]["y"].asString();
         int x = std::stoi(x1);
         int y = std::stoi(y1);
-        //registroTutorial(x,y);
         ListaCola.registroTutorial(x,y);
         }
         cout<<"\n";
@@ -224,7 +222,6 @@ void reportes(){
 		switch (opcestruct){
 		case 1:
             Listausuarios.GraficoListaCDobleEnlace();
-			//GraficoListaCDobleEnlace();
 			break;
 		case 2:
             cout<<"Lista de listas\n";
@@ -232,11 +229,10 @@ void reportes(){
 			break;
 		case 3:
             ListaCola.GraficoTutorial();
-            //cout<<"Tutorial\n";
 			break;
 		case 4:
             cout<<"Movimientos\n";
-			//GraficoMovimientos(userlogin,nombrejugada);
+            ListaMovimientos.GraficoMovimientos(userlogin, nombrejugada);
 			break;
 		case 5:
 			cout<<"\n";
@@ -394,7 +390,8 @@ void sub_login(string nombreuser, string contra,int edad, int monedas){
             break;
         case 5:
             cout<<"Realizar Movimientos"<<endl;
-            //movimientos(nombreuser);
+            userlogin = nombreuser;
+            movimientos(nombreuser);
             break;
         case 6:
             cout << "\nSe cerró la sesión\n";
@@ -481,7 +478,6 @@ void modificarContra(string contra){
             if(actual->contra==contra){
                 cout << "\n Ingrese la nueva Contraseña: ";
                 cin>>cambiocontra;
-                //cin >> actual->contra;
                 string encriptado = SHA256::cifrar(cambiocontra);
                 actual->contracifrada = encriptado;
                 actual->contra = cambiocontra;
@@ -537,3 +533,102 @@ void eliminarCuenta(string userbuscado){
         cout<<"Ingrese una opcion valida"<<endl;
     }
 }
+
+
+void movimientos(string nombreuser){
+	int movx, movy;
+	int contadormov = 0;
+	int resp;
+	cout<<"\t\t\nTokens: "<<contadormov<<endl;
+	cout<<"Realizar movimientos\n";
+	cout<<"Ingrese la coordenada X: ";
+	cin>>movx;
+	cout<<"Ingrese la coordenada Y: ";
+	cin>>movy;
+	ListaMovimientos.insertarPila(movx,movy);
+	SumaPuntosJugada(nombreuser);
+
+	cout<<"\nMovimiento - "<<movx<<","<<movy<<endl;
+
+	cout<<"Desea realizar otro movimiento? "<<endl;
+	cout<<"1. SI"<<endl;
+	cout<<"2. NO"<<endl;
+	cin>>resp;
+	do{
+		switch (resp)
+	{
+	case 1:
+		contadormov +=1;
+		cout<<"\t\t\nTokens: +"<<contadormov<<endl;
+		cout<<"Realizar movimientos\n";
+		cout<<"Ingrese la coordenada X: ";
+		cin>>movx;
+		cout<<"Ingrese la coordenada Y: ";
+		cin>>movy;
+		ListaMovimientos.insertarPila(movx,movy);
+		SumaPuntosJugada(nombreuser);
+		cout<<"Desea realizar otro movimiento? "<<endl;
+		cout<<"1. SI"<<endl;
+		cout<<"2. NO"<<endl;
+		cin>>resp;
+		if(resp==2){
+		string nombremov;
+		cout<<"Nombre para guardar movimientos: ";
+		cin>>nombremov;
+		nombrejugada = nombremov;
+		cout<<"Se ha guardado la jugada\n";
+		}
+		break;
+	case 2:
+		string nombremov;
+		cout<<"Nombre para guardar movimientos: ";
+		cin>>nombremov;
+		nombrejugada = nombremov;
+		cout<<"Se ha guardado la jugada\n";
+	}
+	}while(resp!=2);
+	
+}
+
+void vaciarPila(){
+	nodoPila* actualPila = new nodoPila();
+	actualPila = ListaMovimientos.primeroPila;
+	nodoPila* anteriorPila = new nodoPila();
+	anteriorPila = NULL;
+	bool encontrado = false;
+	if(ListaMovimientos.primeroPila!=NULL){
+		while(actualPila!=NULL && encontrado != true){				
+				if(actualPila == ListaMovimientos.primeroPila){
+					ListaMovimientos.primeroPila = ListaMovimientos.primeroPila->siguientePila;
+				}else{
+					anteriorPila->siguientePila = actualPila->siguientePila;
+				}
+			anteriorPila = actualPila;
+			actualPila = actualPila->siguientePila;
+		}
+	}else{
+		cout<<"\n";
+	}	
+}
+
+
+void SumaPuntosJugada(string user){
+	nodoUsuarios* actualJugada = new nodoUsuarios();
+	bool encontrado = false;
+	int jugada = 1;
+	actualJugada = Listausuarios.primero;
+	if(Listausuarios.primero!=NULL){
+		do{
+			if(actualJugada->nombreuser==user){
+				encontrado = true;
+				actualJugada->monedas = actualJugada->monedas + jugada;
+				break;
+			}else{
+				encontrado = false;
+			}
+			actualJugada = actualJugada->siguiente;
+			}while(actualJugada!=Listausuarios.primero && encontrado!=true);
+		}else{
+			cout<<"No encontrado\n";
+		}
+	}

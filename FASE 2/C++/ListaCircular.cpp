@@ -5,7 +5,6 @@
 #include <iostream>
 
 using namespace std;
-std:: string userlogin;
 
 void ListaCircular::registro_usuario(string nombreuser, string contra, int monedas ,int edad, string contracifrada){
 	nodoUsuarios *actual = new nodoUsuarios();
