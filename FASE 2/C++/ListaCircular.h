@@ -26,7 +26,7 @@ public:
     void intercambioASC(nodoUsuarios *lado_izq, nodoUsuarios *lado_der);
     void intercambioDESC(nodoUsuarios *lado_izq, nodoUsuarios *lado_der);
     //void registro_usuario1(string nombreuser);
-    unsigned registro_usuario1(string nombreuser, string contra, int monedas, int edad);
+    void registro_usuario1(string nombreuser, string contra, int monedas, int edad);
     string getUsers();
     //string Buscar(string usuario);
 private:

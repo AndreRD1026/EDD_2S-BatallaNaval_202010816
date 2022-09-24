@@ -142,7 +142,6 @@ void ListaCircular::lista_usuarios() {
     }else{
         std::cout << "Lista vacia" << endl;
     }
- 
 }
 
 void ListaCircular::ordenarUsuarioASC(){
@@ -264,7 +263,7 @@ void ListaCircular:: ListaUsuarioDESC(nodoUsuarios *cabeza)
 }
 
 
-unsigned ListaCircular:: registro_usuario1(string nombreuser, string contra, int monedas, int edad){
+void ListaCircular:: registro_usuario1(string nombreuser, string contra, int monedas, int edad){
 	nodoUsuarios *actual = new nodoUsuarios();
 	actual = primero;
 	bool encontrado = false;
@@ -324,7 +323,6 @@ unsigned ListaCircular:: registro_usuario1(string nombreuser, string contra, int
 		}
 		cout<<"\nUsuario registrado"<<endl;
 	}
-	return true;
 }
 
 
