@@ -5,7 +5,7 @@
 using namespace std;
 
 
-void ListaCircular::registro_usuario(string nombreuser, string contra, int monedas ,int edad, string contracifrada){
+void ListaCircular::registro_usuario(int id,string nombreuser, string contra, int monedas ,int edad, string contracifrada){
 	nodoUsuarios *actual = new nodoUsuarios();
 	actual = primero;
 	bool encontrado = false;
@@ -23,6 +23,7 @@ void ListaCircular::registro_usuario(string nombreuser, string contra, int moned
 	if(primero!= NULL  && encontrado==false){
 			if(actual->nombreuser!=nombreuser){
 				nodoUsuarios *nuevo = new nodoUsuarios();
+				nuevo->id = id;
 				nuevo->nombreuser = nombreuser;
 				nuevo->contra = contra;
 				nuevo->monedas = monedas;
@@ -47,6 +48,7 @@ void ListaCircular::registro_usuario(string nombreuser, string contra, int moned
 		
 	if(primero == NULL){
 		nodoUsuarios *nuevo = new nodoUsuarios();
+		nuevo->id = id;
 		nuevo->nombreuser = nombreuser;
 		nuevo->contra = contra;
 		nuevo->monedas = monedas;
@@ -70,7 +72,7 @@ void ListaCircular::registro_usuario(string nombreuser, string contra, int moned
 
 }
 
-void ListaCircular::registro_usuarioJ(string nombreuser, string contra, int monedas ,int edad, string contracifrada){
+void ListaCircular::registro_usuarioJ(int id,string nombreuser, string contra, int monedas ,int edad, string contracifrada){
     nodoUsuarios *actual = new nodoUsuarios();
     actual = primero;
     bool encontrado = false;
@@ -86,6 +88,7 @@ void ListaCircular::registro_usuarioJ(string nombreuser, string contra, int mone
     if(primero!= NULL  && encontrado==false){
             if(actual->nombreuser!=nombreuser){
                 nodoUsuarios *nuevo = new nodoUsuarios();
+				nuevo-> id = id;
                 nuevo->nombreuser = nombreuser;
                 nuevo->contra = contra;
                 nuevo->monedas = monedas;
@@ -108,6 +111,7 @@ void ListaCircular::registro_usuarioJ(string nombreuser, string contra, int mone
     }   
     if(primero == NULL){
         nodoUsuarios *nuevo = new nodoUsuarios();
+		nuevo-> id = id;
         nuevo->nombreuser = nombreuser;
         nuevo->contra = contra;
         nuevo->monedas = monedas;
@@ -263,7 +267,7 @@ void ListaCircular:: ListaUsuarioDESC(nodoUsuarios *cabeza)
 }
 
 
-void ListaCircular:: registro_usuario1(string nombreuser, string contra, int monedas, int edad){
+void ListaCircular:: registro_usuario1(int id,string nombreuser, string contra, int monedas, int edad){
 	nodoUsuarios *actual = new nodoUsuarios();
 	actual = primero;
 	bool encontrado = false;
@@ -281,8 +285,9 @@ void ListaCircular:: registro_usuario1(string nombreuser, string contra, int mon
 	if(primero!= NULL  && encontrado==false){
 			if(actual->nombreuser!=nombreuser){
 				nodoUsuarios *nuevo = new nodoUsuarios();
+				nuevo-> id = id;
 				nuevo->nombreuser = nombreuser;
-				nuevo->contra = contra;
+				nuevo->contracifrada = contra;
 				nuevo->monedas = monedas;
 				nuevo->edad = edad;
 
@@ -304,8 +309,9 @@ void ListaCircular:: registro_usuario1(string nombreuser, string contra, int mon
 		
 	if(primero == NULL){
 		nodoUsuarios *nuevo = new nodoUsuarios();
+		nuevo->id = id;
 		nuevo->nombreuser = nombreuser;
-		nuevo->contra = contra;
+		nuevo->contracifrada = contra;
 		nuevo->monedas = monedas;
 		nuevo->edad = edad;
 
@@ -327,18 +333,20 @@ void ListaCircular:: registro_usuario1(string nombreuser, string contra, int mon
 
 
 
-string ListaCircular::getUsers() {
+/*string ListaCircular::getUsers() {
 
+	nodoUsuarios *actual = new nodoUsuarios();
+	actual = primero;
 
-    if (primero == NULL)
+    if (actual == NULL)
         return "[\n]";
 
     string out = "";
-    nodoUsuarios *aux = primero;
-    while (aux != NULL)
+    nodoUsuarios *aux = actual;
+    while (aux != NULL && aux->siguiente!= primero)
     {
 
-        out += "{\"Nick\": \"" + (aux->nombreuser) + "\"}";
+        out += "{\"nick\": \"" + (aux->nombreuser) + "\"}";
         aux = aux->siguiente;
         if (aux != NULL)
         {
@@ -347,6 +355,33 @@ string ListaCircular::getUsers() {
     }
     return "[\n " + out + "\n]";
 }
+*/
+
+
+string ListaCircular::getUsers() {
+    nodoUsuarios*aux = primero;
+	string datos = "";
+	datos += "\"usuario\":[";
+	while (aux != NULL){
+		datos += "{";
+		datos+= "\"id\":\"" + to_string(aux->id) + "\",";
+		datos+= "\"nick\":\"" + aux->nombreuser + "\",";
+		datos+= "\"password\":\"" + aux->contracifrada + "\",";
+		datos+= "\"monedas\":\"" + to_string(aux->monedas) + "\",";
+		datos+= "\"edad\":\"" + to_string(aux->edad) + "\"";
+		datos += "}"; 
+
+	aux = aux->siguiente;
+	if(aux == primero){
+		break;;
+	}
+
+	}
+	datos += "]";
+	return datos;
+		
+}
+
 
 
 /*

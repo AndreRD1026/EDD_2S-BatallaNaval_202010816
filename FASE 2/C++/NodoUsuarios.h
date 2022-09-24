@@ -8,12 +8,13 @@ public:
 	std::string nombreuser;
     std::string contra;
     std::string contracifrada;
-	int  monedas,edad; 
+	int  id,monedas,edad; 
 	nodoUsuarios *anterior;
 	nodoUsuarios *siguiente;
     nodoUsuarios(){
         anterior = NULL;
         siguiente = NULL;
+        id = 0;
         nombreuser = ' ';
         contra = ' ';
         contracifrada = ' ';
