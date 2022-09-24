@@ -12,6 +12,7 @@
 #include "ListaTutorial.cpp"
 #include "ListaArticulos.cpp"
 #include "ListaPila.cpp"
+#include "ArbolB.cpp"
 #include <cstdlib>
 
 using namespace std;
@@ -31,13 +32,16 @@ void movimientos(string nombreuser);
 void vaciarPila();
 void SumaPuntosJugada(string user);
 
+
 std:: string userlogin;
 std:: string nombrejugada;
+int contadorusuarios = 1;
 
 ListaCircular Listausuarios;
 ListaTutorial ListaCola;
 ListaPila ListaMovimientos;
 ListaArticulos ListaArt;
+ArbolB pruebas;
 
 int main(int argc, char** argv) {
 
@@ -98,11 +102,14 @@ void registrousuario(){
 	string encriptado = SHA256::cifrar(contra);
 	//cout<<"El cifrado sha es : "<<encriptado<<endl;
 	Listausuarios.registro_usuario(nombreuser,contra,monedas,edad,encriptado);
+    pruebas.insertar(contadorusuarios, nombreuser);
+    contadorusuarios++;
 	cout<<"\n";
 }
 
 
 void cargamasiva(){
+    //int contador = 0;
     ifstream archivo;
     string ruta;
     string texto;
@@ -140,6 +147,8 @@ void cargamasiva(){
             int eddi = std::stoi(edadi);
             int monedi = std::stoi(monedasi);
             Listausuarios.registro_usuarioJ(nombreuser,contra,monedi,eddi,encriptado);
+            pruebas.insertar(contadorusuarios,nombreuser);
+            contadorusuarios++;
         }
 
         const Json::Value& articulosJ = obj["articulos"]; 
@@ -217,7 +226,8 @@ void reportes(){
 		cout<<"\n";
 		switch (opcestruct){
 		case 1:
-            Listausuarios.GraficoListaCDobleEnlace();
+            cout<<"Hola";
+            //Listausuarios.GraficoListaCDobleEnlace();
 			break;
 		case 2:
             cout<<"Lista de listas\n";
@@ -282,6 +292,20 @@ void reportes(){
 		switch (ordenp)
 		{
 		case 1:
+    /*pruebas.insertar(10, "Pamela");
+    pruebas.insertar(15, "Jose");
+    pruebas.insertar(16, "Maria");
+    pruebas.insertar(18, "Javier");
+    pruebas.insertar(20, "Will");
+    pruebas.insertar(25, "Andy");
+    pruebas.insertar(30, "Michael");
+    pruebas.insertar(40, "Juan");
+    pruebas.insertar(50, "Walter");
+    pruebas.insertar(70, "Pedro");
+    pruebas.insertar(75, "Santiago");
+    pruebas.insertar(80, "Orlando");
+    pruebas.insertar(90, "Paula"); */
+    pruebas.Grafo(); 
 			cout<<"lista articulos de forma precio ascendente"<<endl;
 			//ordenarPrecioASC();
 			return;

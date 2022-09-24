@@ -10,6 +10,7 @@ public:
     nodoUsuarios*primero;
     nodoUsuarios*ultimo;
 
+
     ListaCircular(){
         primero = NULL;
         ultimo = NULL;
@@ -17,13 +18,17 @@ public:
     void registro_usuario(string nombreuser, string contra, int monedas ,int edad, string contracifrada);
     void registro_usuarioJ(string nombreuser, string contra, int monedas ,int edad, string contracifrada);
     void lista_usuarios();
-    void GraficoListaCDobleEnlace();
+    //void GraficoListaCDobleEnlace();
     void ordenarUsuarioASC();
     void ordenarUsuarioDESC();
     void ListaUsuarioASC(nodoUsuarios *cabeza);
     void ListaUsuarioDESC(nodoUsuarios *cabeza);
     void intercambioASC(nodoUsuarios *lado_izq, nodoUsuarios *lado_der);
     void intercambioDESC(nodoUsuarios *lado_izq, nodoUsuarios *lado_der);
+    //void registro_usuario1(string nombreuser);
+    unsigned registro_usuario1(string nombreuser, string contra, int monedas, int edad);
+    string getUsers();
+    //string Buscar(string usuario);
 private:
 };
 #endif
