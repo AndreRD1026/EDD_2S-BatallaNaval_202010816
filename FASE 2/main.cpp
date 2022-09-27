@@ -18,6 +18,19 @@ ListaCircular ListaUsuarios;
 ListaArticulos ListaArt;
 ListaTutorial ListTutorial;
 
+
+int atoi(std::string s)
+{
+    try
+    {
+        return std::stod(s);
+    }
+    catch (std::exception &e)
+    {
+        return 0;
+    }
+}
+
 static std::string jsonkv(std::string k, std::string v)
 {
     /* "k": "v" */
@@ -100,7 +113,6 @@ public:
             categoriarticulo = articulosJ[i]["categoria"].asString();
             //cout << "\nPrecio: " << articulosJ[i]["precio"].asString();
             precioarticuloo = articulosJ[i]["precio"].asString();
-            articulosJ[i]["precio"].asString();
             //cout << "\nNombre: " << articulosJ[i]["nombre"].asString();
             nombrearticulo = articulosJ[i]["nombre"].asString();
             //cout << "\nSRC: " << articulosJ[i]["src"].asString();
@@ -108,7 +120,7 @@ public:
             //std ::string iarticulo = idarticuloo;
             std ::string precioarticul = precioarticuloo;
             int precioarticulo = std::stoi(precioarticul);
-            int idarticulo = std::stoi(idarticuloo);
+            //int idarticulo = std::stoi(idarticuloo);
             //registro_articulos(categoriarticulo,nombrearticulo,precioarticulo,idarticuloo,srcarticulo);
             //ListaArt.registro_articulos(categoriarticulo,nombrearticulo,precioarticulo,idarticuloo,srcarticulo);
             ListaArt.registro_articulos(categoriarticulo,nombrearticulo,precioarticulo,idarticuloo,srcarticulo);
@@ -148,8 +160,6 @@ public:
     response << "{ "
                  << jsonkv("status", "ok ha sido enviado") << ",\n"
                 " }";
-
-
     return;
     }
 
@@ -169,18 +179,41 @@ class Servidor2{
         string rut;
         response.contentType("text/json");
         rut = request.special["Login"];
+
         response << ListaUsuarios.getUsers();
         
-    } 
-
+    }
 };
 
+class Servidor3{
+    public:
+    Servidor3()
+    {
+       //ListaUsuarios = Servidor
+    
+    }
 
+    void post(GloveHttpRequest &request, GloveHttpResponse &response){
+        string nombreuser, contra;
+        int monedas, edad;
+        nombreuser = request.special["nick"];
+        contra = request.special["contra"];
+        edad = atoi(request.special["edad"]);
+        monedas = 0;
+        string encriptado = SHA256::cifrar(contra);
+        ListaUsuarios.registro_usuario(contadorusuarios,nombreuser,encriptado,monedas,edad);
+        contadorusuarios++;
+        response << "{ "
+            << jsonkv("status", "ok ha sido registrado") << ",\n"
+            " }";
+    }
+};
 
 int main(int argc, char *argv[])
 {
     Servidor cine;
     Servidor2 cine2;
+    Servidor3 registroUser;
 
     GloveHttpServer serv(8080, "", 2048);
     serv.compression("gzip, deflate");
@@ -193,6 +226,9 @@ int main(int argc, char *argv[])
     serv.addRest("/Login/$Ruta", 1,
                  GloveHttpServer::jsonApiErrorCall,
                  std::bind(&Servidor2::get, &cine2, ph::_1, ph::_2));
+    serv.addRest("/Registro/$nick/$contra/$edad", 1,
+                GloveHttpServer::jsonApiErrorCall,
+                std::bind(&Servidor3::post, &registroUser, ph::_1, ph::_2));
     
     while (1)
     {
