@@ -25,7 +25,7 @@ def abrirArchivo1():
         res = requests.post(f'{base_url}/Carga/' + f'{prueba[1]}')
         data = res.text#convertimos la respuesta en dict
         print(data)
-        #MessageBox.showinfo("Exito!", "Archivo Cargado con exito")
+        MessageBox.showinfo("Exito!", "Archivo Cargado con exito")
         ventana.mainloop()
     except:
         MessageBox.showwarning("Alerta", "Debe cargar un archivo")
@@ -55,15 +55,21 @@ def registrarUsuarios():
     textoPass.place(x=230, y=255)
     textoEdad = Text(ventanaReg, height=2, width=30, fg="white", font=("Consolas", 11))
     textoEdad.place(x=230,y=330)
-    btnRegistro = Button(ventanaReg, height=2, width=15, text="Registrar", command = lambda:prueba(textoUsuario.get(1.0, tk.END+"-1c"),textoPass.get(1.0, tk.END+"-1c"),textoEdad.get(1.0, tk.END+"-1c")), background="#368807", font=("Verdana",10), fg="black")
+    btnRegistro = Button(ventanaReg, height=2, width=15, text="Registrar", command = lambda:[mandarRegistro(textoUsuario.get(1.0, tk.END+"-1c"),textoPass.get(1.0, tk.END+"-1c"),textoEdad.get(1.0, tk.END+"-1c")), cerrandoRegistro()], background="#368807", font=("Verdana",10), fg="black")
     btnRegistro.place(x=180, y=400)
-    print("Btn Registrar")
 
 
-def prueba(salida,salida2,salida3):
+def mandarRegistro(salida,salida2,salida3):
     res = requests.get(f'{base_url}/Registro/' + f'{salida}' + "/" + f'{salida2}' + "/" +  f'{salida3}')
     data = res.text#convertimos la respuesta en dict
+    #MessageBox.showinfo("Exito!", "Usuario registrado con exito")
+    #ventana.mainloop()
     print(data)
+
+def cerrandoRegistro():
+    print("llegando")
+    MessageBox.showinfo("Exito!", "Usuario Registrado con exito")
+    ventana.deiconify()
 
 
 
@@ -96,7 +102,7 @@ ventana.geometry(posicion)
 btnCargarArchivo = Button(ventana, height=2, width=15, text="Cargar Usuarios", command = abrirArchivo1, background="#368807", font=("Verdana",10), fg="black")
 btnCargarArchivo.place(x=180, y=150)
 
-btnRegistrar = Button(ventana, height=2, width=15, text="Registrar Usuario", command=registrarUsuarios, background="#10139E", font=("Verdana",10), fg="black")
+btnRegistrar = Button(ventana, height=2, width=15, text="Registrar Usuario", command=lambda: [ ventana.withdraw(),registrarUsuarios()], background="#10139E", font=("Verdana",10), fg="black")
 btnRegistrar.place(x=180, y=210)
 
 btnLogin = Button(ventana, height=2, width=15, text="Login",command=Login, background="#8E8C08", font=("Verdana",10), fg="black")

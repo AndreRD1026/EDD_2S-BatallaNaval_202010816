@@ -10,6 +10,7 @@
 #include "C++/ListaCircular.cpp"
 #include "C++/ListaArticulos.cpp"
 #include "C++/ListaTutorial.cpp"
+#include "C++/ArbolB.cpp"
 
 
 int contadorusuarios = 0;
@@ -17,6 +18,8 @@ int contadorusuarios = 0;
 ListaCircular ListaUsuarios;
 ListaArticulos ListaArt;
 ListaTutorial ListTutorial;
+ArbolB Arbol;
+
 
 
 int atoi(std::string s)
@@ -100,8 +103,7 @@ public:
             int eddi = std::stoi(edadi);
             int monedi = std::stoi(monedasi);
             ListaUsuarios.registro_usuarioJ(contadorusuarios,nombreuser, encriptado, monedi, eddi);
-            //Listausuarios.registro_usuario(nombreuser,contra,monedi,eddi,encriptado);
-            //ListaUsuarios.insertar(contadorusuarios,nombreuser);
+            Arbol.insertar(contadorusuarios,nombreuser);
             contadorusuarios++;
         }
 
@@ -120,9 +122,6 @@ public:
             //std ::string iarticulo = idarticuloo;
             std ::string precioarticul = precioarticuloo;
             int precioarticulo = std::stoi(precioarticul);
-            //int idarticulo = std::stoi(idarticuloo);
-            //registro_articulos(categoriarticulo,nombrearticulo,precioarticulo,idarticuloo,srcarticulo);
-            //ListaArt.registro_articulos(categoriarticulo,nombrearticulo,precioarticulo,idarticuloo,srcarticulo);
             ListaArt.registro_articulos(categoriarticulo,nombrearticulo,precioarticulo,idarticuloo,srcarticulo);
             //cout << endl;
         }
@@ -137,7 +136,6 @@ public:
         int x = std::stoi(ancho);
         int y = std::stoi(alto);
         ListTutorial.registroTutorial(x,y);
-        //ListaCola.registroTutorial(x,y);
         //cout<<"\nMovimientos: ";
         const Json::Value& movimientosJ = tutorialJ["movimientos"];
         for(int i = 0; i < movimientosJ.size(); i++){
@@ -147,7 +145,6 @@ public:
             y1 = movimientosJ[i]["y"].asString();
         int x = std::stoi(x1);
         int y = std::stoi(y1);
-        //ListaCola.registroTutorial(x,y);
         ListTutorial.registroTutorial(x,y);
         }
         cout<<"\n";
@@ -202,6 +199,7 @@ class Servidor3{
         monedas = 0;
         string encriptado = SHA256::cifrar(contra);
         ListaUsuarios.registro_usuario(contadorusuarios,nombreuser,encriptado,monedas,edad);
+        Arbol.insertar(contadorusuarios,nombreuser);
         contadorusuarios++;
         response << "{ "
             << jsonkv("status", "ok ha sido registrado") << ",\n"
