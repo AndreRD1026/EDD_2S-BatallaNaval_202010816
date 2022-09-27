@@ -5,7 +5,7 @@
 using namespace std;
 
 
-void ListaCircular::registro_usuario(int id,string nombreuser, string contra, int monedas ,int edad, string contracifrada){
+void ListaCircular::registro_usuario(int id,string nombreuser, string contracifrada, int monedas ,int edad){
 	nodoUsuarios *actual = new nodoUsuarios();
 	actual = primero;
 	bool encontrado = false;
@@ -25,7 +25,7 @@ void ListaCircular::registro_usuario(int id,string nombreuser, string contra, in
 				nodoUsuarios *nuevo = new nodoUsuarios();
 				nuevo->id = id;
 				nuevo->nombreuser = nombreuser;
-				nuevo->contra = contra;
+				//nuevo->contra = contra;
 				nuevo->monedas = monedas;
 				nuevo->edad = edad;
 				nuevo->contracifrada = contracifrada;
@@ -50,7 +50,7 @@ void ListaCircular::registro_usuario(int id,string nombreuser, string contra, in
 		nodoUsuarios *nuevo = new nodoUsuarios();
 		nuevo->id = id;
 		nuevo->nombreuser = nombreuser;
-		nuevo->contra = contra;
+		//nuevo->contra = contra;
 		nuevo->monedas = monedas;
 		nuevo->edad = edad;
 		nuevo->contracifrada = contracifrada;
@@ -72,7 +72,7 @@ void ListaCircular::registro_usuario(int id,string nombreuser, string contra, in
 
 }
 
-void ListaCircular::registro_usuarioJ(int id,string nombreuser, string contra, int monedas ,int edad, string contracifrada){
+void ListaCircular::registro_usuarioJ(int id,string nombreuser, string contracifrada, int monedas ,int edad){
     nodoUsuarios *actual = new nodoUsuarios();
     actual = primero;
     bool encontrado = false;
@@ -90,7 +90,7 @@ void ListaCircular::registro_usuarioJ(int id,string nombreuser, string contra, i
                 nodoUsuarios *nuevo = new nodoUsuarios();
 				nuevo-> id = id;
                 nuevo->nombreuser = nombreuser;
-                nuevo->contra = contra;
+                //nuevo->contra = contra;
                 nuevo->monedas = monedas;
                 nuevo->edad = edad;
                 nuevo->contracifrada = contracifrada;
@@ -113,7 +113,7 @@ void ListaCircular::registro_usuarioJ(int id,string nombreuser, string contra, i
         nodoUsuarios *nuevo = new nodoUsuarios();
 		nuevo-> id = id;
         nuevo->nombreuser = nombreuser;
-        nuevo->contra = contra;
+        //nuevo->contra = contra;
         nuevo->monedas = monedas;
         nuevo->edad = edad;
         nuevo->contracifrada = contracifrada;
@@ -331,33 +331,6 @@ void ListaCircular:: registro_usuario1(int id,string nombreuser, string contra, 
 	}
 }
 
-
-
-/*string ListaCircular::getUsers() {
-
-	nodoUsuarios *actual = new nodoUsuarios();
-	actual = primero;
-
-    if (actual == NULL)
-        return "[\n]";
-
-    string out = "";
-    nodoUsuarios *aux = actual;
-    while (aux != NULL && aux->siguiente!= primero)
-    {
-
-        out += "{\"nick\": \"" + (aux->nombreuser) + "\"}";
-        aux = aux->siguiente;
-        if (aux != NULL)
-        {
-            out += ",";
-        }
-    }
-    return "[\n " + out + "\n]";
-}
-*/
-
-
 string ListaCircular::getUsers() {
     nodoUsuarios*aux = primero;
 	string datos = "";
@@ -372,13 +345,17 @@ string ListaCircular::getUsers() {
 		datos += "}"; 
 
 	aux = aux->siguiente;
+	if(aux!=primero){
+		datos+= ",";
+	}
 	if(aux == primero){
-		break;;
+		break;
 	}
 
 	}
 	datos += "]";
 	return datos;
+	
 		
 }
 

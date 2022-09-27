@@ -170,4 +170,48 @@ void ListaArticulos:: GraficoListadeListas(){
 
 } 
 
+string ListaArticulos :: getArticulos(){
+    NodoCategoria* aux1 = new NodoCategoria();
+	aux1 = primeroCategoria;
+	NodoArticulos* aux2 = new NodoArticulos();
+	/*
+	NodoCategoria* aux1 = new NodoCategoria();
+    aux1 = primeroCategoria;
+    NodoArticulos* aux2 = new NodoArticulos();
+	*/
+
+	string datos = "";
+	datos += "\"articulos\":[";
+	while (aux1 != NULL){
+		aux2 = aux1->abajo;
+		while (aux2!=NULL)
+		{
+			datos+= "{";
+			datos+= "\"id\":\"" + aux2->idArticulo;
+			datos+= "\"categoria\":\"" + aux1->categoria;
+			datos+= "\"precio\":\"" + to_string(aux2->precioArticulo);
+			datos+= "\"nombre\":\"" + aux2->nombreArticulo;
+			datos+= "\"src\":\"" + aux2->SRCArticulo;
+			datos+= "}";
+		}
+		aux1 = aux1->siguienteCA;
+	}
+	datos += "]";
+	return datos;
+		
+}
+
+/* 
+while(aux1!=NULL){		
+        aux2 = aux1->abajo;
+        while (aux2!=NULL)
+        {
+			cout << "  "<< left << setw( 10 ) <<aux2->idArticulo<< " "<< left << setw( 20 ) << aux2->nombreArticulo<< "   "<< left << setw( 12 ) << aux1->categoria<< " "<< left << setw( 12 ) <<aux2->precioArticulo<< " "<<endl;
+            aux2 = aux2->siguienteArtic;
+        }
+        aux1 = aux1->siguienteCA;
+
+    }
+
+*/
 

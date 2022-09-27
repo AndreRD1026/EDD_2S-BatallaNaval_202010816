@@ -8,9 +8,15 @@
 #include "./glove/json.hpp"
 #include "C++/jsoncpp.cpp"
 #include "C++/ListaCircular.cpp"
+#include "C++/ListaArticulos.cpp"
+#include "C++/ListaTutorial.cpp"
 
 
 int contadorusuarios = 0;
+
+ListaCircular ListaUsuarios;
+ListaArticulos ListaArt;
+ListaTutorial ListTutorial;
 
 static std::string jsonkv(std::string k, std::string v)
 {
@@ -23,8 +29,8 @@ class Servidor
 public:
     Servidor()
     {
-       //pruebas = Servidor
-        //pruebas.registro_usuario1("sale?","aaaa",10,21);
+       //ListaUsuarios = Servidor
+    
     }
 
     void get(GloveHttpRequest &request, GloveHttpResponse &response)
@@ -33,7 +39,8 @@ public:
         response.contentType("text/json");
         rut = request.special["Ruta"];
         if (rut.empty())
-            response << pruebas.getUsers();
+            response << ListaUsuarios.getUsers();
+                    
         else
         {
             response << "{ "
@@ -79,9 +86,9 @@ public:
             std ::string monedasi = monedas;
             int eddi = std::stoi(edadi);
             int monedi = std::stoi(monedasi);
-            pruebas.registro_usuario1(contadorusuarios,nombreuser, encriptado, monedi, eddi);
+            ListaUsuarios.registro_usuarioJ(contadorusuarios,nombreuser, encriptado, monedi, eddi);
             //Listausuarios.registro_usuario(nombreuser,contra,monedi,eddi,encriptado);
-            //pruebas.insertar(contadorusuarios,nombreuser);
+            //ListaUsuarios.insertar(contadorusuarios,nombreuser);
             contadorusuarios++;
         }
 
@@ -101,9 +108,10 @@ public:
             //std ::string iarticulo = idarticuloo;
             std ::string precioarticul = precioarticuloo;
             int precioarticulo = std::stoi(precioarticul);
-            //int idarticulo = std::stoi(iarticulo);
+            int idarticulo = std::stoi(idarticuloo);
             //registro_articulos(categoriarticulo,nombrearticulo,precioarticulo,idarticuloo,srcarticulo);
             //ListaArt.registro_articulos(categoriarticulo,nombrearticulo,precioarticulo,idarticuloo,srcarticulo);
+            ListaArt.registro_articulos(categoriarticulo,nombrearticulo,precioarticulo,idarticuloo,srcarticulo);
             //cout << endl;
         }
 
@@ -116,6 +124,7 @@ public:
         std ::string alto = alt;
         int x = std::stoi(ancho);
         int y = std::stoi(alto);
+        ListTutorial.registroTutorial(x,y);
         //ListaCola.registroTutorial(x,y);
         //cout<<"\nMovimientos: ";
         const Json::Value& movimientosJ = tutorialJ["movimientos"];
@@ -127,6 +136,7 @@ public:
         int x = std::stoi(x1);
         int y = std::stoi(y1);
         //ListaCola.registroTutorial(x,y);
+        ListTutorial.registroTutorial(x,y);
         }
         cout<<"\n";
         cout<<"\nArchivo cargado con exito\n"<<endl;
@@ -143,13 +153,34 @@ public:
     return;
     }
 
-private:
-    ListaCircular pruebas;
 };
+
+
+class Servidor2{
+    public:
+    Servidor2()
+    {
+       //ListaUsuarios = Servidor
+    
+    }
+
+    void get(GloveHttpRequest &request, GloveHttpResponse &response)
+    {
+        string rut;
+        response.contentType("text/json");
+        rut = request.special["Login"];
+        response << ListaUsuarios.getUsers();
+        
+    } 
+
+};
+
+
 
 int main(int argc, char *argv[])
 {
     Servidor cine;
+    Servidor2 cine2;
 
     GloveHttpServer serv(8080, "", 2048);
     serv.compression("gzip, deflate");
@@ -158,7 +189,11 @@ int main(int argc, char *argv[])
                  GloveHttpServer::jsonApiErrorCall,
                  std::bind(&Servidor::get, &cine, ph::_1, ph::_2),
                  std::bind(&Servidor::post, &cine, ph::_1, ph::_2));
-    std::cout << "Servidor en Ejecucion" << std::endl;
+                 std::cout << "Servidor en Ejecucion :D" << std::endl;
+    serv.addRest("/Login/$Ruta", 1,
+                 GloveHttpServer::jsonApiErrorCall,
+                 std::bind(&Servidor2::get, &cine2, ph::_1, ph::_2));
+    
     while (1)
     {
         std::this_thread::sleep_for(std::chrono::seconds(1));

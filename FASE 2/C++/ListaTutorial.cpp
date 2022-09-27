@@ -81,3 +81,77 @@ void ListaTutorial:: GraficoTutorial(){
 	cout<<"\nReporte de Tutorial Generado\n"<<endl;
 	}
 }
+
+
+string ListaTutorial:: getTutorial(){
+	string datos = "";
+	/*nodoCola* actualCola = new nodoCola();
+	cout<<"   Tablero\n";
+	actualCola = primeroCola->siguienteCola;
+	if(primeroCola!=NULL){
+		cout<<"\tAncho: " << primeroCola->x<<"\n"; 
+		cout<<"\tAlto: "<<primeroCola->y<<"\n";
+		cout<<"   Movimientos: "<<endl;
+		cout<<"\t";
+		while(actualCola!=NULL){
+			if(actualCola!= ultimoCola){
+				cout<< "(" << actualCola->x<<","<<actualCola->y<< ")<-";
+			}
+			else if(actualCola == ultimoCola){
+				cout<< "(" << actualCola->x<<","<<actualCola->y<< ")";
+			}			
+			
+			actualCola = actualCola->siguienteCola;
+		}
+		cout<<"\n\n";
+	}else{
+		cout << endl << " La cola se encuentra Vacia " << endl << endl;
+	} */
+
+	nodoCola* actualCola = new nodoCola();
+	actualCola = primeroCola->siguienteCola;
+	datos += "\"tutorial\":{";
+	if(primeroCola!=NULL){
+		datos+= "\"ancho\":\"" + to_string(primeroCola->x) + "\",";
+		datos+= "\"alto\":\"" + to_string(primeroCola->y) + "\",";
+		datos += "\"movimientos\":[";
+		while(actualCola!=NULL){
+			if(actualCola!=ultimoCola){
+				datos+= "{\"x\":\"" + to_string(actualCola->x) + "\"," +  "\"y\":\"" + to_string(actualCola->y)  + "\"},";
+				
+			}
+			else if (actualCola == ultimoCola){
+				datos+= "{\"x\":\"" + to_string(actualCola->x) + "\"," +  "\"y\":\"" + to_string(actualCola->y)  + "\"}";
+				datos += "]";
+			}
+			actualCola = actualCola->siguienteCola;
+		}
+	}
+	datos += "}";
+	return datos;
+
+	/*  
+	if (Inicio == NULL)
+        return "[\n]";
+
+    string out = "";
+    nodosimple *aux = Inicio;
+    while (aux != NULL)
+    {
+
+        out += "{\"Id\": \"" + to_string(aux->valor) + "\"}";
+        aux = aux->sig;
+        if (aux != NULL)
+        {
+            out += ",";
+        }
+    }
+    return "[\n " + out + "\n]";
+
+	
+
+	
+	*/
+
+
+}

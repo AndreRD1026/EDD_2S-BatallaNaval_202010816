@@ -23,6 +23,7 @@ public:
     bool CategoriaRepetida(string _categoria);
     void Mostrar_Tienda(int monedas);
     void GraficoListadeListas();
+    string getArticulos();
 
 private:
 };

@@ -17,6 +17,7 @@ public:
     void registroTutorial(int x, int y);
     void verTutorial();
     void GraficoTutorial();
+    string getTutorial();
 private:
 };
 #endif
