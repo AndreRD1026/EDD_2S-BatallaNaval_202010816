@@ -7,6 +7,7 @@ from tkinter import messagebox as MessageBox
 import sys
 import os
 
+pruebaa = None
 
 base_url = "http://127.0.0.1:8080/"
 
@@ -56,13 +57,26 @@ def registrarUsuarios():
     textoPass.place(x=230, y=255)
     textoEdad = Text(ventanaReg, height=2, width=30, fg="white", font=("Consolas", 11))
     textoEdad.place(x=230,y=330)
-    btnRegistro = Button(ventanaReg, height=2, width=15, text="Registrar", command = lambda:[mandarRegistro(textoUsuario.get(1.0, tk.END+"-1c"),textoPass.get(1.0, tk.END+"-1c"),textoEdad.get(1.0, tk.END+"-1c")), cerrandoRegistro(), ventanaReg.withdraw()], background="#368807", font=("Verdana",10), fg="black")
+    btnRegistro = Button(ventanaReg, height=2, width=15, text="Registrar", command = lambda:[mandarRegistro(textoUsuario.get(1.0, tk.END+"-1c"),textoPass.get(1.0, tk.END+"-1c"),textoEdad.get(1.0, tk.END+"-1c")), ventanaReg.withdraw()], background="#368807", font=("Verdana",10), fg="black")
     btnRegistro.place(x=180, y=400)
 
 
 def mandarRegistro(salida,salida2,salida3):
     res = requests.get(f'{base_url}/Registro/' + f'{salida}' + "/" + f'{salida2}' + "/" +  f'{salida3}')
     data = res.text#convertimos la respuesta en dict
+    
+    cerrandoRegistro()
+    '''
+    if (data == "falso"):
+        MessageBox.showinfo("Advertencia!", "Ya existe un usuario con ese nick")
+    if (data == "true"):
+        MessageBox.showinfo("Exito!", "Usuario Registrado con exito")
+        ventana.deiconify()
+    if (data == "true2"):
+        MessageBox.showinfo("Exito2!", "Usuario Registrado con exito")
+        ventana.deiconify()
+    '''
+    
     print(data)
 
 def cerrandoRegistro():
@@ -70,56 +84,42 @@ def cerrandoRegistro():
     MessageBox.showinfo("Exito!", "Usuario Registrado con exito")
     ventana.deiconify()
 
-
-
-#Registro/$nick/$contra/$edad"
-
-def Login():
-    ventanaLog = Tk()
-    ventanaLog.title("Login")
-    ventanaLog.resizable(0,0)
-    ancho_ventana1 = 500
-    alto_ventana1 = 500
-    x_ventana1 = ventanaLog.winfo_screenwidth() // 2 - ancho_ventana1 // 2
-    y_ventana1 = ventanaLog.winfo_screenheight() // 2 - alto_ventana1 // 2
-    posicion1 = str(ancho_ventana1) + "x" + str(alto_ventana1) + "+" + str(x_ventana1) + "+" + str(y_ventana1)
-    ventanaLog.geometry(posicion1)
-    labelLogin = Label (ventanaLog, text ="Login", font=("Verdana",16), background="#044D9A", fg="white")
-    labelLogin.place(x=180, y=90)
-    labelUser = Label (ventanaLog, text ="Ingrese Usuario", font=("Verdana",16), background="#044D9A", fg="white")
-    labelUser.place(x=50, y=220)
-    labelPass = Label (ventanaLog, text ="Ingrese Contraseña", font=("Verdana",16), background="#044D9A", fg="white")
-    labelPass.place(x=50, y=280)
-    #img = PhotoImage(file="Python/usser.jpeg")
-    #labelPhoto = Label(ventanaLog, image=img)
-    #labelPhoto.place(x=230,y=30)
-    textoUsuario = Text(ventanaLog, height=2, width=30, fg="white", font=("Consolas", 11)) 
-    textoUsuario.place(x=230, y=210)
-    textoPass = Entry(ventanaLog, fg="white", show="*", font=("Consolas", 11), width=30) 
-    textoPass.place(x=230, y=275)
-    btnIniciar = Button(ventanaLog, height=2, width=15, text="Iniciar Sesion", command = lambda:[mandarLogin(textoUsuario.get(1.0, tk.END+"-1c"), textoPass.get())], background="#368807", font=("Verdana",10), fg="black")
-    btnIniciar.place(x=180, y=400)
-
-
 def mandarLogin(usuario, contra):
-    #print(usuario)
-    #print(contra)
+    print(usuario)
+    print(contra)
+    #pruebaa = usuario
     res = requests.get(f'{base_url}/Login/' + f'{usuario}' + "/" + f'{contra}')
     data = res.text#convertimos la respuesta en dict
-    #print(data)
+    print(data)
+    if (data == "admin"):
+        MessageBox.showinfo("Exito!", "Inicio de sesion correcto")
+        ventanaAdmin.deiconify()
     if (data == "correcto"):
         MessageBox.showinfo("Exito!", "Inicio de sesion correcto")
+        ventanaUser.deiconify()
     if (data == "incorrecto"):
         MessageBox.showinfo("Error!", "Usuario o contraseña incorrectos")
     if (data == "inexistente"):
         MessageBox.showinfo("Inesperado!", "El usuario no existe")
 
 
+
+def mandarDatos(usuario):
+    global pruebaa
+    res = requests.get(f'{base_url}/Log/' + f'{usuario}')
+    data = res.text#convertimos la respuesta en dict
+    pruebaa = data
+    print(data)
+
+
+def verusuario():
+    print("usuarios")
+
 def cerrar():
     MessageBox.showinfo("Adios", "Gracias por usar el programa")
     sys.exit()
 
-#---------------------------------INTERFAZ GRÁFICA ------------------------------
+#---------------------------------VENTANA PRINCIPAL ------------------------------
 
 ventana = Tk()
 ventana.title("Proyecto Fase 2 - 202010816")
@@ -139,7 +139,7 @@ btnCargarArchivo.place(x=180, y=150)
 btnRegistrar = Button(ventana, height=2, width=15, text="Registrar Usuario", command=lambda:[ ventana.withdraw(),registrarUsuarios()], background="#10139E", font=("Verdana",10), fg="black")
 btnRegistrar.place(x=180, y=210)
 
-btnLogin = Button(ventana, height=2, width=15, text="Login",command=lambda:[ventana.withdraw(),Login()], background="#8E8C08", font=("Verdana",10), fg="black")
+btnLogin = Button(ventana, height=2, width=15, text="Login",command=lambda:[ventana.withdraw(),ventanaLog.deiconify()], background="#8E8C08", font=("Verdana",10), fg="black")
 btnLogin.place(x=180, y=270)
 
 btnSalir = Button(ventana, height=2, width=15, text="Salir",command=cerrar, background="#B03314", font=("Verdana",10), fg="black")
@@ -149,6 +149,117 @@ btnSalir.place(x=180, y=330)
 #Labels
 labelEditor = Label (ventana, text ="BATALLA NAVAL", font=("Verdana",16), background="#044D9A", fg="white")
 labelEditor.place(x=180, y=90)
+
+
+
+#---------------------------------LOGIN ------------------------------
+
+ventanaLog = Tk()
+ventanaLog.title("Login")
+ventanaLog.resizable(0,0)
+ancho_ventana1 = 500
+alto_ventana1 = 500
+x_ventana1 = ventanaLog.winfo_screenwidth() // 2 - ancho_ventana1 // 2
+y_ventana1 = ventanaLog.winfo_screenheight() // 2 - alto_ventana1 // 2
+posicion1 = str(ancho_ventana1) + "x" + str(alto_ventana1) + "+" + str(x_ventana1) + "+" + str(y_ventana1)
+ventanaLog.geometry(posicion1)
+labelLogin = Label (ventanaLog, text ="Login", font=("Verdana",16), background="#044D9A", fg="white")
+labelLogin.place(x=180, y=90)
+labelUser = Label (ventanaLog, text ="Ingrese Usuario", font=("Verdana",16), background="#044D9A", fg="white")
+labelUser.place(x=50, y=220)
+labelPass = Label (ventanaLog, text ="Ingrese Contraseña", font=("Verdana",16), background="#044D9A", fg="white")
+labelPass.place(x=50, y=280)
+#img = PhotoImage(file="Python/usser.jpeg")
+#labelPhoto = Label(ventanaLog, image=img)
+#labelPhoto.place(x=230,y=30)
+textoUsuarioL = Text(ventanaLog, height=2, width=30, fg="white", font=("Consolas", 11)) 
+textoUsuarioL.place(x=230, y=210)
+textoPassL = Entry(ventanaLog, fg="white", show="*", font=("Consolas", 11), width=30) 
+textoPassL.place(x=230, y=275)
+
+btnIniciar = Button(ventanaLog, height=2, width=15, text="Iniciar Sesion", command = lambda:[mandarLogin(textoUsuarioL.get(1.0, tk.END+"-1c"), textoPassL.get()), mandarDatos(textoUsuarioL.get(1.0, tk.END+"-1c")), textoUsuarioL.delete(1.0, tk.END+"-1c"), textoPassL.delete(0, tk.END) ,ventanaLog.withdraw()], background="#368807", font=("Verdana",10), fg="black")
+btnIniciar.place(x=180, y=400)
+ventanaLog.withdraw()
+
+
+#---------------------------------SUB LOGIN ------------------------------
+
+ventanaSubLog = Tk()
+ventanaSubLog.title("Sub_Login")
+ventanaSubLog.resizable(0,0)
+ancho_ventana1 = 500
+alto_ventana1 = 500
+x_ventana1 = ventanaSubLog.winfo_screenwidth() // 2 - ancho_ventana1 // 2
+y_ventana1 = ventanaSubLog.winfo_screenheight() // 2 - alto_ventana1 // 2
+posicion1 = str(ancho_ventana1) + "x" + str(alto_ventana1) + "+" + str(x_ventana1) + "+" + str(y_ventana1)
+ventanaSubLog.geometry(posicion1)
+btnIniciar = Button(ventanaSubLog, height=2, width=15, text="Editar Info", command = lambda: [ventanaSubLog.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
+btnIniciar.place(x=180, y=400)
+labelLogin = Label (ventanaSubLog, text =pruebaa, font=("Verdana",16), background="#044D9A", fg="white")
+labelLogin.place(x=180, y=90)
+labelUser = Label (ventanaSubLog, text ="Usuario", font=("Verdana",16), background="#044D9A", fg="white")
+labelUser.place(x=50, y=220)
+labelPass = Label (ventanaSubLog, text ="Contraseña", font=("Verdana",16), background="#044D9A", fg="white")
+labelPass.place(x=50, y=280)
+textoUsuarioSL = Text(ventanaSubLog, height=2, width=30, fg="white", font=("Consolas", 11)) 
+textoUsuarioSL.place(x=230, y=210)
+textoPassSL = Entry(ventanaSubLog, fg="white", show="*", font=("Consolas", 11), width=30) 
+textoPassSL.place(x=230, y=275)
+ventanaSubLog.withdraw()
+
+
+#--------------------------------- ADMIN ------------------------------
+
+ventanaAdmin = Tk()
+ventanaAdmin.title("ADMINISTRADOR")
+ventanaAdmin.resizable(0,0)
+ancho_ventana1 = 500
+alto_ventana1 = 500
+x_ventana1 = ventanaAdmin.winfo_screenwidth() // 2 - ancho_ventana1 // 2
+y_ventana1 = ventanaAdmin.winfo_screenheight() // 2 - alto_ventana1 // 2
+posicion1 = str(ancho_ventana1) + "x" + str(alto_ventana1) + "+" + str(x_ventana1) + "+" + str(y_ventana1)
+ventanaAdmin.geometry(posicion1)
+btnUser = Button(ventanaAdmin, height=2, width=15, text="Ver lista de usuarios", command = lambda: [verusuario()], background="#368807", font=("Verdana",10), fg="black")
+btnUser.place(x=180, y=200)
+btnArticulos = Button(ventanaAdmin, height=2, width=15, text="Ver lista de articulos", command = lambda: [ventanaAdmin.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
+btnArticulos.place(x=180, y=250)
+btnOrdenAsc = Button(ventanaAdmin, height=2, width=15, text="Ver lista de usuarios ordenado por edad ascendente", command = lambda: [ventanaAdmin.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
+btnOrdenAsc.place(x=180, y=300)
+btnOrdenDesc = Button(ventanaAdmin, height=2, width=15, text="Ver lista de usuarios ordenado por edad descendente", command = lambda: [ventanaAdmin.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
+btnOrdenDesc.place(x=180, y=350)
+btnTutorial = Button(ventanaAdmin, height=2, width=15, text="Ver tutorial del juego", command = lambda: [ventanaAdmin.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
+btnTutorial.place(x=180, y=400)
+btnCerrarSesionAdmin = Button(ventanaAdmin, height=2, width=15, text="Cerrar Sesion", command = lambda: [ventanaLog.deiconify(),MessageBox.showinfo("Exito", "Sesion cerrada") , ventanaAdmin.withdraw()], background="#368807", font=("Verdana",10), fg="black")
+btnCerrarSesionAdmin.place(x=180, y=450)
+
+
+ventanaAdmin.withdraw()
+
+
+#--------------------------------- USUARIOS ------------------------------
+
+ventanaUser = Tk()
+ventanaUser.title("Principal")
+ventanaUser.resizable(0,0)
+ancho_ventana1 = 500
+alto_ventana1 = 500
+x_ventana1 = ventanaUser.winfo_screenwidth() // 2 - ancho_ventana1 // 2
+y_ventana1 = ventanaUser.winfo_screenheight() // 2 - alto_ventana1 // 2
+posicion1 = str(ancho_ventana1) + "x" + str(alto_ventana1) + "+" + str(x_ventana1) + "+" + str(y_ventana1)
+ventanaUser.geometry(posicion1)
+btnEditar = Button(ventanaUser, height=2, width=15, text="Editar Info", command = lambda: [ventanaUser.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
+btnEditar.place(x=180, y=400)
+labelLogin = Label (ventanaUser, text = "Nick" , font=("Verdana",16), background="#044D9A", fg="white")
+labelLogin.place(x=180, y=90)
+labelUser = Label (ventanaUser, text ="Usuario", font=("Verdana",16), background="#044D9A", fg="white")
+labelUser.place(x=50, y=220)
+labelPass = Label (ventanaUser, text ="Contraseña", font=("Verdana",16), background="#044D9A", fg="white")
+labelPass.place(x=50, y=280)
+labelEdad = Label (ventanaUser, text ="Edad", font=("Verdana",16), background="#044D9A", fg="white")
+labelEdad.place(x=50, y=340)
+labelNick = Label(ventanaUser, height=2, width=30, fg="white", font=("Consolas", 11)) 
+labelNick.place(x=230, y=210)
+ventanaUser.withdraw()
 
 
 ventana.mainloop()

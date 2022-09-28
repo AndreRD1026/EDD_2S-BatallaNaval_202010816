@@ -45,7 +45,25 @@ class Servidor
 public:
     Servidor()
     {
-       //ListaUsuarios = Servidor
+    string usuario = "EDD";
+    string contra = "edd123";
+    string encriptado = SHA256::cifrar(contra);
+    ///cout<<"encripatdo: "<<encriptado<<"\n";
+
+    ListaUsuarios.registro_usuario(contadorusuarios,usuario,encriptado,0,50);
+    Arbol.insertar(contadorusuarios,usuario);
+    contadorusuarios++;
+
+    /*
+    string a = "smyford2e";
+    string prueba = SHA256::cifrar(a);
+    cout<<""<<prueba<<"\n";
+    
+
+    string b = "smyford2e";
+    string prueba1 = SHA256::cifrar(b);
+    cout<<""<<prueba1<<"\n";
+    */
     
     }
 
@@ -152,6 +170,7 @@ public:
         break;
     }
     archivo.close();
+    //Arbol.Grafo();
     //return;
 
     response << "{ "
@@ -191,6 +210,29 @@ class Servidor3{
     
     }
 
+
+    /* 
+    void post(GloveHttpRequest &request, GloveHttpResponse &response){
+        string nombreuser, contra;
+        int monedas, edad;
+        nombreuser = request.special["nick"];
+        contra = request.special["contra"];
+        edad = atoi(request.special["edad"]);
+        monedas = 0;
+        string encriptado = SHA256::cifrar(contra);
+        //ListaUsuarios.Comprobar(nombreuser);
+        //ListaUsuarios.registro_usuario(contadorusuarios,nombreuser,encriptado,monedas,edad);
+        //Arbol.insertar(contadorusuarios,nombreuser);
+        //contadorusuarios++;
+        response << "{ "
+            << jsonkv("status", "ok ha sido registrado") << ",\n"
+            " }"; 
+
+        response << ListaUsuarios.registro_usuario1(contadorusuarios,nombreuser,encriptado,monedas,edad);
+        contadorusuarios++;
+        }
+    */
+    
     void post(GloveHttpRequest &request, GloveHttpResponse &response){
         string nombreuser, contra;
         int monedas, edad;
@@ -207,6 +249,29 @@ class Servidor3{
             << jsonkv("status", "ok ha sido registrado") << ",\n"
             " }";
     }
+    
+};
+
+class Servidor4{
+
+    public:
+    Servidor4()
+    {
+       //ListaUsuarios = Servidor
+    
+    }
+
+    void get(GloveHttpRequest &request, GloveHttpResponse &response)
+    {
+        string user;
+        response.contentType("text/json");
+        user = request.special["Usuario"];
+        //contr = request.special["Contra"];
+        //string cifrada = SHA256::cifrar(contr);
+        response << ListaUsuarios.Buscar(user);
+        
+    }
+
 };
 
 int main(int argc, char *argv[])
@@ -214,6 +279,7 @@ int main(int argc, char *argv[])
     Servidor cine;
     Servidor2 cine2;
     Servidor3 registroUser;
+    Servidor4 mandarDatos;
 
     GloveHttpServer serv(8080, "", 2048);
     serv.compression("gzip, deflate");
@@ -229,6 +295,9 @@ int main(int argc, char *argv[])
     serv.addRest("/Registro/$nick/$contra/$edad", 1,
                 GloveHttpServer::jsonApiErrorCall,
                 std::bind(&Servidor3::post, &registroUser, ph::_1, ph::_2));
+    serv.addRest("/Log/$Usuario", 1,
+                 GloveHttpServer::jsonApiErrorCall,
+                 std::bind(&Servidor4::get, &mandarDatos, ph::_1, ph::_2));
     
     while (1)
     {
