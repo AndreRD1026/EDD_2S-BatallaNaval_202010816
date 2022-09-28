@@ -173,11 +173,12 @@ class Servidor2{
 
     void get(GloveHttpRequest &request, GloveHttpResponse &response)
     {
-        string rut;
+        string user, contr;
         response.contentType("text/json");
-        rut = request.special["Login"];
-
-        response << ListaUsuarios.getUsers();
+        user = request.special["Usuario"];
+        contr = request.special["Contra"];
+        string cifrada = SHA256::cifrar(contr);
+        response << ListaUsuarios.verificarLog(user,cifrada);
         
     }
 };
@@ -198,6 +199,7 @@ class Servidor3{
         edad = atoi(request.special["edad"]);
         monedas = 0;
         string encriptado = SHA256::cifrar(contra);
+        ListaUsuarios.Comprobar(nombreuser);
         ListaUsuarios.registro_usuario(contadorusuarios,nombreuser,encriptado,monedas,edad);
         Arbol.insertar(contadorusuarios,nombreuser);
         contadorusuarios++;
@@ -221,7 +223,7 @@ int main(int argc, char *argv[])
                  std::bind(&Servidor::get, &cine, ph::_1, ph::_2),
                  std::bind(&Servidor::post, &cine, ph::_1, ph::_2));
                  std::cout << "Servidor en Ejecucion :D" << std::endl;
-    serv.addRest("/Login/$Ruta", 1,
+    serv.addRest("/Login/$Usuario/$Contra", 1,
                  GloveHttpServer::jsonApiErrorCall,
                  std::bind(&Servidor2::get, &cine2, ph::_1, ph::_2));
     serv.addRest("/Registro/$nick/$contra/$edad", 1,

@@ -354,12 +354,59 @@ string ListaCircular::getUsers() {
 
 	}
 	datos += "]";
-	return datos;
-	
-		
+	return datos;	
 }
 
 
+void ListaCircular::Comprobar(string nombreuser) {
+
+	nodoUsuarios *actual = new nodoUsuarios();
+	actual = primero;
+	bool encontrado = false;
+	if(primero != NULL){
+		do{
+			if(actual->nombreuser==nombreuser){
+				cout<<"\n";
+				cout<<"No se puede agregar porque ya existe un ususario con ese Nick"<<endl;
+				encontrado = true;				
+			}
+			actual = actual->siguiente;	
+		}while(actual!=primero && encontrado != true);
+	}
+    
+}
+
+string ListaCircular:: verificarLog(string usuariob, string cifrada){
+	string dato = "";
+	bool encontrado = false;
+	nodoUsuarios *actual;
+	actual = primero;
+	if(primero!=NULL){
+        do{
+            //cout<<"El cifrado sha a comparar es : "<<actual->contracifrada<<endl;
+            if(actual->nombreuser==usuariob && actual->contracifrada==cifrada){
+                encontrado = true;  
+                cout<<"Inicio de sesión correctos"<<endl;
+				dato += "correcto";
+				return dato;
+                //userlogin = actual->nombreuser;
+                //sub_login(actual->nombreuser, actual->contra,actual-> edad, actual->monedas);
+            }
+            actual = actual->siguiente;
+        }while(actual!=primero && encontrado != true);
+        
+        if(!encontrado){
+            cout << "\nUsuario o contraseña incorrectos\n\n";
+			dato += "incorrecto";
+			return dato;
+        }
+        
+    }else{
+        cout << "\nNo existe el usuario en la lista\n\n";
+		dato += "inexistente";
+		return dato;
+    }
+}
 
 /*
 string ListaCircular::Buscar(string usuario)
