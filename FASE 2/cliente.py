@@ -33,7 +33,6 @@ def abrirArchivo1():
         MessageBox.showwarning("Alerta", "Debe cargar un archivo")
     
 
-
 def Comprobar(salida,salida2,salida3):
     res = requests.get(f'{base_url}/Verificar/' + f'{salida}' + "/" + f'{salida2}' + "/" +  f'{salida3}')
     data = res.text#convertimos la respuesta en dict
@@ -47,6 +46,22 @@ def Comprobar(salida,salida2,salida3):
         textoPass.delete(1.0, tk.END+"-1c")
         textoEdad.delete(1.0, tk.END+"-1c")
         ventanaReg.withdraw()
+
+def ComprobarCambio(salidaa,salidaa2,salidaa3):
+    res = requests.get(f'{base_url}/Verificar/' + f'{salidaa}' + "/" + f'{salidaa2}' + "/" +  f'{salidaa3}')
+    data = res.text#convertimos la respuesta en dict
+    #print(data)
+
+    if (data == "existe"):
+        MessageBox.showinfo("Problema", "El Nick ya esta en uso")
+    if (data == "no existe"):
+        MessageBox.showinfo("Exito!", "Para actualizar los cambios debe volver a iniciar sesion")
+        textoUsuarioC.delete(1.0, tk.END+"-1c")
+        textoPassC.delete(1.0, tk.END+"-1c")
+        textoEdadC.delete(1.0, tk.END+"-1c")
+        ventanaEdit.withdraw()
+        ventanaUser.deiconify()
+
 
 
 def mandarRegistro(salida,salida2,salida3):
@@ -62,11 +77,9 @@ def cerrandoRegistro():
     ventana.deiconify()
 
 
-
 def mandarLogin(usuario, contra):
     print(usuario)
     print(contra)
-    #pruebaa = usuario
     res = requests.get(f'{base_url}/Login/' + f'{usuario}' + "/" + f'{contra}')
     data = res.text#convertimos la respuesta en dict
     print(data)
@@ -75,7 +88,7 @@ def mandarLogin(usuario, contra):
         MessageBox.showinfo("Exito!", "Inicio de sesion correcto")
         ventanaAdmin.deiconify()
     if (data == "correcto"):
-        ventanaUser.withdraw()
+        ventanaLog.withdraw()
         MessageBox.showinfo("Exito!", "Inicio de sesion correcto")
         ventanaUser.deiconify()
     if (data == "incorrecto"):
@@ -86,7 +99,6 @@ def mandarLogin(usuario, contra):
         ventanaLog.deiconify()
 
 
-
 def mandarDatos(usuario):
     global pruebaa
     res = requests.get(f'{base_url}/Log/' + f'{usuario}')
@@ -94,12 +106,10 @@ def mandarDatos(usuario):
     pruebaa = data
     print(data)
 
-
 def verusuario():
-    print("usuarios")
     res = requests.get(f'{base_url}/Usuarios/')
     data = res.text#convertimos la respuesta en dict
-    print(data)
+    #print(data)
     im = Image.open('Pruebas.png')
     im.show()
 
@@ -111,21 +121,17 @@ def verArticulos():
     im = Image.open('ListadeListas.png')
     im.show()
 
-
 def verusuarioASC():
-    print("usuariosASC")
     res = requests.get(f'{base_url}/UsuariosASC/')
     data = res.text#convertimos la respuesta en dict
-    print(data)
+    #print(data)
 
 def verusuarioDESC():
-    print("usuariosDESC")
     res = requests.get(f'{base_url}/UsuariosDESC/')
     data = res.text#convertimos la respuesta en dict
-    print(data)
+    #print(data)
 
 def EliminarCuenta():
-    print("")
     res = MessageBox.askquestion('Eliminar cuenta', '¿Esta seguro de eliminar esta cuenta?')
     if res == 'yes':
         MessageBox.showinfo('Cerrando Sesion', 'La cuenta ha sido eliminada')
@@ -134,6 +140,13 @@ def EliminarCuenta():
     else:
         MessageBox.showinfo('Regresar', 'Regresando al menu')
 
+
+def Tutorial():
+    print("Tutorial")
+
+
+def Partida():
+    print("Partida")
 
 def cerrar():
     MessageBox.showinfo("Adios", "Gracias por usar el programa")
@@ -247,7 +260,7 @@ btnOrdenAsc = Button(ventanaAdmin, height=2, width=22, text="Usuarios ordenados 
 btnOrdenAsc.place(x=160, y=300)
 btnOrdenDesc = Button(ventanaAdmin, height=2, width=22, text="Usuarios ordenados descendente", command = lambda: [verusuarioDESC()], background="#368807", font=("Verdana",10), fg="black")
 btnOrdenDesc.place(x=160, y=350)
-btnTutorial = Button(ventanaAdmin, height=2, width=22, text="Tutorial del juego", command = lambda: [ventanaAdmin.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
+btnTutorial = Button(ventanaAdmin, height=2, width=22, text="Tutorial del juego", command = lambda: [Tutorial()], background="#368807", font=("Verdana",10), fg="black")
 btnTutorial.place(x=160, y=400)
 btnCerrarSesionAdmin = Button(ventanaAdmin, height=2, width=22, text="Cerrar Sesion", command = lambda: [ventanaLog.deiconify(),MessageBox.showinfo("Exito", "Sesion cerrada") , ventanaAdmin.withdraw()], background="#368807", font=("Verdana",10), fg="black")
 btnCerrarSesionAdmin.place(x=160, y=450)
@@ -268,35 +281,52 @@ ventanaUser.geometry(posicion1)
 bgUser = PhotoImage(file="Python/usuario.png")
 labelPhotoUser = Label(ventanaUser, image=bgUser)
 labelPhotoUser.place(x=150,y=30)
-btnEditar = Button(ventanaUser, height=2, width=15, text="Editar Informacion", command = lambda: [ventanaUser.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
+btnEditar = Button(ventanaUser, height=2, width=15, text="Editar Informacion", command = lambda: [ventanaUser.withdraw(), ventanaEdit.deiconify()], background="#368807", font=("Verdana",10), fg="black")
 btnEditar.place(x=180, y=200)
 btnEliminarCuenta = Button(ventanaUser, height=2, width=15, text="Eliminar mi cuenta", command = lambda: [EliminarCuenta()], background="#368807", font=("Verdana",10), fg="black")
 btnEliminarCuenta.place(x=180, y=250)
-btnVerTutorial = Button(ventanaUser, height=2, width=15, text="Mostrar Tutorial", command = lambda: [ventanaUser.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
+btnVerTutorial = Button(ventanaUser, height=2, width=15, text="Mostrar Tutorial", command = lambda: [Tutorial()], background="#368807", font=("Verdana",10), fg="black")
 btnVerTutorial.place(x=180, y=300)
-btnVerTienda = Button(ventanaUser, height=2, width=15, text="Tienda", command = lambda: [ventanaUser.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
+btnVerTienda = Button(ventanaUser, height=2, width=15, text="Tienda", command = lambda: [verArticulos()], background="#368807", font=("Verdana",10), fg="black")
 btnVerTienda.place(x=180, y=350)
-btnPartida = Button(ventanaUser, height=2, width=15, text="Iniciar Partida", command = lambda: [ventanaUser.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
+btnPartida = Button(ventanaUser, height=2, width=15, text="Iniciar Partida", command = lambda: [Partida()], background="#368807", font=("Verdana",10), fg="black")
 btnPartida.place(x=180, y=400)
 btncerrarSesionUser = Button(ventanaUser, height=2, width=15, text="Cerrar Sesion", command = lambda: [ventanaUser.withdraw(),MessageBox.showinfo("Exito", "Sesion cerrada"), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
 btncerrarSesionUser.place(x=180, y=450)
-
 ventanaUser.withdraw()
 
 #--------------------------------- EDITAR USUARIO ------------------------------
 
-'''
-labelLogin = Label (ventanaUser, text = "Nick" , font=("Verdana",16), background="#044D9A", fg="white")
-labelLogin.place(x=180, y=90)
-labelUser = Label (ventanaUser, text ="Usuario", font=("Verdana",16), background="#044D9A", fg="white")
-labelUser.place(x=50, y=220)
-labelPass = Label (ventanaUser, text ="Contraseña", font=("Verdana",16), background="#044D9A", fg="white")
-labelPass.place(x=50, y=280)
-labelEdad = Label (ventanaUser, text ="Edad", font=("Verdana",16), background="#044D9A", fg="white")
-labelEdad.place(x=50, y=340)
-labelNick = Label(ventanaUser, height=2, width=30, fg="white", font=("Consolas", 11)) 
-labelNick.place(x=230, y=210)
-'''
+ventanaEdit = Toplevel()
+ventanaEdit.title("Actualizacion de Datos")
+ventanaEdit.resizable(0,0)
+ancho_ventana1 = 500
+alto_ventana1 = 500
+x_ventana1 = ventanaEdit.winfo_screenwidth() // 2 - ancho_ventana1 // 2
+y_ventana1 = ventanaEdit.winfo_screenheight() // 2 - alto_ventana1 // 2
+posicion1 = str(ancho_ventana1) + "x" + str(alto_ventana1) + "+" + str(x_ventana1) + "+" + str(y_ventana1)
+ventanaEdit.geometry(posicion1)
+bgc = PhotoImage(file="Python/usuario.png")
+labelPhotoC = Label(ventanaEdit, image=bgc)
+labelPhotoC.place(x=150,y=30)
+labelUserC = Label (ventanaEdit, text ="NICK", font=("Verdana",16), background="#044D9A", fg="white")
+labelUserC.place(x=100, y=215)
+labelPassC = Label (ventanaEdit, text ="Contra", font=("Verdana",16), background="#044D9A", fg="white")
+labelPassC.place(x=100, y=280)
+labelEdadC = Label (ventanaEdit, text ="Edad", font=("Verdana",16), background="#044D9A", fg="white")
+labelEdadC.place(x=100, y=345)
+textoUsuarioC = Text(ventanaEdit, height=2, width=30 ,fg="white", font=("Consolas", 12)) 
+textoUsuarioC.place(x=210, y=210)
+textoPassC = Text(ventanaEdit, height=2, width=30, fg="white", font=("Consolas", 12)) 
+textoPassC.place(x=210, y=270)
+textoEdadC = Text(ventanaEdit, height=2, width=30 ,fg="white", font=("Consolas", 12)) 
+textoEdadC.place(x=210, y=340)
+btnGuardarC = Button(ventanaEdit, height=2, width=15, text="Guardar Cambios", command = lambda:[ComprobarCambio(textoUsuarioC.get(1.0, tk.END+"-1c"), textoPassC.get(1.0, tk.END+"-1c"), textoEdadC.get(1.0, tk.END+"-1c"))], background="#368807", font=("Verdana",10), fg="black")
+btnGuardarC.place(x=110, y=420)
+btnRegresarC = Button(ventanaEdit, height=2, width=15, text="Regresar", command = lambda:[ventanaUser.deiconify(), ventanaEdit.withdraw()], background="#368807", font=("Verdana",10), fg="black")
+btnRegresarC.place(x=270, y=420)
+ventanaEdit.withdraw()
+
 
 #--------------------------------- INICIANDO INTERFAZ------------------------------
 ventana.mainloop()
