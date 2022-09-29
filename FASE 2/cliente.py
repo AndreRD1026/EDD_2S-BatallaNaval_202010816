@@ -1,4 +1,4 @@
-import requests##pip3 install request
+import requests
 import json
 from tkinter import*
 import tkinter as tk
@@ -7,7 +7,6 @@ from tkinter import messagebox as MessageBox
 import sys
 import os
 from PIL import Image
-import webbrowser
 
 pruebaa = None
 
@@ -30,7 +29,6 @@ def abrirArchivo1():
         data = res.text#convertimos la respuesta en dict
         print(data)
         MessageBox.showinfo("Exito!", "Archivo Cargado con exito")
-        ventana.mainloop()
     except:
         MessageBox.showwarning("Alerta", "Debe cargar un archivo")
     
@@ -139,19 +137,24 @@ def verusuarioASC():
     print("usuariosASC")
     res = requests.get(f'{base_url}/UsuariosASC/')
     data = res.text#convertimos la respuesta en dict
-    webbrowser.open("ASC.html")
-    #webbrowser.open_new_tab('ASC.html')
     print(data)
-    #im = Image.open('Pruebas.png')
-    #im.show()
 
 def verusuarioDESC():
     print("usuariosDESC")
     res = requests.get(f'{base_url}/UsuariosDESC/')
     data = res.text#convertimos la respuesta en dict
     print(data)
-    #im = Image.open('Pruebas.png')
-    #im.show()
+
+def EliminarCuenta():
+    print("")
+    res = MessageBox.askquestion('Eliminar cuenta', '¿Esta seguro de eliminar esta cuenta?')
+    if res == 'yes':
+        MessageBox.showinfo('Cerrando Sesion', 'La cuenta ha sido eliminada')
+        ventanaUser.withdraw()
+        ventanaLog.deiconify()
+    else:
+        MessageBox.showinfo('Regresar', 'Regresando al menu')
+
 
 def cerrar():
     MessageBox.showinfo("Adios", "Gracias por usar el programa")
@@ -168,26 +171,18 @@ x_ventana = ventana.winfo_screenwidth() // 2 - ancho_ventana // 2
 y_ventana = ventana.winfo_screenheight() // 2 - alto_ventana // 2
 posicion = str(ancho_ventana) + "x" + str(alto_ventana) + "+" + str(x_ventana) + "+" + str(y_ventana)
 ventana.geometry(posicion)
-
-
 #Botones
 btnCargarArchivo = Button(ventana, height=2, width=15, text="Cargar Usuarios", command = abrirArchivo1, background="#368807", font=("Verdana",10), fg="black")
 btnCargarArchivo.place(x=180, y=150)
-
 btnRegistrar = Button(ventana, height=2, width=15, text="Registrar Usuario", command=lambda:[ ventana.withdraw(),registrarUsuarios()], background="#10139E", font=("Verdana",10), fg="black")
 btnRegistrar.place(x=180, y=210)
-
 btnLogin = Button(ventana, height=2, width=15, text="Login",command=lambda:[ventana.withdraw(),ventanaLog.deiconify()], background="#8E8C08", font=("Verdana",10), fg="black")
 btnLogin.place(x=180, y=270)
-
 btnSalir = Button(ventana, height=2, width=15, text="Salir",command=cerrar, background="#B03314", font=("Verdana",10), fg="black")
 btnSalir.place(x=180, y=330)
-
-
 #Labels
 labelEditor = Label (ventana, text ="BATALLA NAVAL", font=("Verdana",16), background="#044D9A", fg="white")
 labelEditor.place(x=180, y=90)
-
 
 
 #---------------------------------LOGIN ------------------------------
@@ -214,9 +209,10 @@ textoUsuarioL = Text(ventanaLog, height=2, width=30, fg="white", font=("Consolas
 textoUsuarioL.place(x=220, y=270)
 textoPassL = Entry(ventanaLog, fg="white", show="*", font=("Consolas", 12), width=30) 
 textoPassL.place(x=220, y=340)
-
 btnIniciar = Button(ventanaLog, height=2, width=15, text="Iniciar Sesion", command = lambda:[mandarLogin(textoUsuarioL.get(1.0, tk.END+"-1c"), textoPassL.get()), textoUsuarioL.delete(1.0, tk.END+"-1c"), textoPassL.delete(0, tk.END)], background="#368807", font=("Verdana",10), fg="black")
-btnIniciar.place(x=180, y=400)
+btnIniciar.place(x=110, y=410)
+btnRegresar = Button(ventanaLog, height=2, width=15, text="Regresar", command = lambda:[ventana.deiconify(), ventanaLog.withdraw()], background="#368807", font=("Verdana",10), fg="black")
+btnRegresar.place(x=270, y=410)
 ventanaLog.withdraw()
 
 #--------------------------------- ADMIN ------------------------------
@@ -224,7 +220,6 @@ ventanaLog.withdraw()
 ventanaAdmin = Toplevel()
 ventanaAdmin.title("ADMINISTRADOR")
 ventanaAdmin.resizable(0,0)
-
 ancho_ventana1 = 500
 alto_ventana1 = 500
 x_ventana1 = ventanaAdmin.winfo_screenwidth() // 2 - ancho_ventana1 // 2
@@ -246,8 +241,6 @@ btnTutorial = Button(ventanaAdmin, height=2, width=22, text="Tutorial del juego"
 btnTutorial.place(x=160, y=400)
 btnCerrarSesionAdmin = Button(ventanaAdmin, height=2, width=22, text="Cerrar Sesion", command = lambda: [ventanaLog.deiconify(),MessageBox.showinfo("Exito", "Sesion cerrada") , ventanaAdmin.withdraw()], background="#368807", font=("Verdana",10), fg="black")
 btnCerrarSesionAdmin.place(x=160, y=450)
-
-
 ventanaAdmin.withdraw()
 
 
@@ -267,7 +260,7 @@ labelPhotoUser = Label(ventanaUser, image=bgUser)
 labelPhotoUser.place(x=150,y=30)
 btnEditar = Button(ventanaUser, height=2, width=15, text="Editar Informacion", command = lambda: [ventanaUser.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
 btnEditar.place(x=180, y=200)
-btnEliminarCuenta = Button(ventanaUser, height=2, width=15, text="Eliminar mi cuenta", command = lambda: [ventanaUser.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
+btnEliminarCuenta = Button(ventanaUser, height=2, width=15, text="Eliminar mi cuenta", command = lambda: [EliminarCuenta()], background="#368807", font=("Verdana",10), fg="black")
 btnEliminarCuenta.place(x=180, y=250)
 btnVerTutorial = Button(ventanaUser, height=2, width=15, text="Mostrar Tutorial", command = lambda: [ventanaUser.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
 btnVerTutorial.place(x=180, y=300)
@@ -275,8 +268,13 @@ btnVerTienda = Button(ventanaUser, height=2, width=15, text="Tienda", command = 
 btnVerTienda.place(x=180, y=350)
 btnPartida = Button(ventanaUser, height=2, width=15, text="Iniciar Partida", command = lambda: [ventanaUser.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
 btnPartida.place(x=180, y=400)
-btncerrarSesionUser = Button(ventanaUser, height=2, width=15, text="Cerrar Sesion", command = lambda: [ventanaUser.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
+btncerrarSesionUser = Button(ventanaUser, height=2, width=15, text="Cerrar Sesion", command = lambda: [ventanaUser.withdraw(),MessageBox.showinfo("Exito", "Sesion cerrada"), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
 btncerrarSesionUser.place(x=180, y=450)
+
+ventanaUser.withdraw()
+
+#--------------------------------- EDITAR USUARIO ------------------------------
+
 '''
 labelLogin = Label (ventanaUser, text = "Nick" , font=("Verdana",16), background="#044D9A", fg="white")
 labelLogin.place(x=180, y=90)
@@ -290,7 +288,5 @@ labelNick = Label(ventanaUser, height=2, width=30, fg="white", font=("Consolas",
 labelNick.place(x=230, y=210)
 '''
 
-ventanaUser.withdraw()
-
-
+#--------------------------------- INICIANDO INTERFAZ------------------------------
 ventana.mainloop()

@@ -311,6 +311,8 @@ void ListaCircular:: HtmlASC(nodoUsuarios *cabeza){
     file.open("ASC.html");
     file<<HTML;
     file.close();
+
+	system(("open ASC.html"));
 }
 
 void ListaCircular:: HtmlDESC(nodoUsuarios *cabeza){
@@ -357,6 +359,8 @@ void ListaCircular:: HtmlDESC(nodoUsuarios *cabeza){
     file.open("DESC.html");
     file<<HTML;
     file.close();
+
+	system(("open DESC.html"));
 }
 
 
