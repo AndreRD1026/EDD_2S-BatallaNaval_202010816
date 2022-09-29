@@ -6,6 +6,7 @@ from tkinter import filedialog
 from tkinter import messagebox as MessageBox
 import sys
 import os
+from PIL import Image
 
 pruebaa = None
 
@@ -92,15 +93,19 @@ def mandarLogin(usuario, contra):
     data = res.text#convertimos la respuesta en dict
     print(data)
     if (data == "admin"):
+        ventanaLog.withdraw()
         MessageBox.showinfo("Exito!", "Inicio de sesion correcto")
         ventanaAdmin.deiconify()
     if (data == "correcto"):
+        ventanaUser.withdraw()
         MessageBox.showinfo("Exito!", "Inicio de sesion correcto")
         ventanaUser.deiconify()
     if (data == "incorrecto"):
         MessageBox.showinfo("Error!", "Usuario o contraseña incorrectos")
+        ventanaLog.deiconify()
     if (data == "inexistente"):
         MessageBox.showinfo("Inesperado!", "El usuario no existe")
+        ventanaLog.deiconify()
 
 
 
@@ -114,6 +119,19 @@ def mandarDatos(usuario):
 
 def verusuario():
     print("usuarios")
+    res = requests.get(f'{base_url}/Usuarios/')
+    data = res.text#convertimos la respuesta en dict
+    print(data)
+    im = Image.open('Pruebas.png')
+    im.show()
+
+def verArticulos():
+    print("articulos")
+    res = requests.get(f'{base_url}/Articulos/')
+    data = res.text#convertimos la respuesta en dict
+    print(data)
+    im = Image.open('ListadeListas.png')
+    im.show()
 
 def cerrar():
     MessageBox.showinfo("Adios", "Gracias por usar el programa")
@@ -154,7 +172,7 @@ labelEditor.place(x=180, y=90)
 
 #---------------------------------LOGIN ------------------------------
 
-ventanaLog = Tk()
+ventanaLog = Toplevel()
 ventanaLog.title("Login")
 ventanaLog.resizable(0,0)
 ancho_ventana1 = 500
@@ -163,21 +181,21 @@ x_ventana1 = ventanaLog.winfo_screenwidth() // 2 - ancho_ventana1 // 2
 y_ventana1 = ventanaLog.winfo_screenheight() // 2 - alto_ventana1 // 2
 posicion1 = str(ancho_ventana1) + "x" + str(alto_ventana1) + "+" + str(x_ventana1) + "+" + str(y_ventana1)
 ventanaLog.geometry(posicion1)
+bgL = PhotoImage(file="Python/user.png")
+labelPhotoL = Label(ventanaLog, image=bgL)
+labelPhotoL.place(x=150,y=30)
 labelLogin = Label (ventanaLog, text ="Login", font=("Verdana",16), background="#044D9A", fg="white")
-labelLogin.place(x=180, y=90)
+labelLogin.place(x=230, y=200)
 labelUser = Label (ventanaLog, text ="Ingrese Usuario", font=("Verdana",16), background="#044D9A", fg="white")
-labelUser.place(x=50, y=220)
+labelUser.place(x=40, y=280)
 labelPass = Label (ventanaLog, text ="Ingrese Contraseña", font=("Verdana",16), background="#044D9A", fg="white")
-labelPass.place(x=50, y=280)
-#img = PhotoImage(file="Python/usser.jpeg")
-#labelPhoto = Label(ventanaLog, image=img)
-#labelPhoto.place(x=230,y=30)
-textoUsuarioL = Text(ventanaLog, height=2, width=30, fg="white", font=("Consolas", 11)) 
-textoUsuarioL.place(x=230, y=210)
-textoPassL = Entry(ventanaLog, fg="white", show="*", font=("Consolas", 11), width=30) 
-textoPassL.place(x=230, y=275)
+labelPass.place(x=40, y=340)
+textoUsuarioL = Text(ventanaLog, height=2, width=30, fg="white", font=("Consolas", 12)) 
+textoUsuarioL.place(x=220, y=270)
+textoPassL = Entry(ventanaLog, fg="white", show="*", font=("Consolas", 12), width=30) 
+textoPassL.place(x=220, y=340)
 
-btnIniciar = Button(ventanaLog, height=2, width=15, text="Iniciar Sesion", command = lambda:[mandarLogin(textoUsuarioL.get(1.0, tk.END+"-1c"), textoPassL.get()), mandarDatos(textoUsuarioL.get(1.0, tk.END+"-1c")), textoUsuarioL.delete(1.0, tk.END+"-1c"), textoPassL.delete(0, tk.END) ,ventanaLog.withdraw()], background="#368807", font=("Verdana",10), fg="black")
+btnIniciar = Button(ventanaLog, height=2, width=15, text="Iniciar Sesion", command = lambda:[mandarLogin(textoUsuarioL.get(1.0, tk.END+"-1c"), textoPassL.get()), textoUsuarioL.delete(1.0, tk.END+"-1c"), textoPassL.delete(0, tk.END)], background="#368807", font=("Verdana",10), fg="black")
 btnIniciar.place(x=180, y=400)
 ventanaLog.withdraw()
 
@@ -210,27 +228,31 @@ ventanaSubLog.withdraw()
 
 #--------------------------------- ADMIN ------------------------------
 
-ventanaAdmin = Tk()
+ventanaAdmin = Toplevel()
 ventanaAdmin.title("ADMINISTRADOR")
 ventanaAdmin.resizable(0,0)
+
 ancho_ventana1 = 500
 alto_ventana1 = 500
 x_ventana1 = ventanaAdmin.winfo_screenwidth() // 2 - ancho_ventana1 // 2
 y_ventana1 = ventanaAdmin.winfo_screenheight() // 2 - alto_ventana1 // 2
 posicion1 = str(ancho_ventana1) + "x" + str(alto_ventana1) + "+" + str(x_ventana1) + "+" + str(y_ventana1)
 ventanaAdmin.geometry(posicion1)
-btnUser = Button(ventanaAdmin, height=2, width=15, text="Ver lista de usuarios", command = lambda: [verusuario()], background="#368807", font=("Verdana",10), fg="black")
-btnUser.place(x=180, y=200)
-btnArticulos = Button(ventanaAdmin, height=2, width=15, text="Ver lista de articulos", command = lambda: [ventanaAdmin.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
-btnArticulos.place(x=180, y=250)
-btnOrdenAsc = Button(ventanaAdmin, height=2, width=15, text="Ver lista de usuarios ordenado por edad ascendente", command = lambda: [ventanaAdmin.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
-btnOrdenAsc.place(x=180, y=300)
-btnOrdenDesc = Button(ventanaAdmin, height=2, width=15, text="Ver lista de usuarios ordenado por edad descendente", command = lambda: [ventanaAdmin.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
-btnOrdenDesc.place(x=180, y=350)
-btnTutorial = Button(ventanaAdmin, height=2, width=15, text="Ver tutorial del juego", command = lambda: [ventanaAdmin.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
-btnTutorial.place(x=180, y=400)
-btnCerrarSesionAdmin = Button(ventanaAdmin, height=2, width=15, text="Cerrar Sesion", command = lambda: [ventanaLog.deiconify(),MessageBox.showinfo("Exito", "Sesion cerrada") , ventanaAdmin.withdraw()], background="#368807", font=("Verdana",10), fg="black")
-btnCerrarSesionAdmin.place(x=180, y=450)
+bg = PhotoImage(file="Python/admin.png")
+labelPhoto = Label(ventanaAdmin, image=bg)
+labelPhoto.place(x=150,y=30)
+btnUser = Button(ventanaAdmin, height=2, width=22, text="Lista de usuarios", command = lambda: [verusuario()], background="#368807", font=("Verdana",10), fg="black")
+btnUser.place(x=160, y=200)
+btnArticulos = Button(ventanaAdmin, height=2, width=22, text="Lista de articulos", command = lambda: [verArticulos()], background="#368807", font=("Verdana",10), fg="black")
+btnArticulos.place(x=160, y=250)
+btnOrdenAsc = Button(ventanaAdmin, height=2, width=22, text="Usuarios ordenados ascendente", command = lambda: [ventanaAdmin.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
+btnOrdenAsc.place(x=160, y=300)
+btnOrdenDesc = Button(ventanaAdmin, height=2, width=22, text="Usuarios ordenados descendente", command = lambda: [ventanaAdmin.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
+btnOrdenDesc.place(x=160, y=350)
+btnTutorial = Button(ventanaAdmin, height=2, width=22, text="Tutorial del juego", command = lambda: [ventanaAdmin.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
+btnTutorial.place(x=160, y=400)
+btnCerrarSesionAdmin = Button(ventanaAdmin, height=2, width=22, text="Cerrar Sesion", command = lambda: [ventanaLog.deiconify(),MessageBox.showinfo("Exito", "Sesion cerrada") , ventanaAdmin.withdraw()], background="#368807", font=("Verdana",10), fg="black")
+btnCerrarSesionAdmin.place(x=160, y=450)
 
 
 ventanaAdmin.withdraw()
@@ -238,7 +260,7 @@ ventanaAdmin.withdraw()
 
 #--------------------------------- USUARIOS ------------------------------
 
-ventanaUser = Tk()
+ventanaUser = Toplevel()
 ventanaUser.title("Principal")
 ventanaUser.resizable(0,0)
 ancho_ventana1 = 500
@@ -247,8 +269,22 @@ x_ventana1 = ventanaUser.winfo_screenwidth() // 2 - ancho_ventana1 // 2
 y_ventana1 = ventanaUser.winfo_screenheight() // 2 - alto_ventana1 // 2
 posicion1 = str(ancho_ventana1) + "x" + str(alto_ventana1) + "+" + str(x_ventana1) + "+" + str(y_ventana1)
 ventanaUser.geometry(posicion1)
-btnEditar = Button(ventanaUser, height=2, width=15, text="Editar Info", command = lambda: [ventanaUser.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
-btnEditar.place(x=180, y=400)
+bgUser = PhotoImage(file="Python/usuario.png")
+labelPhotoUser = Label(ventanaUser, image=bgUser)
+labelPhotoUser.place(x=150,y=30)
+btnEditar = Button(ventanaUser, height=2, width=15, text="Editar Informacion", command = lambda: [ventanaUser.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
+btnEditar.place(x=180, y=200)
+btnEliminarCuenta = Button(ventanaUser, height=2, width=15, text="Eliminar mi cuenta", command = lambda: [ventanaUser.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
+btnEliminarCuenta.place(x=180, y=250)
+btnVerTutorial = Button(ventanaUser, height=2, width=15, text="Mostrar Tutorial", command = lambda: [ventanaUser.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
+btnVerTutorial.place(x=180, y=300)
+btnVerTienda = Button(ventanaUser, height=2, width=15, text="Tienda", command = lambda: [ventanaUser.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
+btnVerTienda.place(x=180, y=350)
+btnPartida = Button(ventanaUser, height=2, width=15, text="Iniciar Partida", command = lambda: [ventanaUser.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
+btnPartida.place(x=180, y=400)
+btncerrarSesionUser = Button(ventanaUser, height=2, width=15, text="Cerrar Sesion", command = lambda: [ventanaUser.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
+btncerrarSesionUser.place(x=180, y=450)
+'''
 labelLogin = Label (ventanaUser, text = "Nick" , font=("Verdana",16), background="#044D9A", fg="white")
 labelLogin.place(x=180, y=90)
 labelUser = Label (ventanaUser, text ="Usuario", font=("Verdana",16), background="#044D9A", fg="white")
@@ -259,6 +295,8 @@ labelEdad = Label (ventanaUser, text ="Edad", font=("Verdana",16), background="#
 labelEdad.place(x=50, y=340)
 labelNick = Label(ventanaUser, height=2, width=30, fg="white", font=("Consolas", 11)) 
 labelNick.place(x=230, y=210)
+'''
+
 ventanaUser.withdraw()
 
 

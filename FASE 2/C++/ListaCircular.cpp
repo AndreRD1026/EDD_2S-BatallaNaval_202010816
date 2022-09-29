@@ -317,11 +317,6 @@ string ListaCircular:: verificarLog(string usuariob, string cifrada){
 	nodoUsuarios *actual;
 	actual = primero;
 	if(primero!=NULL){
-		/*if (usuariob == "EDD" && cifrada == "857aba7c59662e1c306cf59c0c2199ec1d2ce895a928fb62b54f034760ebe8a6"){
-				encontrado = true;
-				dato += "admin";
-				return dato;
-		} */
         do{
 			string contr = "edd123";
 			string uss = "EDD";
@@ -348,11 +343,13 @@ string ListaCircular:: verificarLog(string usuariob, string cifrada){
         
         if(!encontrado){
             cout << "\nUsuario o contraseña incorrectos\n\n";
+			encontrado = false;
 			dato += "incorrecto";
 			return dato;
         }
     }else{
         cout << "\nNo existe el usuario en la lista\n\n";
+		encontrado = false;
 		dato += "inexistente";
 		return dato;
     }
@@ -453,7 +450,7 @@ string ListaCircular::Buscar(string user)
 				salida += actual->nombreuser;
 				salida2 += actual-> edad;
 				encontrado = true;			
-				return salida, salida2;	
+				return salida;	
 			}
 			actual = actual->siguiente;	
 		}while(actual!=primero && encontrado != true);

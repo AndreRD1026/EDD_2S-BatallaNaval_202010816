@@ -25,7 +25,8 @@ void ListaArticulos:: registro_articulos(string categoria, string nombre, int pr
             primeroCategoria->abajo = nodoArticulos;
             primeroArticulos = nodoArticulos;
             ultimoArticulos = nodoArticulos;
-    }else{
+    }
+	else{
         if(!CategoriaRepetida(nodoCategoria->categoria)){
         NodoCategoria* temp = new NodoCategoria();
         temp = primeroCategoria;

@@ -1,0 +1,64 @@
+digraph G{
+graph[nodesep="0.75"]
+labelloc="t"
+label="Lista de Listas"
+node[shape=box];
+rankdir = "LR" 
+    H1[label = "Categoria: legendario"   width = 2 , group = 1 ];
+    H1C1[label =" Id: 1
+Nombre: barco1
+Precio: 500" width = 2, group = 1 ];
+    H1 -> H1C1
+    { rank = same; H1; H1C1;}
+    H2[label = "Categoria: epic"   width = 2 , group = 1 ];
+    H2C2[label =" Id: 2
+Nombre: barco2
+Precio: 400" width = 2, group = 1 ];
+    H2 -> H2C2
+    { rank = same; H2; H2C2;}
+    H3[label = "Categoria: basico"   width = 2 , group = 1 ];
+    H3C3[label =" Id: 3
+Nombre: barco3
+Precio: 100" width = 2, group = 1 ];
+    H3C4[label =" Id: 4
+Nombre: barco4
+Precio: 300" width = 2, group = 1 ];
+    H3 -> H3C3    H3C3 ->H3C4
+
+    { rank = same; H3; H3C3;H3C4;}
+    H4[label = "Categoria: mitico"   width = 2 , group = 1 ];
+    H4C5[label =" Id: 5
+Nombre: barco5
+Precio: 350" width = 2, group = 1 ];
+    H4 -> H4C5
+    { rank = same; H4; H4C5;}
+    H5[label = "Categoria: raro"   width = 2 , group = 1 ];
+    H5C6[label =" Id: 6
+Nombre: barco6
+Precio: 540" width = 2, group = 1 ];
+    H5C7[label =" Id: 7
+Nombre: barco7
+Precio: 150" width = 2, group = 1 ];
+    H5 -> H5C6    H5C6 ->H5C7
+
+    { rank = same; H5; H5C6;H5C7;}
+    H6[label = "Categoria: especial"   width = 2 , group = 1 ];
+    H6C8[label =" Id: 8
+Nombre: barco8
+Precio: 120" width = 2, group = 1 ];
+    H6C9[label =" Id: 9
+Nombre: barco9
+Precio: 255" width = 2, group = 1 ];
+    H6C10[label =" Id: 10
+Nombre: barco10
+Precio: 270" width = 2, group = 1 ];
+    H6 -> H6C8    H6C8 ->H6C9
+    H6C9 ->H6C10
+
+    { rank = same; H6; H6C8;H6C9;H6C10;}    H1 -> H2
+    H2 -> H3
+    H3 -> H4
+    H4 -> H5
+    H5 -> H6
+
+}

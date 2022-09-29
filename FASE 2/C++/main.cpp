@@ -101,7 +101,7 @@ void registrousuario(){
 	cin >> edad;
 	string encriptado = SHA256::cifrar(contra);
 	//cout<<"El cifrado sha es : "<<encriptado<<endl;
-	Listausuarios.registro_usuario(nombreuser,contra,monedas,edad,encriptado);
+	//Listausuarios.registro_usuario(nombreuser,contra,monedas,edad,encriptado);
     pruebas.insertar(contadorusuarios, nombreuser);
     contadorusuarios++;
 	cout<<"\n";
@@ -146,7 +146,7 @@ void cargamasiva(){
             std ::string monedasi = monedas;
             int eddi = std::stoi(edadi);
             int monedi = std::stoi(monedasi);
-            Listausuarios.registro_usuarioJ(nombreuser,contra,monedi,eddi,encriptado);
+            //istausuarios.registro_usuarioJ(nombreuser,contra,monedi,eddi,encriptado);
             pruebas.insertar(contadorusuarios,nombreuser);
             contadorusuarios++;
         }
