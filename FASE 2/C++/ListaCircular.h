@@ -29,7 +29,7 @@ public:
     void HtmlDESC(nodoUsuarios *cabeza);
     string registro_usuario1(int id,string nombreuser, string contracifrada, int monedas ,int edad);
     string getUsers();
-    void Comprobar(string nombreuser);
+    string Comprobar(string nombreuser);
     string verificarLog(string usuariob, string cifrada);
     string Buscar(string user);
     //string Buscar(string usuario);

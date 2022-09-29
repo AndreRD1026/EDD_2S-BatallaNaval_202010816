@@ -391,9 +391,10 @@ string ListaCircular::getUsers() {
 }
 
 
-void ListaCircular::Comprobar(string nombreuser) {
+string ListaCircular::Comprobar(string nombreuser) {
 
 	nodoUsuarios *actual = new nodoUsuarios();
+	string dato = "";
 	actual = primero;
 	bool encontrado = false;
 	if(primero != NULL){
@@ -401,10 +402,18 @@ void ListaCircular::Comprobar(string nombreuser) {
 			if(actual->nombreuser==nombreuser){
 				cout<<"\n";
 				cout<<"No se puede agregar porque ya existe un ususario con ese Nick"<<endl;
-				encontrado = true;				
+				dato += "existe";
+				encontrado = true;
+				return dato;				
 			}
 			actual = actual->siguiente;	
 		}while(actual!=primero && encontrado != true);
+	}
+	if(primero!= NULL  && encontrado==false){
+			if(actual->nombreuser!=nombreuser){
+				dato += "no existe";
+				return dato;
+			}
 	}
     
 }

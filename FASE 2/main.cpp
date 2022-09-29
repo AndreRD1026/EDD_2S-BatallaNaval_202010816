@@ -197,29 +197,6 @@ class Servidor3{
        //ListaUsuarios = Servidor
     
     }
-
-
-    /* 
-    void post(GloveHttpRequest &request, GloveHttpResponse &response){
-        string nombreuser, contra;
-        int monedas, edad;
-        nombreuser = request.special["nick"];
-        contra = request.special["contra"];
-        edad = atoi(request.special["edad"]);
-        monedas = 0;
-        string encriptado = SHA256::cifrar(contra);
-        //ListaUsuarios.Comprobar(nombreuser);
-        //ListaUsuarios.registro_usuario(contadorusuarios,nombreuser,encriptado,monedas,edad);
-        //Arbol.insertar(contadorusuarios,nombreuser);
-        //contadorusuarios++;
-        response << "{ "
-            << jsonkv("status", "ok ha sido registrado") << ",\n"
-            " }"; 
-
-        response << ListaUsuarios.registro_usuario1(contadorusuarios,nombreuser,encriptado,monedas,edad);
-        contadorusuarios++;
-        }
-    */
     
     void post(GloveHttpRequest &request, GloveHttpResponse &response){
         string nombreuser, contra;
@@ -346,6 +323,24 @@ class Servidor8{
 
 };
 
+class Servidor9{
+    public:
+    Servidor9(){
+
+    }
+
+    void get(GloveHttpRequest &request, GloveHttpResponse &response)
+    {
+        string user, contra, edad;
+        response.contentType("text/json");
+        user = request.special["nick"];
+        contra = request.special["contra"];
+        edad = atoi(request.special["edad"]);
+        response << ListaUsuarios.Comprobar(user);
+        
+    }
+};
+
 
 
 int main(int argc, char *argv[])
@@ -358,36 +353,40 @@ int main(int argc, char *argv[])
     Servidor6 Articulos;
     Servidor7 UsuariosAsc;
     Servidor8 UsuariosDesc;
+    Servidor9 Verificador;
 
     GloveHttpServer serv(8080, "", 2048);
     serv.compression("gzip, deflate");
     namespace ph = std::placeholders;
     serv.addRest("/Carga/$Ruta", 1,
-                 GloveHttpServer::jsonApiErrorCall,
-                 std::bind(&Servidor::get, &cine, ph::_1, ph::_2),
-                 std::bind(&Servidor::post, &cine, ph::_1, ph::_2));
-                 std::cout << "Servidor en Ejecucion :D" << std::endl;
+                GloveHttpServer::jsonApiErrorCall,
+                std::bind(&Servidor::get, &cine, ph::_1, ph::_2),
+                std::bind(&Servidor::post, &cine, ph::_1, ph::_2));
+                std::cout << "Servidor en Ejecucion :D" << std::endl;
     serv.addRest("/Login/$Usuario/$Contra", 1,
-                 GloveHttpServer::jsonApiErrorCall,
-                 std::bind(&Servidor2::get, &cine2, ph::_1, ph::_2));
+                GloveHttpServer::jsonApiErrorCall,
+                std::bind(&Servidor2::get, &cine2, ph::_1, ph::_2));
     serv.addRest("/Registro/$nick/$contra/$edad", 1,
                 GloveHttpServer::jsonApiErrorCall,
                 std::bind(&Servidor3::post, &registroUser, ph::_1, ph::_2));
     serv.addRest("/Log/$Usuario", 1,
-                 GloveHttpServer::jsonApiErrorCall,
-                 std::bind(&Servidor4::get, &mandarDatos, ph::_1, ph::_2));
+                GloveHttpServer::jsonApiErrorCall,
+                std::bind(&Servidor4::get, &mandarDatos, ph::_1, ph::_2));
     serv.addRest("/Usuarios/", 1,
-                 GloveHttpServer::jsonApiErrorCall,
-                 std::bind(&Servidor5::post, &usuarios, ph::_1, ph::_2));
+                GloveHttpServer::jsonApiErrorCall,
+                std::bind(&Servidor5::post, &usuarios, ph::_1, ph::_2));
     serv.addRest("/Articulos/", 1,
-                 GloveHttpServer::jsonApiErrorCall,
-                 std::bind(&Servidor6::post, &Articulos, ph::_1, ph::_2));
+                GloveHttpServer::jsonApiErrorCall,
+                std::bind(&Servidor6::post, &Articulos, ph::_1, ph::_2));
     serv.addRest("/UsuariosASC/", 1,
-                 GloveHttpServer::jsonApiErrorCall,
-                 std::bind(&Servidor7::post, &UsuariosAsc, ph::_1, ph::_2));
+                GloveHttpServer::jsonApiErrorCall,
+                std::bind(&Servidor7::post, &UsuariosAsc, ph::_1, ph::_2));
     serv.addRest("/UsuariosDESC/", 1,
-                 GloveHttpServer::jsonApiErrorCall,
-                 std::bind(&Servidor8::post, &UsuariosDesc, ph::_1, ph::_2));
+                GloveHttpServer::jsonApiErrorCall,
+                std::bind(&Servidor8::post, &UsuariosDesc, ph::_1, ph::_2));
+    serv.addRest("/Verificar/$nick/$contra/$edad", 1,
+                GloveHttpServer::jsonApiErrorCall,
+                std::bind(&Servidor9::get, &Verificador, ph::_1, ph::_2));
     
     while (1)
     {

@@ -33,56 +33,35 @@ def abrirArchivo1():
         MessageBox.showwarning("Alerta", "Debe cargar un archivo")
     
 
-def registrarUsuarios():
-    ventanaReg = Tk()
-    ventanaReg.title("Registro Usuario")
-    ventanaReg.resizable(0,0)
-    ancho_ventana1 = 500
-    alto_ventana1 = 500
-    x_ventana1 = ventanaReg.winfo_screenwidth() // 2 - ancho_ventana1 // 2
-    y_ventana1 = ventanaReg.winfo_screenheight() // 2 - alto_ventana1 // 2
-    posicion1 = str(ancho_ventana1) + "x" + str(alto_ventana1) + "+" + str(x_ventana1) + "+" + str(y_ventana1)
-    ventanaReg.geometry(posicion1)
-    labelLogin = Label (ventanaReg, text ="Registro", font=("Verdana",16), background="#044D9A", fg="white")
-    labelLogin.place(x=220, y=60)
-    labelUser = Label (ventanaReg, text ="Ingrese Usuario", font=("Verdana",16), background="#044D9A", fg="white")
-    labelUser.place(x=50, y=200)
-    labelPass = Label (ventanaReg, text ="Ingrese Contraseña", font=("Verdana",16), background="#044D9A", fg="white")
-    labelPass.place(x=50, y=260)
-    labelEdad = Label (ventanaReg, text ="Ingrese Edad", font=("Verdana",16), background="#044D9A", fg="white")
-    labelEdad.place(x=50, y=320)
-    textoUsuario = Text(ventanaReg, height=2, width=30, fg="white", font=("Consolas", 11)) 
-    textoUsuario.place(x=230, y=190)
-    textoPass = Text(ventanaReg, height=2, width=30, fg="white", font=("Consolas", 11))
-    textoPass.place(x=230, y=255)
-    textoEdad = Text(ventanaReg, height=2, width=30, fg="white", font=("Consolas", 11))
-    textoEdad.place(x=230,y=330)
-    btnRegistro = Button(ventanaReg, height=2, width=15, text="Registrar", command = lambda:[mandarRegistro(textoUsuario.get(1.0, tk.END+"-1c"),textoPass.get(1.0, tk.END+"-1c"),textoEdad.get(1.0, tk.END+"-1c")), ventanaReg.withdraw()], background="#368807", font=("Verdana",10), fg="black")
-    btnRegistro.place(x=180, y=400)
+
+def Comprobar(salida,salida2,salida3):
+    res = requests.get(f'{base_url}/Verificar/' + f'{salida}' + "/" + f'{salida2}' + "/" +  f'{salida3}')
+    data = res.text#convertimos la respuesta en dict
+    #print(data)
+
+    if (data == "existe"):
+        MessageBox.showinfo("Problema", "Ya existe un usuario con este Nick")
+    if (data == "no existe"):
+        mandarRegistro(salida,salida2,salida3)
+        textoUsuario.delete(1.0, tk.END+"-1c")
+        textoPass.delete(1.0, tk.END+"-1c")
+        textoEdad.delete(1.0, tk.END+"-1c")
+        ventanaReg.withdraw()
 
 
 def mandarRegistro(salida,salida2,salida3):
     res = requests.get(f'{base_url}/Registro/' + f'{salida}' + "/" + f'{salida2}' + "/" +  f'{salida3}')
     data = res.text#convertimos la respuesta en dict
+    #print(data)
+    cerrandoRegistro()    
     
-    cerrandoRegistro()
-    '''
-    if (data == "falso"):
-        MessageBox.showinfo("Advertencia!", "Ya existe un usuario con ese nick")
-    if (data == "true"):
-        MessageBox.showinfo("Exito!", "Usuario Registrado con exito")
-        ventana.deiconify()
-    if (data == "true2"):
-        MessageBox.showinfo("Exito2!", "Usuario Registrado con exito")
-        ventana.deiconify()
-    '''
-    
-    print(data)
 
 def cerrandoRegistro():
     print("llegando")
     MessageBox.showinfo("Exito!", "Usuario Registrado con exito")
     ventana.deiconify()
+
+
 
 def mandarLogin(usuario, contra):
     print(usuario)
@@ -174,7 +153,7 @@ ventana.geometry(posicion)
 #Botones
 btnCargarArchivo = Button(ventana, height=2, width=15, text="Cargar Usuarios", command = abrirArchivo1, background="#368807", font=("Verdana",10), fg="black")
 btnCargarArchivo.place(x=180, y=150)
-btnRegistrar = Button(ventana, height=2, width=15, text="Registrar Usuario", command=lambda:[ ventana.withdraw(),registrarUsuarios()], background="#10139E", font=("Verdana",10), fg="black")
+btnRegistrar = Button(ventana, height=2, width=15, text="Registrar Usuario", command=lambda:[ ventana.withdraw(),ventanaReg.deiconify()], background="#10139E", font=("Verdana",10), fg="black")
 btnRegistrar.place(x=180, y=210)
 btnLogin = Button(ventana, height=2, width=15, text="Login",command=lambda:[ventana.withdraw(),ventanaLog.deiconify()], background="#8E8C08", font=("Verdana",10), fg="black")
 btnLogin.place(x=180, y=270)
@@ -183,6 +162,37 @@ btnSalir.place(x=180, y=330)
 #Labels
 labelEditor = Label (ventana, text ="BATALLA NAVAL", font=("Verdana",16), background="#044D9A", fg="white")
 labelEditor.place(x=180, y=90)
+
+#---------------------------------REGISTRO ------------------------------
+
+ventanaReg = Toplevel()
+ventanaReg.title("Registro Usuario")
+ventanaReg.resizable(0,0)
+ancho_ventana1 = 500
+alto_ventana1 = 500
+x_ventana1 = ventanaReg.winfo_screenwidth() // 2 - ancho_ventana1 // 2
+y_ventana1 = ventanaReg.winfo_screenheight() // 2 - alto_ventana1 // 2
+posicion1 = str(ancho_ventana1) + "x" + str(alto_ventana1) + "+" + str(x_ventana1) + "+" + str(y_ventana1)
+ventanaReg.geometry(posicion1)
+labelLogin = Label (ventanaReg, text ="Registro", font=("Verdana",16), background="#044D9A", fg="white")
+labelLogin.place(x=210, y=80)
+labelUser = Label (ventanaReg, text ="Ingrese Usuario", font=("Verdana",16), background="#044D9A", fg="white")
+labelUser.place(x=50, y=200)
+labelPass = Label (ventanaReg, text ="Ingrese Contraseña", font=("Verdana",16), background="#044D9A", fg="white")
+labelPass.place(x=50, y=260)
+labelEdad = Label (ventanaReg, text ="Ingrese Edad", font=("Verdana",16), background="#044D9A", fg="white")
+labelEdad.place(x=50, y=320)
+textoUsuario = Text(ventanaReg, height=2, width=30, fg="white", font=("Consolas", 11)) 
+textoUsuario.place(x=230, y=190)
+textoPass = Text(ventanaReg, height=2, width=30, fg="white", font=("Consolas", 11))
+textoPass.place(x=230, y=255)
+textoEdad = Text(ventanaReg, height=2, width=30, fg="white", font=("Consolas", 11))
+textoEdad.place(x=230,y=330)
+btnRegistro = Button(ventanaReg, height=2, width=15, text="Registrar", command = lambda:[Comprobar(textoUsuario.get(1.0, tk.END+"-1c"),textoPass.get(1.0, tk.END+"-1c"),textoEdad.get(1.0, tk.END+"-1c"))], background="#368807", font=("Verdana",10), fg="black")
+btnRegistro.place(x=180, y=400)
+btnRegreso = Button(ventanaReg, height=2, width=8, text="Regresar", command = lambda:[textoUsuario.delete(1.0, tk.END+"-1c"),textoPass.delete(1.0, tk.END+"-1c"),textoEdad.delete(1.0, tk.END+"-1c"), ventanaReg.withdraw(), ventana.deiconify()], background="#368807", font=("Verdana",10), fg="black")
+btnRegreso.place(x=405, y=5)
+ventanaReg.withdraw()
 
 
 #---------------------------------LOGIN ------------------------------

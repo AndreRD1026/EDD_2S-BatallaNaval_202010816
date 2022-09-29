@@ -1,0 +1,6 @@
+digraph G {
+node[shape=record]
+		//Agregar Nodos Rama
+R0x142e06f70[label="ID: 0\n Nick: EDD|ID: 1\n Nick: EDD1"];
+		//Agregar conexiones
+}
