@@ -25,6 +25,8 @@ public:
     void ListaUsuarioDESC(nodoUsuarios *cabeza);
     void intercambioASC(nodoUsuarios *lado_izq, nodoUsuarios *lado_der);
     void intercambioDESC(nodoUsuarios *lado_izq, nodoUsuarios *lado_der);
+    void HtmlASC(nodoUsuarios *cabeza);
+    void HtmlDESC(nodoUsuarios *cabeza);
     string registro_usuario1(int id,string nombreuser, string contracifrada, int monedas ,int edad);
     string getUsers();
     void Comprobar(string nombreuser);

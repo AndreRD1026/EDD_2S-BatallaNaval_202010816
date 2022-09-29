@@ -7,6 +7,7 @@ from tkinter import messagebox as MessageBox
 import sys
 import os
 from PIL import Image
+import webbrowser
 
 pruebaa = None
 
@@ -133,6 +134,25 @@ def verArticulos():
     im = Image.open('ListadeListas.png')
     im.show()
 
+
+def verusuarioASC():
+    print("usuariosASC")
+    res = requests.get(f'{base_url}/UsuariosASC/')
+    data = res.text#convertimos la respuesta en dict
+    webbrowser.open("ASC.html")
+    #webbrowser.open_new_tab('ASC.html')
+    print(data)
+    #im = Image.open('Pruebas.png')
+    #im.show()
+
+def verusuarioDESC():
+    print("usuariosDESC")
+    res = requests.get(f'{base_url}/UsuariosDESC/')
+    data = res.text#convertimos la respuesta en dict
+    print(data)
+    #im = Image.open('Pruebas.png')
+    #im.show()
+
 def cerrar():
     MessageBox.showinfo("Adios", "Gracias por usar el programa")
     sys.exit()
@@ -199,33 +219,6 @@ btnIniciar = Button(ventanaLog, height=2, width=15, text="Iniciar Sesion", comma
 btnIniciar.place(x=180, y=400)
 ventanaLog.withdraw()
 
-
-#---------------------------------SUB LOGIN ------------------------------
-
-ventanaSubLog = Tk()
-ventanaSubLog.title("Sub_Login")
-ventanaSubLog.resizable(0,0)
-ancho_ventana1 = 500
-alto_ventana1 = 500
-x_ventana1 = ventanaSubLog.winfo_screenwidth() // 2 - ancho_ventana1 // 2
-y_ventana1 = ventanaSubLog.winfo_screenheight() // 2 - alto_ventana1 // 2
-posicion1 = str(ancho_ventana1) + "x" + str(alto_ventana1) + "+" + str(x_ventana1) + "+" + str(y_ventana1)
-ventanaSubLog.geometry(posicion1)
-btnIniciar = Button(ventanaSubLog, height=2, width=15, text="Editar Info", command = lambda: [ventanaSubLog.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
-btnIniciar.place(x=180, y=400)
-labelLogin = Label (ventanaSubLog, text =pruebaa, font=("Verdana",16), background="#044D9A", fg="white")
-labelLogin.place(x=180, y=90)
-labelUser = Label (ventanaSubLog, text ="Usuario", font=("Verdana",16), background="#044D9A", fg="white")
-labelUser.place(x=50, y=220)
-labelPass = Label (ventanaSubLog, text ="Contraseña", font=("Verdana",16), background="#044D9A", fg="white")
-labelPass.place(x=50, y=280)
-textoUsuarioSL = Text(ventanaSubLog, height=2, width=30, fg="white", font=("Consolas", 11)) 
-textoUsuarioSL.place(x=230, y=210)
-textoPassSL = Entry(ventanaSubLog, fg="white", show="*", font=("Consolas", 11), width=30) 
-textoPassSL.place(x=230, y=275)
-ventanaSubLog.withdraw()
-
-
 #--------------------------------- ADMIN ------------------------------
 
 ventanaAdmin = Toplevel()
@@ -245,9 +238,9 @@ btnUser = Button(ventanaAdmin, height=2, width=22, text="Lista de usuarios", com
 btnUser.place(x=160, y=200)
 btnArticulos = Button(ventanaAdmin, height=2, width=22, text="Lista de articulos", command = lambda: [verArticulos()], background="#368807", font=("Verdana",10), fg="black")
 btnArticulos.place(x=160, y=250)
-btnOrdenAsc = Button(ventanaAdmin, height=2, width=22, text="Usuarios ordenados ascendente", command = lambda: [ventanaAdmin.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
+btnOrdenAsc = Button(ventanaAdmin, height=2, width=22, text="Usuarios ordenados ascendente", command = lambda: [verusuarioASC()], background="#368807", font=("Verdana",10), fg="black")
 btnOrdenAsc.place(x=160, y=300)
-btnOrdenDesc = Button(ventanaAdmin, height=2, width=22, text="Usuarios ordenados descendente", command = lambda: [ventanaAdmin.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
+btnOrdenDesc = Button(ventanaAdmin, height=2, width=22, text="Usuarios ordenados descendente", command = lambda: [verusuarioDESC()], background="#368807", font=("Verdana",10), fg="black")
 btnOrdenDesc.place(x=160, y=350)
 btnTutorial = Button(ventanaAdmin, height=2, width=22, text="Tutorial del juego", command = lambda: [ventanaAdmin.withdraw(), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
 btnTutorial.place(x=160, y=400)

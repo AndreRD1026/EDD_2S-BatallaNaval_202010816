@@ -272,17 +272,12 @@ class Servidor5{
 
     void post(GloveHttpRequest &request, GloveHttpResponse &response)
     {
-        //string user;
-        //response.contentType("text/json");
         Arbol.Grafo();
         response << "{ "
                  << jsonkv("status", "ok ha sido enviado") << ",\n"
                 " }";
         return;
-        //user = request.special[""];
-        //contr = request.special["Contra"];
-        //string cifrada = SHA256::cifrar(contr);
-        //response << ListaUsuarios.Buscar(user);
+
         
     }
 
@@ -308,6 +303,51 @@ class Servidor6{
 };
 
 
+
+class Servidor7{
+    public:
+    Servidor7()
+    {
+       //ListaUsuarios = Servidor
+    
+    }
+
+    void post(GloveHttpRequest &request, GloveHttpResponse &response)
+    {
+        ListaUsuarios.ordenarUsuarioASC();
+        response << "{ "
+                 << jsonkv("status", "ok ha sido enviado") << ",\n"
+                " }";
+        return;
+
+        
+    }
+
+};
+
+
+class Servidor8{
+    public:
+    Servidor8()
+    {
+       //ListaUsuarios = Servidor
+    
+    }
+
+    void post(GloveHttpRequest &request, GloveHttpResponse &response)
+    {
+        ListaUsuarios.ordenarUsuarioDESC();
+        response << "{ "
+                 << jsonkv("status", "ok ha sido enviado") << ",\n"
+                " }";
+        return;
+
+    }
+
+};
+
+
+
 int main(int argc, char *argv[])
 {
     Servidor cine;
@@ -316,6 +356,8 @@ int main(int argc, char *argv[])
     Servidor4 mandarDatos;
     Servidor5 usuarios;
     Servidor6 Articulos;
+    Servidor7 UsuariosAsc;
+    Servidor8 UsuariosDesc;
 
     GloveHttpServer serv(8080, "", 2048);
     serv.compression("gzip, deflate");
@@ -340,6 +382,12 @@ int main(int argc, char *argv[])
     serv.addRest("/Articulos/", 1,
                  GloveHttpServer::jsonApiErrorCall,
                  std::bind(&Servidor6::post, &Articulos, ph::_1, ph::_2));
+    serv.addRest("/UsuariosASC/", 1,
+                 GloveHttpServer::jsonApiErrorCall,
+                 std::bind(&Servidor7::post, &UsuariosAsc, ph::_1, ph::_2));
+    serv.addRest("/UsuariosDESC/", 1,
+                 GloveHttpServer::jsonApiErrorCall,
+                 std::bind(&Servidor8::post, &UsuariosDesc, ph::_1, ph::_2));
     
     while (1)
     {

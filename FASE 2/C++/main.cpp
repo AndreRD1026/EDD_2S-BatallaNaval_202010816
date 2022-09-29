@@ -35,7 +35,7 @@ void SumaPuntosJugada(string user);
 
 std:: string userlogin;
 std:: string nombrejugada;
-int contadorusuarios = 1;
+int contadorusuarios = 0;
 
 ListaCircular Listausuarios;
 ListaTutorial ListaCola;
@@ -101,7 +101,7 @@ void registrousuario(){
 	cin >> edad;
 	string encriptado = SHA256::cifrar(contra);
 	//cout<<"El cifrado sha es : "<<encriptado<<endl;
-	//Listausuarios.registro_usuario(nombreuser,contra,monedas,edad,encriptado);
+	Listausuarios.registro_usuario(contadorusuarios,nombreuser,encriptado,monedas,edad);
     pruebas.insertar(contadorusuarios, nombreuser);
     contadorusuarios++;
 	cout<<"\n";
@@ -146,7 +146,7 @@ void cargamasiva(){
             std ::string monedasi = monedas;
             int eddi = std::stoi(edadi);
             int monedi = std::stoi(monedasi);
-            //istausuarios.registro_usuarioJ(nombreuser,contra,monedi,eddi,encriptado);
+            Listausuarios.registro_usuarioJ(contadorusuarios,nombreuser,encriptado,monedi,eddi);
             pruebas.insertar(contadorusuarios,nombreuser);
             contadorusuarios++;
         }

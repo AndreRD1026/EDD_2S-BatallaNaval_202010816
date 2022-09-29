@@ -170,6 +170,7 @@ void ListaCircular::ordenarUsuarioASC(){
 		}
 	}while(cambiopos);
 		ListaUsuarioASC(cabeza);
+		HtmlASC(cabeza);
 	}
 }
 
@@ -206,7 +207,6 @@ void ListaCircular:: ListaUsuarioASC(nodoUsuarios *cabeza) {
 	cout<<"\n\n";
 }
 
-
 void ListaCircular:: ordenarUsuarioDESC(){
 	nodoUsuarios* cabeza = new nodoUsuarios();
 	cabeza = primero;
@@ -229,6 +229,7 @@ void ListaCircular:: ordenarUsuarioDESC(){
 		}
 	}while(cambiopos);
 		ListaUsuarioDESC(cabeza);
+		HtmlDESC(cabeza);
 	}
 }
 
@@ -265,6 +266,99 @@ void ListaCircular:: ListaUsuarioDESC(nodoUsuarios *cabeza)
 	}
 	cout<<"\n\n";
 }
+
+void ListaCircular:: HtmlASC(nodoUsuarios *cabeza){
+	nodoUsuarios *inicio = cabeza;
+	string HTML = "";
+	HTML = HTML + "<html>";
+	HTML = HTML + "<head>";
+	HTML = HTML + "<meta charset=\"UTF-8\">";
+	HTML = HTML + "<link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3\" crossorigin=\"anonymous\">";
+	HTML = HTML + "<title> ORDEN ASC </title>";
+	HTML = HTML + "</head>";
+	HTML = HTML + "<body>";
+	HTML = HTML + "<center>";
+	HTML = HTML + "<h1> Usuarios ordenados de forma Ascendente </h1>";
+	HTML = HTML + "<table class=\"table table-striped table-hover\">";
+	HTML = HTML + "<tbody>";
+	HTML = HTML + "<td>NICK</td>";
+	HTML = HTML + "<td>MONEDAS</td>";
+	HTML = HTML + "<td>EDAD</td>";
+	HTML = HTML + "<td>CONTRASEÑA</td>";
+
+	while(inicio)
+	{
+		//cout << "  "<< left << setw( 15 ) <<inicio->nombreuser<< " "<< left << setw( 12 ) << inicio->monedas<< "   "<< left << setw( 12 ) << inicio->edad<< " "<< left << setw( 12 ) <<inicio->contracifrada<< " "<<endl;
+		HTML = HTML + "<tr>";
+		HTML = HTML + "<td>" + inicio->nombreuser + "</td>";
+		HTML = HTML + "<td>" + to_string(inicio->monedas) + "</td>";
+		HTML = HTML + "<td>" + to_string(inicio->edad) + "</td>";
+		HTML = HTML + "<td>" + inicio->contracifrada + "</td>";
+		HTML = HTML + "</tr>";
+		inicio = inicio->siguiente;
+		if(inicio == primero){
+			break;
+		}
+	}
+
+	HTML = HTML + "</tbody>";
+	HTML = HTML + "</table>";
+	HTML = HTML + "</center>";
+	HTML = HTML + "</body>";
+	HTML = HTML + "</HTML>";
+
+	ofstream file;
+    file.open("ASC.html");
+    file<<HTML;
+    file.close();
+}
+
+void ListaCircular:: HtmlDESC(nodoUsuarios *cabeza){
+	nodoUsuarios *inicio = cabeza;
+	string HTML = "";
+	HTML = HTML + "<html>";
+	HTML = HTML + "<head>";
+	HTML = HTML + "<meta charset=\"UTF-8\">";
+	HTML = HTML + "<link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3\" crossorigin=\"anonymous\">";
+	HTML = HTML + "<title> ORDEN DESC </title>";
+	HTML = HTML + "</head>";
+	HTML = HTML + "<body>";
+	HTML = HTML + "<center>";
+	HTML = HTML + "<h1> Usuarios ordenados de forma Descendente </h1>";
+	HTML = HTML + "<table class=\"table table-striped table-hover\">";
+	HTML = HTML + "<tbody>";
+	HTML = HTML + "<td>NICK</td>";
+	HTML = HTML + "<td>MONEDAS</td>";
+	HTML = HTML + "<td>EDAD</td>";
+	HTML = HTML + "<td>CONTRASEÑA</td>";
+
+	while(inicio)
+	{
+		//cout << "  "<< left << setw( 15 ) <<inicio->nombreuser<< " "<< left << setw( 12 ) << inicio->monedas<< "   "<< left << setw( 12 ) << inicio->edad<< " "<< left << setw( 12 ) <<inicio->contracifrada<< " "<<endl;
+		HTML = HTML + "<tr>";
+		HTML = HTML + "<td>" + inicio->nombreuser + "</td>";
+		HTML = HTML + "<td>" + to_string(inicio->monedas) + "</td>";
+		HTML = HTML + "<td>" + to_string(inicio->edad) + "</td>";
+		HTML = HTML + "<td>" + inicio->contracifrada + "</td>";
+		HTML = HTML + "</tr>";
+		inicio = inicio->siguiente;
+		if(inicio == primero){
+			break;
+		}
+	}
+
+	HTML = HTML + "</tbody>";
+	HTML = HTML + "</table>";
+	HTML = HTML + "</center>";
+	HTML = HTML + "</body>";
+	HTML = HTML + "</HTML>";
+
+	ofstream file;
+    file.open("DESC.html");
+    file<<HTML;
+    file.close();
+}
+
 
 string ListaCircular::getUsers() {
     nodoUsuarios*aux = primero;
