@@ -50,7 +50,7 @@ public:
     string encriptado = SHA256::cifrar(contra);
     ///cout<<"encripatdo: "<<encriptado<<"\n";
 
-    ListaUsuarios.registro_usuario(contadorusuarios,usuario,encriptado,0,50);
+    ListaUsuarios.registro_usuario(contadorusuarios,usuario,encriptado,0,50,contra);
     Arbol.insertar(contadorusuarios,usuario);
     contadorusuarios++;
     }
@@ -108,7 +108,7 @@ public:
             std ::string monedasi = monedas;
             int eddi = std::stoi(edadi);
             int monedi = std::stoi(monedasi);
-            ListaUsuarios.registro_usuarioJ(contadorusuarios,nombreuser, encriptado, monedi, eddi);
+            ListaUsuarios.registro_usuarioJ(contadorusuarios,nombreuser, encriptado, monedi, eddi, contra);
             Arbol.insertar(contadorusuarios,nombreuser);
             contadorusuarios++;
         }
@@ -158,8 +158,6 @@ public:
         break;
     }
     archivo.close();
-    //Arbol.Grafo();
-    //return;
 
     response << "{ "
                  << jsonkv("status", "ok ha sido enviado") << ",\n"
@@ -207,7 +205,7 @@ class Servidor3{
         monedas = 0;
         string encriptado = SHA256::cifrar(contra);
         ListaUsuarios.Comprobar(nombreuser);
-        ListaUsuarios.registro_usuario(contadorusuarios,nombreuser,encriptado,monedas,edad);
+        ListaUsuarios.registro_usuario(contadorusuarios,nombreuser,encriptado,monedas,edad, contra);
         Arbol.insertar(contadorusuarios,nombreuser);
         contadorusuarios++;
         response << "{ "
@@ -228,12 +226,13 @@ class Servidor4{
 
     void get(GloveHttpRequest &request, GloveHttpResponse &response)
     {
-        string user;
+        string user, cont;
         response.contentType("text/json");
         user = request.special["Usuario"];
+        cont = request.special["Contra"];
         //contr = request.special["Contra"];
         //string cifrada = SHA256::cifrar(contr);
-        response << ListaUsuarios.Buscar(user);
+        response << ListaUsuarios.Buscar1(user);
         
     }
 
@@ -342,6 +341,64 @@ class Servidor9{
 };
 
 
+class Servidor10{
+    public:
+    Servidor10(){
+
+    }
+
+    void get(GloveHttpRequest &request, GloveHttpResponse &response)
+    {
+        string user, contra, edad;
+        response.contentType("text/json");
+        user = request.special["nick"];
+        response << ListaUsuarios.BuscarUser(user);
+        
+    }
+};
+
+class Servidor11{
+    public:
+    Servidor11(){
+        
+    }
+
+        void get(GloveHttpRequest &request, GloveHttpResponse &response)
+    {
+        string user, contra, edad;
+        response.contentType("text/json");
+        user = request.special["nick"];
+        ListaUsuarios.eliminarCuenta(user);
+        response << "{ "
+            << jsonkv("status", "ok ha sido eliminado") << ",\n"
+            " }";
+        
+    }
+};
+
+class Servidor12{
+    public:
+    Servidor12(){
+        
+    }
+
+        void get(GloveHttpRequest &request, GloveHttpResponse &response)
+    {
+        string user,nuevouser, contranueva, edadnueva;
+        response.contentType("text/json");
+        user = request.special["nick"];
+        nuevouser = request.special["nuevoN"];
+        contranueva = request.special["nuevoC"];
+        string cifrado = SHA256::cifrar(contranueva);
+        edadnueva = request.special["nuevoE"];
+        ListaUsuarios.modificarUsuario(user,nuevouser,contranueva,atoi(edadnueva),cifrado);
+        response << "{ "
+            << jsonkv("status", "ok ha sido modificado") << ",\n"
+            " }";
+        
+    }
+};
+
 
 int main(int argc, char *argv[])
 {
@@ -354,6 +411,9 @@ int main(int argc, char *argv[])
     Servidor7 UsuariosAsc;
     Servidor8 UsuariosDesc;
     Servidor9 Verificador;
+    Servidor10 Eliminar;
+    Servidor11 Eliminado;
+    Servidor12 Modificando;
 
     GloveHttpServer serv(8080, "", 2048);
     serv.compression("gzip, deflate");
@@ -369,7 +429,7 @@ int main(int argc, char *argv[])
     serv.addRest("/Registro/$nick/$contra/$edad", 1,
                 GloveHttpServer::jsonApiErrorCall,
                 std::bind(&Servidor3::post, &registroUser, ph::_1, ph::_2));
-    serv.addRest("/Log/$Usuario", 1,
+    serv.addRest("/Log/$Usuario/$Contra", 1,
                 GloveHttpServer::jsonApiErrorCall,
                 std::bind(&Servidor4::get, &mandarDatos, ph::_1, ph::_2));
     serv.addRest("/Usuarios/", 1,
@@ -387,6 +447,15 @@ int main(int argc, char *argv[])
     serv.addRest("/Verificar/$nick/$contra/$edad", 1,
                 GloveHttpServer::jsonApiErrorCall,
                 std::bind(&Servidor9::get, &Verificador, ph::_1, ph::_2));
+    serv.addRest("/Eliminar/$nick", 1,
+                GloveHttpServer::jsonApiErrorCall,
+                std::bind(&Servidor10::get, &Eliminar, ph::_1, ph::_2));
+    serv.addRest("/Eliminando/$nick", 1,
+                GloveHttpServer::jsonApiErrorCall,
+                std::bind(&Servidor11::get, &Eliminado, ph::_1, ph::_2));
+    serv.addRest("/Modificando/$nick/$nuevoN/$nuevoC/$nuevoE", 1,
+                GloveHttpServer::jsonApiErrorCall,
+                std::bind(&Servidor12::get, &Modificando, ph::_1, ph::_2));
     
     while (1)
     {

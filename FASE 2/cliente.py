@@ -32,7 +32,6 @@ def abrirArchivo1():
     except:
         MessageBox.showwarning("Alerta", "Debe cargar un archivo")
     
-
 def Comprobar(salida,salida2,salida3):
     res = requests.get(f'{base_url}/Verificar/' + f'{salida}' + "/" + f'{salida2}' + "/" +  f'{salida3}')
     data = res.text#convertimos la respuesta en dict
@@ -48,21 +47,28 @@ def Comprobar(salida,salida2,salida3):
         ventanaReg.withdraw()
 
 def ComprobarCambio(salidaa,salidaa2,salidaa3):
-    res = requests.get(f'{base_url}/Verificar/' + f'{salidaa}' + "/" + f'{salidaa2}' + "/" +  f'{salidaa3}')
-    data = res.text#convertimos la respuesta en dict
-    #print(data)
-
-    if (data == "existe"):
-        MessageBox.showinfo("Problema", "El Nick ya esta en uso")
-    if (data == "no existe"):
+    if (usuariobusqueda == salidaa):
+        res = requests.get(f'{base_url}/Modificando/' + f'{usuariobusqueda}' + "/" + f'{salidaa}' + "/" + f'{salidaa2}' + "/" + f'{salidaa3}')
         MessageBox.showinfo("Exito!", "Para actualizar los cambios debe volver a iniciar sesion")
         textoUsuarioC.delete(1.0, tk.END+"-1c")
         textoPassC.delete(1.0, tk.END+"-1c")
         textoEdadC.delete(1.0, tk.END+"-1c")
         ventanaEdit.withdraw()
         ventanaUser.deiconify()
-
-
+        print("No se cambio el usuario")
+    else:
+        res = requests.get(f'{base_url}/Verificar/' + f'{salidaa}' + "/" + f'{salidaa2}' + "/" +  f'{salidaa3}')
+        data = res.text#convertimos la respuesta en dict
+        if (data == "existe"):
+            MessageBox.showinfo("Problema", "El Nick ya esta en uso")
+        if (data == "no existe"):
+            res = requests.get(f'{base_url}/Modificando/' + f'{usuariobusqueda}' + "/" + f'{salidaa}' + "/" + f'{salidaa2}' + "/" + f'{salidaa3}')
+            MessageBox.showinfo("Exito!", "Para actualizar los cambios debe volver a iniciar sesion")
+            textoUsuarioC.delete(1.0, tk.END+"-1c")
+            textoPassC.delete(1.0, tk.END+"-1c")
+            textoEdadC.delete(1.0, tk.END+"-1c")
+            ventanaEdit.withdraw()
+            ventanaUser.deiconify()
 
 def mandarRegistro(salida,salida2,salida3):
     res = requests.get(f'{base_url}/Registro/' + f'{salida}' + "/" + f'{salida2}' + "/" +  f'{salida3}')
@@ -78,6 +84,7 @@ def cerrandoRegistro():
 
 
 def mandarLogin(usuario, contra):
+    global usuariobusqueda
     print(usuario)
     print(contra)
     res = requests.get(f'{base_url}/Login/' + f'{usuario}' + "/" + f'{contra}')
@@ -90,6 +97,16 @@ def mandarLogin(usuario, contra):
     if (data == "correcto"):
         ventanaLog.withdraw()
         MessageBox.showinfo("Exito!", "Inicio de sesion correcto")
+        res = requests.get(f'{base_url}/Log/' + f'{usuario}' + "/" + f'{contra}')
+        data = res.text
+        datos_diccionario = json.loads(data)
+        name = datos_diccionario["nick"]
+        passw = datos_diccionario["password"]
+        edadd = datos_diccionario["edad"]
+        textoUsuarioC.insert(INSERT, name)
+        textoPassC.insert(INSERT, passw)
+        textoEdadC.insert(INSERT,edadd)
+        usuariobusqueda = name
         ventanaUser.deiconify()
     if (data == "incorrecto"):
         MessageBox.showinfo("Error!", "Usuario o contraseña incorrectos")
@@ -131,15 +148,24 @@ def verusuarioDESC():
     data = res.text#convertimos la respuesta en dict
     #print(data)
 
-def EliminarCuenta():
-    res = MessageBox.askquestion('Eliminar cuenta', '¿Esta seguro de eliminar esta cuenta?')
-    if res == 'yes':
-        MessageBox.showinfo('Cerrando Sesion', 'La cuenta ha sido eliminada')
-        ventanaUser.withdraw()
-        ventanaLog.deiconify()
-    else:
-        MessageBox.showinfo('Regresar', 'Regresando al menu')
 
+#def ModificarUsuario(usuariob,nuevousuario,nuevacontra,nuevaedad):
+#    print("")
+
+def EliminarCuenta():
+    res = requests.get(f'{base_url}/Eliminar/' + f'{usuariobusqueda}')
+    data = res.text
+    #print(data)
+    if (data == "encontrado"):
+        res = requests.get(f'{base_url}/Eliminando/' + f'{usuariobusqueda}')
+        data = res.text
+        mes = MessageBox.askquestion('Eliminar cuenta', '¿Esta seguro de eliminar esta cuenta?')
+        if mes == 'yes':
+            MessageBox.showinfo('Cerrando Sesion', 'La cuenta ha sido eliminada')
+            ventanaUser.withdraw()
+            ventanaLog.deiconify()
+        else:
+            MessageBox.showinfo('Regresar', 'Regresando al menu')
 
 def Tutorial():
     print("Tutorial")
@@ -291,7 +317,7 @@ btnVerTienda = Button(ventanaUser, height=2, width=15, text="Tienda", command = 
 btnVerTienda.place(x=180, y=350)
 btnPartida = Button(ventanaUser, height=2, width=15, text="Iniciar Partida", command = lambda: [Partida()], background="#368807", font=("Verdana",10), fg="black")
 btnPartida.place(x=180, y=400)
-btncerrarSesionUser = Button(ventanaUser, height=2, width=15, text="Cerrar Sesion", command = lambda: [ventanaUser.withdraw(),MessageBox.showinfo("Exito", "Sesion cerrada"), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
+btncerrarSesionUser = Button(ventanaUser, height=2, width=15, text="Cerrar Sesion", command = lambda: [ventanaUser.withdraw(),textoUsuarioC.delete(1.0, tk.END+"-1c"),textoPassC.delete(1.0, tk.END+"-1c"),textoEdadC.delete(1.0, tk.END+"-1c"),MessageBox.showinfo("Exito", "Sesion cerrada"), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
 btncerrarSesionUser.place(x=180, y=450)
 ventanaUser.withdraw()
 

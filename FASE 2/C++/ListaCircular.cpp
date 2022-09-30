@@ -5,7 +5,7 @@
 using namespace std;
 
 
-void ListaCircular::registro_usuario(int id,string nombreuser, string contracifrada, int monedas ,int edad){
+void ListaCircular::registro_usuario(int id,string nombreuser, string contracifrada, int monedas ,int edad, string contra){
 	nodoUsuarios *actual = new nodoUsuarios();
 	actual = primero;
 	bool encontrado = false;
@@ -25,7 +25,7 @@ void ListaCircular::registro_usuario(int id,string nombreuser, string contracifr
 				nodoUsuarios *nuevo = new nodoUsuarios();
 				nuevo->id = id;
 				nuevo->nombreuser = nombreuser;
-				//nuevo->contra = contra;
+				nuevo->contra = contra;
 				nuevo->monedas = monedas;
 				nuevo->edad = edad;
 				nuevo->contracifrada = contracifrada;
@@ -72,7 +72,7 @@ void ListaCircular::registro_usuario(int id,string nombreuser, string contracifr
 
 }
 
-void ListaCircular::registro_usuarioJ(int id,string nombreuser, string contracifrada, int monedas ,int edad){
+void ListaCircular::registro_usuarioJ(int id,string nombreuser, string contracifrada, int monedas ,int edad, string contra){
     nodoUsuarios *actual = new nodoUsuarios();
     actual = primero;
     bool encontrado = false;
@@ -90,7 +90,7 @@ void ListaCircular::registro_usuarioJ(int id,string nombreuser, string contracif
                 nodoUsuarios *nuevo = new nodoUsuarios();
 				nuevo-> id = id;
                 nuevo->nombreuser = nombreuser;
-                //nuevo->contra = contra;
+                nuevo->contra = contra;
                 nuevo->monedas = monedas;
                 nuevo->edad = edad;
                 nuevo->contracifrada = contracifrada;
@@ -462,105 +462,100 @@ string ListaCircular:: verificarLog(string usuariob, string cifrada){
     }
 }
 
-
-string ListaCircular::registro_usuario1(int id,string nombreuser, string contracifrada, int monedas ,int edad){
-	string datos = "";
+string ListaCircular:: Buscar1(string nombreuser){
 	nodoUsuarios *actual = new nodoUsuarios();
+	string nombre,contra,edad;
+	string datos = "";
 	actual = primero;
 	bool encontrado = false;
-
 	if(primero != NULL){
 		do{
 			if(actual->nombreuser==nombreuser){
-				cout<<"\n";
-				cout<<"No se puede agregar porque ya existe un ususario con ese Nick"<<endl;
-				encontrado = true;				
+				datos += "{";
+				datos+= "\"nick\":\"" + actual->nombreuser + "\",";
+				datos+= "\"password\":\"" + actual->contra + "\",";
+				datos+= "\"edad\":\"" + to_string(actual->edad) + "\"";
+				datos += "}"; 
+				encontrado = true;
+				return datos;				
+			}
+			actual = actual->siguiente;	
+		}while(actual!=primero && encontrado != true);
+	}
+}
+
+string ListaCircular::BuscarUser(string nombreuser) {
+
+	nodoUsuarios *actual = new nodoUsuarios();
+	string dato = "";
+	actual = primero;
+	bool encontrado = false;
+	if(primero != NULL){
+		do{
+			if(actual->nombreuser==nombreuser){
+				//cout<<"\n";
+				//cout<<"No se puede agregar porque ya existe un ususario con ese Nick"<<endl;
+				dato += "encontrado";
+				encontrado = true;
+				return dato;				
 			}
 			actual = actual->siguiente;	
 		}while(actual!=primero && encontrado != true);
 	}
 	if(primero!= NULL  && encontrado==false){
 			if(actual->nombreuser!=nombreuser){
-				nodoUsuarios *nuevo = new nodoUsuarios();
-				nuevo->id = id;
-				nuevo->nombreuser = nombreuser;
-				//nuevo->contra = contra;
-				nuevo->monedas = monedas;
-				nuevo->edad = edad;
-				nuevo->contracifrada = contracifrada;
-
-				if (primero==NULL) {
-					primero=nuevo;
-					ultimo=nuevo;
-					primero -> siguiente=primero;
-					primero -> anterior=ultimo;
-				}else{
-					ultimo-> siguiente=nuevo;
-					nuevo-> anterior=ultimo;
-					nuevo-> siguiente=primero;
-					ultimo=nuevo;
-					primero-> anterior=ultimo;
-				}
-				cout<<"\nUsuario registrado"<<endl;
+				dato += "no encontrado";
+				return dato;
 			}
-			datos += "true";
-			return datos;
 	}
-		
-	if(primero == NULL){
-		nodoUsuarios *nuevo = new nodoUsuarios();
-		nuevo->id = id;
-		nuevo->nombreuser = nombreuser;
-		//nuevo->contra = contra;
-		nuevo->monedas = monedas;
-		nuevo->edad = edad;
-		nuevo->contracifrada = contracifrada;
+    
+}
 
-		if (primero==NULL) {
-			primero=nuevo;
-			ultimo=nuevo;
-			primero -> siguiente=primero;
-			primero -> anterior=ultimo;
-		}else{
-			ultimo-> siguiente=nuevo;
-			nuevo-> anterior=ultimo;
-			nuevo-> siguiente=primero;
-			ultimo=nuevo;
-			primero-> anterior=ultimo;
+void ListaCircular:: eliminarCuenta(string userbuscado){
+    nodoUsuarios* actual = new nodoUsuarios();
+    actual = primero;
+    nodoUsuarios* anterior = new nodoUsuarios();
+    anterior = NULL;
+    bool encontrado = false;
+	if(primero!=NULL){
+	do{
+		if(actual->nombreuser==userbuscado){                
+			if(actual==primero){
+				primero = primero->siguiente;
+				primero->anterior = ultimo;
+				ultimo->siguiente = primero;
+			}else if(actual==ultimo){
+				ultimo = anterior;
+				ultimo->siguiente = primero;
+				primero->anterior = ultimo;
+			}else{
+				anterior->siguiente = actual->siguiente;
+				actual->siguiente->anterior = anterior;
+			}
+			//cout << "\nLa cuenta ha sido eliminada\n\n";
+			encontrado = true;      
 		}
-		datos += "true2";
-		return datos;
-		cout<<"\nUsuario registrado"<<endl;
-	}
+		anterior = actual;
+		actual = actual->siguiente;
+	}while(actual!=primero && encontrado != true);      
+}
 }
 
 
-string ListaCircular::Buscar(string user)
-{
-	string salida = "";
-	string salida2= "";
-    if (primero == NULL)
-        return "El valor no se encuentra en la lista";
-
-    string out = "";
-    int contador = 0;
-    nodoUsuarios *actual = primero;
-
-	bool encontrado = false;
-	if(primero != NULL){
-		do{
-			if(actual->nombreuser==user){
-				cout<<"\n";
-				cout<<"Ha sido encontrado"<<endl;
-				cout<<" "<< actual->edad<<"\n";
-				cout<<" "<< actual->monedas<<"\n";
-				salida += actual->nombreuser;
-				salida2 += actual-> edad;
-				encontrado = true;			
-				return salida;	
-			}
-			actual = actual->siguiente;	
-		}while(actual!=primero && encontrado != true);
-	}
-
+void ListaCircular:: modificarUsuario(string userb, string nuevouser, string contra, int edad, string cifrada){
+    nodoUsuarios* actual = new nodoUsuarios();
+    actual = primero;
+    bool encontrado = false;
+    if(primero!=NULL){
+        do{
+            if(actual->nombreuser==userb){
+				actual->nombreuser = nuevouser;
+				actual->contra = contra;
+				actual->contracifrada = cifrada;
+				actual->edad = edad;
+                encontrado = true;              
+            }
+            actual = actual->siguiente;
+        }while(actual!=primero && encontrado != true);  
+    }
 }
