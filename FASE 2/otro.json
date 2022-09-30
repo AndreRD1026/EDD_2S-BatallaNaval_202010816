@@ -21,7 +21,7 @@
       { "id": "1", "categoria": "legendario", "precio": "500", "nombre": "barco1", "src": "link1" },
       { "id": "2", "categoria": "epic", "precio": "400", "nombre": "barco2", "src": "link2" },
       { "id": "3", "categoria": "basico", "precio": "100", "nombre": "barco3", "src": "link3" },
-      { "id": "4", "categoria": "epic", "precio": "300", "nombre": "barco4", "src": "link4" },
+      { "id": "4", "categoria": "basico", "precio": "300", "nombre": "barco4", "src": "link4" },
       { "id": "5", "categoria": "mitico", "precio": "350", "nombre": "barco5", "src": "link5" },
       { "id": "6", "categoria": "raro", "precio": "540", "nombre": "barco6", "src": "link6" },
       { "id": "7", "categoria": "mitico", "precio": "150", "nombre": "barco7", "src": "link7" },

@@ -10,8 +10,10 @@ public:
     std::string nombreArticulo;
     std::string SRCArticulo;
     NodoArticulos* siguienteArtic;
+    NodoArticulos* anteriorArtic;
     NodoArticulos(){
         siguienteArtic = NULL;
+        anteriorArtic = NULL;
         precioArticulo = 0;
         idArticulo = ' ';
         nombreArticulo = ' ';

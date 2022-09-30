@@ -21,7 +21,6 @@ ListaTutorial ListTutorial;
 ArbolB Arbol;
 
 
-
 int atoi(std::string s)
 {
     try
@@ -128,7 +127,7 @@ public:
             //std ::string iarticulo = idarticuloo;
             std ::string precioarticul = precioarticuloo;
             int precioarticulo = std::stoi(precioarticul);
-            ListaArt.registro_articulos(categoriarticulo,nombrearticulo,precioarticulo,idarticuloo,srcarticulo);
+            //ListaArt.registro_articulos(categoriarticulo,nombrearticulo,precioarticulo,idarticuloo,srcarticulo);
             //cout << endl;
         }
 
@@ -365,10 +364,12 @@ class Servidor11{
 
         void get(GloveHttpRequest &request, GloveHttpResponse &response)
     {
-        string user, contra, edad;
+        string user, idd;
         response.contentType("text/json");
         user = request.special["nick"];
+        idd = request.special["id"];
         ListaUsuarios.eliminarCuenta(user);
+        Arbol.eliminar(atoi(idd));
         response << "{ "
             << jsonkv("status", "ok ha sido eliminado") << ",\n"
             " }";
@@ -384,14 +385,16 @@ class Servidor12{
 
         void get(GloveHttpRequest &request, GloveHttpResponse &response)
     {
-        string user,nuevouser, contranueva, edadnueva;
+        string user,nuevouser, contranueva, edadnueva,idd;
         response.contentType("text/json");
         user = request.special["nick"];
         nuevouser = request.special["nuevoN"];
         contranueva = request.special["nuevoC"];
         string cifrado = SHA256::cifrar(contranueva);
         edadnueva = request.special["nuevoE"];
+        idd = request.special["Id"];
         ListaUsuarios.modificarUsuario(user,nuevouser,contranueva,atoi(edadnueva),cifrado);
+        Arbol.modificar(atoi(idd),nuevouser);
         response << "{ "
             << jsonkv("status", "ok ha sido modificado") << ",\n"
             " }";
@@ -450,10 +453,10 @@ int main(int argc, char *argv[])
     serv.addRest("/Eliminar/$nick", 1,
                 GloveHttpServer::jsonApiErrorCall,
                 std::bind(&Servidor10::get, &Eliminar, ph::_1, ph::_2));
-    serv.addRest("/Eliminando/$nick", 1,
+    serv.addRest("/Eliminando/$nick/$id", 1,
                 GloveHttpServer::jsonApiErrorCall,
                 std::bind(&Servidor11::get, &Eliminado, ph::_1, ph::_2));
-    serv.addRest("/Modificando/$nick/$nuevoN/$nuevoC/$nuevoE", 1,
+    serv.addRest("/Modificando/$nick/$nuevoN/$nuevoC/$nuevoE/$Id", 1,
                 GloveHttpServer::jsonApiErrorCall,
                 std::bind(&Servidor12::get, &Modificando, ph::_1, ph::_2));
     

@@ -47,6 +47,17 @@ def Comprobar(salida,salida2,salida3):
         ventanaReg.withdraw()
 
 def ComprobarCambio(salidaa,salidaa2,salidaa3):
+
+    '''
+    res = requests.get(f'{base_url}/Eliminar/' + f'{usuariobusqueda}')
+    data = res.text
+    #print(data)
+    datos_diccionario1 = json.loads(data)
+    idd = datos_diccionario1["Id"]
+    est = datos_diccionario1["estado"]
+    '''
+
+
     if (usuariobusqueda == salidaa):
         res = requests.get(f'{base_url}/Modificando/' + f'{usuariobusqueda}' + "/" + f'{salidaa}' + "/" + f'{salidaa2}' + "/" + f'{salidaa3}')
         MessageBox.showinfo("Exito!", "Para actualizar los cambios debe volver a iniciar sesion")
@@ -59,16 +70,29 @@ def ComprobarCambio(salidaa,salidaa2,salidaa3):
     else:
         res = requests.get(f'{base_url}/Verificar/' + f'{salidaa}' + "/" + f'{salidaa2}' + "/" +  f'{salidaa3}')
         data = res.text#convertimos la respuesta en dict
-        if (data == "existe"):
+
+        datos_diccionario2 = json.loads(data)
+        #idd1 = datos_diccionario2["Id"]
+        est1 = datos_diccionario2["estado"]
+
+        if (est1 == "existe"):
             MessageBox.showinfo("Problema", "El Nick ya esta en uso")
-        if (data == "no existe"):
-            res = requests.get(f'{base_url}/Modificando/' + f'{usuariobusqueda}' + "/" + f'{salidaa}' + "/" + f'{salidaa2}' + "/" + f'{salidaa3}')
+        if (est1 == "no existe"):
+            res = requests.get(f'{base_url}/Eliminar/' + f'{usuariobusqueda}')
+            data = res.text
+            datos_diccionario3 = json.loads(data)
+            idd2 = datos_diccionario3["Id"]
+            print("Sale? " + idd2)
+            res = requests.get(f'{base_url}/Modificando/' + f'{usuariobusqueda}' + "/" + f'{salidaa}' + "/" + f'{salidaa2}' + "/" + f'{salidaa3}' "/" + f'{idd2}')
             MessageBox.showinfo("Exito!", "Para actualizar los cambios debe volver a iniciar sesion")
             textoUsuarioC.delete(1.0, tk.END+"-1c")
             textoPassC.delete(1.0, tk.END+"-1c")
             textoEdadC.delete(1.0, tk.END+"-1c")
             ventanaEdit.withdraw()
             ventanaUser.deiconify()
+        
+        
+        
 
 def mandarRegistro(salida,salida2,salida3):
     res = requests.get(f'{base_url}/Registro/' + f'{salida}' + "/" + f'{salida2}' + "/" +  f'{salida3}')
@@ -149,15 +173,16 @@ def verusuarioDESC():
     #print(data)
 
 
-#def ModificarUsuario(usuariob,nuevousuario,nuevacontra,nuevaedad):
-#    print("")
-
 def EliminarCuenta():
     res = requests.get(f'{base_url}/Eliminar/' + f'{usuariobusqueda}')
     data = res.text
+
     #print(data)
-    if (data == "encontrado"):
-        res = requests.get(f'{base_url}/Eliminando/' + f'{usuariobusqueda}')
+    datos_diccionario1 = json.loads(data)
+    idd = datos_diccionario1["Id"]
+    est = datos_diccionario1["estado"]
+    if (est == "encontrado"):
+        res = requests.get(f'{base_url}/Eliminando/' + f'{usuariobusqueda}' + "/" + f'{idd}')
         data = res.text
         mes = MessageBox.askquestion('Eliminar cuenta', '¿Esta seguro de eliminar esta cuenta?')
         if mes == 'yes':
@@ -166,12 +191,60 @@ def EliminarCuenta():
             ventanaLog.deiconify()
         else:
             MessageBox.showinfo('Regresar', 'Regresando al menu')
+    
 
 def Tutorial():
     print("Tutorial")
 
 
 def Partida():
+    Portaav = 1
+    Subma = 2
+    Destruc = 3
+    Buq = 4
+    # Formula para determinar la cantidad de barcos por tablero
+    # B(m) = ((m-1)/10)+1
+    dimens = textoDimension.get(1.0,tk.END+"-1c")
+    dimen = int(dimens)
+    if (dimen<10):
+        MessageBox.showerror("Advertencia", "El Numero minimo para el tablero es de 10")
+    if (dimen==10):
+        B = int(((dimen-1)/10))+1
+        #print(B)
+        Portaaviones = Portaav * B
+        Submarino = Subma * B
+        Destructores = Destruc * B
+        Buques = Buq * B
+        print("Portaaviones: ", Portaaviones)
+        print("Submarinos : ", Submarino)
+        print("Destructores: ", Destructores)
+        print("Buques : " , Buques)
+        MessageBox.showinfo("Exito", "Tablero creado con exito")
+    if (dimen>10 and dimen <= 20):
+        B = int(((dimen-1)/10))+1
+        #print(B)
+        Portaaviones = Portaav * B
+        Submarino = Subma * B
+        Destructores = Destruc * B
+        Buques = Buq * B
+        print("Portaaviones: ", Portaaviones)
+        print("Submarinos : ", Submarino)
+        print("Destructores: ", Destructores)
+        print("Buques : " , Buques)
+        MessageBox.showinfo("Exito", "Tablero creado con exito")
+    if (dimen>20):
+        B = int(((dimen-1)/10))+1
+        #print(B)
+        Portaaviones = Portaav * B
+        Submarino = Subma * B
+        Destructores = Destruc * B
+        Buques = Buq * B
+        print("Portaaviones: ", Portaaviones)
+        print("Submarinos : ", Submarino)
+        print("Destructores: ", Destructores)
+        print("Buques : " , Buques)
+        MessageBox.showinfo("Exito", "Tablero creado con exito")
+    #print(dimen)
     print("Partida")
 
 def cerrar():
@@ -315,7 +388,7 @@ btnVerTutorial = Button(ventanaUser, height=2, width=15, text="Mostrar Tutorial"
 btnVerTutorial.place(x=180, y=300)
 btnVerTienda = Button(ventanaUser, height=2, width=15, text="Tienda", command = lambda: [verArticulos()], background="#368807", font=("Verdana",10), fg="black")
 btnVerTienda.place(x=180, y=350)
-btnPartida = Button(ventanaUser, height=2, width=15, text="Iniciar Partida", command = lambda: [Partida()], background="#368807", font=("Verdana",10), fg="black")
+btnPartida = Button(ventanaUser, height=2, width=15, text="Iniciar Partida", command = lambda: [ventanaObtenerDimension.deiconify()], background="#368807", font=("Verdana",10), fg="black")
 btnPartida.place(x=180, y=400)
 btncerrarSesionUser = Button(ventanaUser, height=2, width=15, text="Cerrar Sesion", command = lambda: [ventanaUser.withdraw(),textoUsuarioC.delete(1.0, tk.END+"-1c"),textoPassC.delete(1.0, tk.END+"-1c"),textoEdadC.delete(1.0, tk.END+"-1c"),MessageBox.showinfo("Exito", "Sesion cerrada"), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
 btncerrarSesionUser.place(x=180, y=450)
@@ -352,6 +425,28 @@ btnGuardarC.place(x=110, y=420)
 btnRegresarC = Button(ventanaEdit, height=2, width=15, text="Regresar", command = lambda:[ventanaUser.deiconify(), ventanaEdit.withdraw()], background="#368807", font=("Verdana",10), fg="black")
 btnRegresarC.place(x=270, y=420)
 ventanaEdit.withdraw()
+
+
+#--------------------------------- CREANDO TABLERO DE JUEGO ------------------------------
+ventanaObtenerDimension = Toplevel()
+ventanaObtenerDimension.title("Dimensiones del Tablero")
+ventanaObtenerDimension.resizable(0,0)
+ancho_ventana2 = 300
+alto_ventana2 = 250
+x_ventana2 = ventanaObtenerDimension.winfo_screenwidth() // 2 - ancho_ventana2 // 2
+y_ventana2 = ventanaObtenerDimension.winfo_screenheight() // 2 - alto_ventana2 // 2
+posicion2 = str(ancho_ventana2) + "x" + str(alto_ventana2) + "+" + str(x_ventana2) + "+" + str(y_ventana2)
+ventanaObtenerDimension.geometry(posicion2)
+labelDimension = Label (ventanaObtenerDimension, text ="Dimensiones del Tablero", font=("Verdana",16), background="#044D9A", fg="white")
+labelDimension.place(x=50, y=45)
+labelNum = Label (ventanaObtenerDimension, text ="Numero", font=("Verdana",16), background="#044D9A", fg="white")
+labelNum.place(x=50, y=115)
+textoDimension = Text(ventanaObtenerDimension, height=2, width=12 ,fg="white", font=("Consolas", 12)) 
+textoDimension.place(x=150, y=110)
+btnCrearT = Button(ventanaObtenerDimension, height=2, width=15, text="Crear", command = lambda:[Partida()], background="#368807", font=("Verdana",10), fg="black")
+btnCrearT.place(x=80, y=190)
+ventanaObtenerDimension.withdraw()
+
 
 
 #--------------------------------- INICIANDO INTERFAZ------------------------------

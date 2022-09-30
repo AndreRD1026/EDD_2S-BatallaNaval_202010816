@@ -19,6 +19,8 @@ public:
     pair<NodoB*, bool>  insertarEnRama(NodoB* primero, NodoB* nuevo);
     bool esHoja(NodoB* primero);
     int contador(NodoB* primero);
+    void eliminar(int id);
+    void modificar(int id, string nuevouser);
     void Grafo();
     string GrafoArbolAbb(NodoB*rama);
     string GrafoRamas(NodoB*rama);

@@ -4,6 +4,7 @@
 
 using namespace std;
 
+int pruebas = 0;
 
 void ListaCircular::registro_usuario(int id,string nombreuser, string contracifrada, int monedas ,int edad, string contra){
 	nodoUsuarios *actual = new nodoUsuarios();
@@ -392,7 +393,40 @@ string ListaCircular::getUsers() {
 
 
 string ListaCircular::Comprobar(string nombreuser) {
+	nodoUsuarios *actual = new nodoUsuarios();
+	string sid = "";
+	//string dato = "";
+	string otro;
+	actual = primero;
+	bool encontrado = false;
+	if(primero != NULL){
+		do{
+			if(actual->nombreuser==nombreuser){
+				sid += "{";
+				sid+= "\"Id\":\"" + to_string(actual->id) + "\",";
+				sid+= "\"estado\":\"existe""\"";
+				sid += "}"; 
+				cout<<"Id: "<<actual->id<<"\n";
+				cout<<"Encontrado"<<"\n";
+				encontrado = true;		
+				return sid;	
+			}
+			actual = actual->siguiente;	
+		}while(actual!=primero && encontrado != true);
+	}
+	if(primero!= NULL  && encontrado==false){
+			if(actual->nombreuser!=nombreuser){
+				sid += "{";
+				sid+= "\"estado\":\"no existe""\"";
+				sid += "}";
+				return sid;
+			}
+	}
+	
+	
+	
 
+	/* 
 	nodoUsuarios *actual = new nodoUsuarios();
 	string dato = "";
 	actual = primero;
@@ -415,6 +449,10 @@ string ListaCircular::Comprobar(string nombreuser) {
 				return dato;
 			}
 	}
+	
+	
+	*/
+	
     
 }
 
@@ -487,29 +525,37 @@ string ListaCircular:: Buscar1(string nombreuser){
 string ListaCircular::BuscarUser(string nombreuser) {
 
 	nodoUsuarios *actual = new nodoUsuarios();
-	string dato = "";
+	string sid = "";
+	//string dato = "";
+	string otro;
 	actual = primero;
 	bool encontrado = false;
 	if(primero != NULL){
 		do{
 			if(actual->nombreuser==nombreuser){
-				//cout<<"\n";
-				//cout<<"No se puede agregar porque ya existe un ususario con ese Nick"<<endl;
-				dato += "encontrado";
-				encontrado = true;
-				return dato;				
+				sid += "{";
+				sid+= "\"Id\":\"" + to_string(actual->id) + "\",";
+				sid+= "\"estado\":\"encontrado""\"";
+				sid += "}"; 
+				cout<<"Id: "<<actual->id<<"\n";
+				cout<<"Encontrado"<<"\n";
+				encontrado = true;		
+				return sid;	
 			}
 			actual = actual->siguiente;	
 		}while(actual!=primero && encontrado != true);
 	}
 	if(primero!= NULL  && encontrado==false){
 			if(actual->nombreuser!=nombreuser){
-				dato += "no encontrado";
-				return dato;
+				sid += "{";
+				sid+= "\"estado\":\"no encontrado""\"";
+				sid += "}";
+				return sid;
 			}
 	}
     
 }
+
 
 void ListaCircular:: eliminarCuenta(string userbuscado){
     nodoUsuarios* actual = new nodoUsuarios();

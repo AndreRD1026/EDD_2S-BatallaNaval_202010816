@@ -28,7 +28,8 @@ void ListaArticulos:: registro_articulos(string categoria, string nombre, int pr
     }
 	else{
         if(!CategoriaRepetida(nodoCategoria->categoria)){
-        NodoCategoria* temp = new NodoCategoria();
+			if (nodoCategoria->categoria == categoria){
+				NodoCategoria* temp = new NodoCategoria();
         temp = primeroCategoria;
         int aux = 1;
             while (temp!=NULL)
@@ -38,15 +39,31 @@ void ListaArticulos:: registro_articulos(string categoria, string nombre, int pr
             }
             nodoCategoria->indice = aux;
             
-            ultimoCategoria->siguienteCA = nodoCategoria;
-            ultimoCategoria = nodoCategoria;
+            
+			ultimoCategoria->siguienteCA = nodoCategoria;
+			ultimoCategoria = nodoCategoria;
 
             ultimoCategoria->abajo = nodoArticulos;
             primeroArticulos = nodoArticulos;
             ultimoArticulos = nodoArticulos;
+			}
+        
         }else{
-            ultimoArticulos->siguienteArtic = nodoArticulos;
-            ultimoArticulos = nodoArticulos;
+			while(primeroCategoria!=NULL){
+            if(categoria==nodoCategoria->categoria){
+				ultimoArticulos->siguienteArtic = nodoArticulos;
+				ultimoArticulos = nodoArticulos;
+                encontrado = true;
+                //break;
+            }
+            nodoCategoria = nodoCategoria->siguienteCA;
+        }
+			//if (nodoCategoria->categoria )
+			
+            //ultimoArticulos->siguienteArtic = nodoArticulos;
+			//ultimoArticulos = nodoArticulos;
+			
+            
         }
     }
 }

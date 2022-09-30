@@ -221,6 +221,111 @@ int ArbolB::contador(NodoB* primero) {
     return contador;
 }
 
+
+void ArbolB:: modificar(int id, string nuevouser){
+    NodoB* aux = raiz;
+    bool encontrado = false;
+
+    if (aux!=NULL){
+        do{
+            if(aux->id == id){
+                aux->nombreuser = nuevouser;
+                encontrado = true;
+            }
+            aux = aux->siguiente;
+        }while(aux->siguiente!=NULL && encontrado!=true);
+    }
+
+    /*
+    nodoUsuarios* actual = new nodoUsuarios();
+    actual = primero;
+    bool encontrado = false;
+    if(primero!=NULL){
+        do{
+            if(actual->nombreuser==userb){
+				actual->nombreuser = nuevouser;
+				actual->contra = contra;
+				actual->contracifrada = cifrada;
+				actual->edad = edad;
+                encontrado = true;              
+            }
+            actual = actual->siguiente;
+        }while(actual!=primero && encontrado != true);  
+    }
+    */
+
+   /*
+    while(aux!=NULL){
+        if(aux->id == id){
+            aux->nombreuser = nuevouser;
+            cout<<"Nombre actual -> " <<aux->nombreuser<<"\n";
+        }
+        aux = aux->siguiente;
+    }
+    */
+}
+
+
+void ArbolB::eliminar(int id){
+    NodoB*aux = raiz;
+    NodoB*padre = NULL;
+    while(aux != NULL){
+        if(aux->id == id){
+            if(aux->izquierda == NULL && aux->derecha == NULL){
+                if(padre == NULL){
+                    raiz = NULL;
+                }else{
+                    if(padre->izquierda == aux){
+                        padre->izquierda = NULL;
+                    }else{
+                        padre->derecha = NULL;
+                    }
+                }
+            }else if(aux->izquierda == NULL && aux->derecha != NULL){
+                if(padre == NULL){
+                    raiz = aux->derecha;
+                }else{
+                    if(padre->izquierda == aux){
+                        padre->izquierda = aux->derecha;
+                    }else{
+                        padre->derecha = aux->derecha;
+                    }
+                }
+            }else if(aux->izquierda != NULL && aux->derecha == NULL){
+                if(padre == NULL){
+                    raiz = aux->izquierda;
+                }else{
+                    if(padre->izquierda == aux){
+                        padre->izquierda = aux->izquierda;
+                    }else{
+                        padre->derecha = aux->izquierda;
+                    }
+                }
+            }else{
+                NodoB*aux2 = aux->izquierda;
+                NodoB*padre2 = aux;
+                while(aux2->derecha != NULL){
+                    padre2 = aux2;
+                    aux2 = aux2->derecha;
+                }
+                aux->nombreuser = aux2->nombreuser;
+                if(padre2->izquierda == aux2){
+                    padre2->izquierda = aux2->izquierda;
+                }else{
+                    padre2->derecha = aux2->izquierda;
+                }
+            }
+            break;
+        }else if(aux->id > id){
+            padre = aux;
+            aux = aux->izquierda;
+        }else{
+            padre = aux;
+            aux = aux->derecha;
+        }
+    }
+}
+
 //================================Grafo solo del arbol b=====================
 
 void ArbolB::Grafo() {
