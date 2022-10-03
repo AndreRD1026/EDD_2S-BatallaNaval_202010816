@@ -40,11 +40,15 @@ def abrirArchivo1():
 def Comprobar(salida,salida2,salida3):
     res = requests.get(f'{base_url}/Verificar/' + f'{salida}' + "/" + f'{salida2}' + "/" +  f'{salida3}')
     data = res.text#convertimos la respuesta en dict
+
+    datos_diccionarioo = json.loads(data)
+        #idd1 = datos_diccionario2["Id"]
+    estt = datos_diccionarioo["estado"]
     #print(data)
 
-    if data == "existe":
+    if estt == "existe":
         MessageBox.showinfo("Problema", "Ya existe un usuario con este Nick")
-    if data == "no existe":
+    if estt == "no existe":
         mandarRegistro(salida,salida2,salida3)
         textoUsuario.delete(1.0, tk.END+"-1c")
         textoPass.delete(1.0, tk.END+"-1c")
@@ -303,10 +307,12 @@ class prueba:
             for j in range(tam):
                 f.append(Casilla())
             self.Tablero.append(f)
+            #print(self.Tablero.append(f))
         num = 0
         while num < numBuques:
             rndx = random.randint(0,tam-1)
             rndy = random.randint(0,tam-1)
+            print("X: ",rndx, "Y: ", rndy)
             if not self.Tablero[rndx][rndy].TieneBuque:
                 self.Tablero[rndx][rndy].TieneBuque = True
                 filaIni = max(rndx-1,0)
@@ -324,6 +330,8 @@ class prueba:
         global lblsalida 
         global lblpuntos
         global lblvidas
+        #doc = open("Python/" + "Prueba" + ".txt", "w")
+        
         vida = 3
         lblvidas = vida
         #lblpuntos = 0
@@ -343,11 +351,13 @@ class prueba:
                 if self.Tablero[i][j].Visible:
                     if self.Tablero[i][j].TieneBuque:
                         plt.plot([px], [py], linestyle='None', marker='.', markersize=8, color='teal')
+                        #doc.write([px] + '\n')
                     else:
                         #if self.Tablero[i][j].NumBuquesAdyacentes != 0:
                         plt.plot([px], [py], linestyle='None', marker='.', markersize=8, color='red')
                 else: 
                     plt.plot([px], [py], linestyle='None', marker='.', markersize=4,color='black')
+        #doc.close()
 
 
     def on_click(self,event):

@@ -396,7 +396,7 @@ class Servidor12{
         edadnueva = request.special["nuevoE"];
         idd = request.special["Id"];
         ListaUsuarios.modificarUsuario(user,nuevouser,contranueva,atoi(edadnueva),cifrado);
-        Arbol.modificar(atoi(idd),nuevouser);
+        //Arbol.modificar(atoi(idd),nuevouser);
         response << "{ "
             << jsonkv("status", "ok ha sido modificado") << ",\n"
             " }";
@@ -436,7 +436,6 @@ class Servidor14{
     }
     
 };
-
 
 int main(int argc, char *argv[])
 {

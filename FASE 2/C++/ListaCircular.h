@@ -32,6 +32,7 @@ public:
     string BuscarUser(string nombreuser);
     string getUsers();
     string Comprobar(string nombreuser);
+    string Comprobar1(string nombreuser);
     string verificarLog(string usuariob, string cifrada);
     string Buscar1(string username);
 private:

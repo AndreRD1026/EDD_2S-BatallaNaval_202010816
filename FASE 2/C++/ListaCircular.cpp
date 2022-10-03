@@ -396,7 +396,6 @@ string ListaCircular::Comprobar(string nombreuser) {
 	nodoUsuarios *actual = new nodoUsuarios();
 	string sid = "";
 	//string dato = "";
-	string otro;
 	actual = primero;
 	bool encontrado = false;
 	if(primero != NULL){
@@ -420,6 +419,31 @@ string ListaCircular::Comprobar(string nombreuser) {
 				sid+= "\"estado\":\"no existe""\"";
 				sid += "}";
 				return sid;
+			}
+	}    
+}
+
+string ListaCircular::Comprobar1(string nombreuser) {
+	nodoUsuarios *actual = new nodoUsuarios();
+	string dato = "";
+	actual = primero;
+	bool encontrado = false;
+	if(primero != NULL){
+		do{
+			if(actual->nombreuser==nombreuser){
+				
+				cout<<"Encontrado"<<"\n";
+				dato += "existe";
+				encontrado = true;		
+				return dato;	
+			}
+			actual = actual->siguiente;	
+		}while(actual!=primero && encontrado != true);
+	}
+	if(primero!= NULL  && encontrado==false){
+			if(actual->nombreuser!=nombreuser){
+				dato += "no existe";
+				return dato;
 			}
 	}    
 }
