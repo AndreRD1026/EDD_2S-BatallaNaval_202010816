@@ -11,6 +11,7 @@
 #include "C++/ListaArticulos.cpp"
 #include "C++/ListaTutorial.cpp"
 #include "C++/ArbolB.cpp"
+#include "C++/ListaPila.cpp"
 
 
 int contadorusuarios = 0;
@@ -19,6 +20,7 @@ ListaCircular ListaUsuarios;
 ListaArticulos ListaArt;
 ListaTutorial ListTutorial;
 ArbolB Arbol;
+ListaPila Movimientos;
 
 
 int atoi(std::string s)
@@ -415,6 +417,27 @@ class Servidor13{
 };
 
 
+class Servidor14{
+    public:
+    Servidor14()
+    {
+       //ListaUsuarios = Servidor
+    
+    }
+    
+    void post(GloveHttpRequest &request, GloveHttpResponse &response){
+        string valX, valY;
+        valX = request.special["X"];
+        valY = request.special["Y"];
+        Movimientos.insertarPila(atoi(valX),atoi(valY));
+        response << "{ "
+            << jsonkv("status", "ok ha sido registrado") << ",\n"
+            " }";
+    }
+    
+};
+
+
 int main(int argc, char *argv[])
 {
     Servidor cine;
@@ -430,6 +453,7 @@ int main(int argc, char *argv[])
     Servidor11 Eliminado;
     Servidor12 Modificando;
     Servidor13 Tienda;
+    Servidor14 Pila;
 
     GloveHttpServer serv(8080, "", 2048);
     serv.compression("gzip, deflate");
@@ -475,6 +499,9 @@ int main(int argc, char *argv[])
     serv.addRest("/Tienda/", 1,
                 GloveHttpServer::jsonApiErrorCall,
                 std::bind(&Servidor13::get, &Tienda, ph::_1, ph::_2));
+    serv.addRest("/Movimiento/$X/$Y", 1,
+                GloveHttpServer::jsonApiErrorCall,
+                std::bind(&Servidor14::post, &Pila, ph::_1, ph::_2));
     
     while (1)
     {

@@ -480,7 +480,8 @@ string ListaCircular:: Buscar1(string nombreuser){
 				datos += "{";
 				datos+= "\"nick\":\"" + actual->nombreuser + "\",";
 				datos+= "\"password\":\"" + actual->contra + "\",";
-				datos+= "\"edad\":\"" + to_string(actual->edad) + "\"";
+				datos+= "\"edad\":\"" + to_string(actual->edad) + "\",";
+				datos+= "\"monedas\":\"" + to_string(actual->monedas) + "\"";
 				datos += "}"; 
 				encontrado = true;
 				return datos;				

@@ -129,29 +129,4 @@ string ListaTutorial:: getTutorial(){
 	}
 	datos += "}";
 	return datos;
-
-	/*  
-	if (Inicio == NULL)
-        return "[\n]";
-
-    string out = "";
-    nodosimple *aux = Inicio;
-    while (aux != NULL)
-    {
-
-        out += "{\"Id\": \"" + to_string(aux->valor) + "\"}";
-        aux = aux->sig;
-        if (aux != NULL)
-        {
-            out += ",";
-        }
-    }
-    return "[\n " + out + "\n]";
-
-	
-
-	
-	*/
-
-
 }
