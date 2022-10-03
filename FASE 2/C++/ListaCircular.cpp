@@ -421,39 +421,7 @@ string ListaCircular::Comprobar(string nombreuser) {
 				sid += "}";
 				return sid;
 			}
-	}
-	
-	
-	
-
-	/* 
-	nodoUsuarios *actual = new nodoUsuarios();
-	string dato = "";
-	actual = primero;
-	bool encontrado = false;
-	if(primero != NULL){
-		do{
-			if(actual->nombreuser==nombreuser){
-				cout<<"\n";
-				cout<<"No se puede agregar porque ya existe un ususario con ese Nick"<<endl;
-				dato += "existe";
-				encontrado = true;
-				return dato;				
-			}
-			actual = actual->siguiente;	
-		}while(actual!=primero && encontrado != true);
-	}
-	if(primero!= NULL  && encontrado==false){
-			if(actual->nombreuser!=nombreuser){
-				dato += "no existe";
-				return dato;
-			}
-	}
-	
-	
-	*/
-	
-    
+	}    
 }
 
 string ListaCircular:: verificarLog(string usuariob, string cifrada){

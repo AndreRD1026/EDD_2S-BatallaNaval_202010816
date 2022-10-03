@@ -25,11 +25,9 @@ void ListaArticulos:: registro_articulos(string categoria, string nombre, int pr
             primeroCategoria->abajo = nodoArticulos;
             primeroArticulos = nodoArticulos;
             ultimoArticulos = nodoArticulos;
-    }
-	else{
+    }else{
         if(!CategoriaRepetida(nodoCategoria->categoria)){
-			if (nodoCategoria->categoria == categoria){
-				NodoCategoria* temp = new NodoCategoria();
+        NodoCategoria* temp = new NodoCategoria();
         temp = primeroCategoria;
         int aux = 1;
             while (temp!=NULL)
@@ -39,31 +37,15 @@ void ListaArticulos:: registro_articulos(string categoria, string nombre, int pr
             }
             nodoCategoria->indice = aux;
             
-            
-			ultimoCategoria->siguienteCA = nodoCategoria;
-			ultimoCategoria = nodoCategoria;
+            ultimoCategoria->siguienteCA = nodoCategoria;
+            ultimoCategoria = nodoCategoria;
 
             ultimoCategoria->abajo = nodoArticulos;
             primeroArticulos = nodoArticulos;
             ultimoArticulos = nodoArticulos;
-			}
-        
         }else{
-			while(primeroCategoria!=NULL){
-            if(categoria==nodoCategoria->categoria){
-				ultimoArticulos->siguienteArtic = nodoArticulos;
-				ultimoArticulos = nodoArticulos;
-                encontrado = true;
-                //break;
-            }
-            nodoCategoria = nodoCategoria->siguienteCA;
-        }
-			//if (nodoCategoria->categoria )
-			
-            //ultimoArticulos->siguienteArtic = nodoArticulos;
-			//ultimoArticulos = nodoArticulos;
-			
-            
+            ultimoArticulos->siguienteArtic = nodoArticulos;
+            ultimoArticulos = nodoArticulos;
         }
     }
 }
@@ -104,6 +86,43 @@ void ListaArticulos:: Mostrar_Tienda(int monedas){
     }
 	cout<<"\n";
 }
+
+string ListaArticulos :: getArticulos(){
+    NodoCategoria* aux1 = new NodoCategoria();
+	aux1 = primeroCategoria;
+	NodoArticulos* aux2 = new NodoArticulos();
+	string datos = "";
+	//datos += "{";
+	//datos += "\"articulos\":[";
+	datos += "[";
+	while (aux1 != NULL){
+		aux2 = aux1->abajo;
+		while (aux2!=NULL)
+		{
+			datos+= "{";
+			datos+= "\"Id\":\"" + aux2->idArticulo + "\",";
+			datos+= "\"categoria\":\"" + aux1->categoria + "\",";
+			datos+= "\"precio\":\"" + to_string(aux2->precioArticulo) + "\",";
+			datos+= "\"nombre\":\"" + aux2->nombreArticulo + "\",";
+			datos+= "\"src\":\"" + aux2->SRCArticulo + "\"";
+			datos+= "}";
+			
+			if(aux2!=ultimoArticulos){
+				datos+= ",";
+			}
+			if(aux2==ultimoArticulos){
+				datos+= "";
+			}
+			aux2 = aux2->siguienteArtic;
+		}
+		aux1 = aux1->siguienteCA;
+	}
+	datos += "]";
+	//datos += "}";
+	return datos;
+}
+
+
 
 void ListaArticulos:: GraficoListadeListas(){
 		NodoCategoria* actualCategoria = new NodoCategoria();
@@ -188,48 +207,4 @@ void ListaArticulos:: GraficoListadeListas(){
 
 } 
 
-string ListaArticulos :: getArticulos(){
-    NodoCategoria* aux1 = new NodoCategoria();
-	aux1 = primeroCategoria;
-	NodoArticulos* aux2 = new NodoArticulos();
-	/*
-	NodoCategoria* aux1 = new NodoCategoria();
-    aux1 = primeroCategoria;
-    NodoArticulos* aux2 = new NodoArticulos();
-	*/
-
-	string datos = "";
-	datos += "\"articulos\":[";
-	while (aux1 != NULL){
-		aux2 = aux1->abajo;
-		while (aux2!=NULL)
-		{
-			datos+= "{";
-			datos+= "\"id\":\"" + aux2->idArticulo;
-			datos+= "\"categoria\":\"" + aux1->categoria;
-			datos+= "\"precio\":\"" + to_string(aux2->precioArticulo);
-			datos+= "\"nombre\":\"" + aux2->nombreArticulo;
-			datos+= "\"src\":\"" + aux2->SRCArticulo;
-			datos+= "}";
-		}
-		aux1 = aux1->siguienteCA;
-	}
-	datos += "]";
-	return datos;
-		
-}
-
-/* 
-while(aux1!=NULL){		
-        aux2 = aux1->abajo;
-        while (aux2!=NULL)
-        {
-			cout << "  "<< left << setw( 10 ) <<aux2->idArticulo<< " "<< left << setw( 20 ) << aux2->nombreArticulo<< "   "<< left << setw( 12 ) << aux1->categoria<< " "<< left << setw( 12 ) <<aux2->precioArticulo<< " "<<endl;
-            aux2 = aux2->siguienteArtic;
-        }
-        aux1 = aux1->siguienteCA;
-
-    }
-
-*/
 

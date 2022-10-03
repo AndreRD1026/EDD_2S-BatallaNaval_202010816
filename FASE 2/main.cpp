@@ -127,7 +127,7 @@ public:
             //std ::string iarticulo = idarticuloo;
             std ::string precioarticul = precioarticuloo;
             int precioarticulo = std::stoi(precioarticul);
-            //ListaArt.registro_articulos(categoriarticulo,nombrearticulo,precioarticulo,idarticuloo,srcarticulo);
+            ListaArt.registro_articulos(categoriarticulo,nombrearticulo,precioarticulo,idarticuloo,srcarticulo);
             //cout << endl;
         }
 
@@ -402,6 +402,18 @@ class Servidor12{
     }
 };
 
+class Servidor13{
+    public:
+    Servidor13(){
+
+    }
+
+        void get(GloveHttpRequest &request, GloveHttpResponse &response)
+    {
+        response << ListaArt.getArticulos();        
+    }
+};
+
 
 int main(int argc, char *argv[])
 {
@@ -417,6 +429,7 @@ int main(int argc, char *argv[])
     Servidor10 Eliminar;
     Servidor11 Eliminado;
     Servidor12 Modificando;
+    Servidor13 Tienda;
 
     GloveHttpServer serv(8080, "", 2048);
     serv.compression("gzip, deflate");
@@ -459,6 +472,9 @@ int main(int argc, char *argv[])
     serv.addRest("/Modificando/$nick/$nuevoN/$nuevoC/$nuevoE/$Id", 1,
                 GloveHttpServer::jsonApiErrorCall,
                 std::bind(&Servidor12::get, &Modificando, ph::_1, ph::_2));
+    serv.addRest("/Tienda/", 1,
+                GloveHttpServer::jsonApiErrorCall,
+                std::bind(&Servidor13::get, &Tienda, ph::_1, ph::_2));
     
     while (1)
     {

@@ -1,14 +1,17 @@
-import requests
+from optparse import Values
+import sys
 import json
 from tkinter import*
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import messagebox as MessageBox
-import sys
+from turtle import title
+import plotly.graph_objects as go 
+import random
+import math
 import os
 from PIL import Image
-
-pruebaa = None
+import requests
 
 base_url = "http://127.0.0.1:8080/"
 
@@ -31,15 +34,16 @@ def abrirArchivo1():
         MessageBox.showinfo("Exito!", "Archivo Cargado con exito")
     except:
         MessageBox.showwarning("Alerta", "Debe cargar un archivo")
-    
+
+
 def Comprobar(salida,salida2,salida3):
     res = requests.get(f'{base_url}/Verificar/' + f'{salida}' + "/" + f'{salida2}' + "/" +  f'{salida3}')
     data = res.text#convertimos la respuesta en dict
     #print(data)
 
-    if (data == "existe"):
+    if data == "existe":
         MessageBox.showinfo("Problema", "Ya existe un usuario con este Nick")
-    if (data == "no existe"):
+    if data == "no existe":
         mandarRegistro(salida,salida2,salida3)
         textoUsuario.delete(1.0, tk.END+"-1c")
         textoPass.delete(1.0, tk.END+"-1c")
@@ -58,7 +62,7 @@ def ComprobarCambio(salidaa,salidaa2,salidaa3):
     '''
 
 
-    if (usuariobusqueda == salidaa):
+    if usuariobusqueda == salidaa:
         res = requests.get(f'{base_url}/Modificando/' + f'{usuariobusqueda}' + "/" + f'{salidaa}' + "/" + f'{salidaa2}' + "/" + f'{salidaa3}')
         MessageBox.showinfo("Exito!", "Para actualizar los cambios debe volver a iniciar sesion")
         textoUsuarioC.delete(1.0, tk.END+"-1c")
@@ -75,9 +79,9 @@ def ComprobarCambio(salidaa,salidaa2,salidaa3):
         #idd1 = datos_diccionario2["Id"]
         est1 = datos_diccionario2["estado"]
 
-        if (est1 == "existe"):
+        if est1 == "existe":
             MessageBox.showinfo("Problema", "El Nick ya esta en uso")
-        if (est1 == "no existe"):
+        if est1 == "no existe":
             res = requests.get(f'{base_url}/Eliminar/' + f'{usuariobusqueda}')
             data = res.text
             datos_diccionario3 = json.loads(data)
@@ -90,16 +94,11 @@ def ComprobarCambio(salidaa,salidaa2,salidaa3):
             textoEdadC.delete(1.0, tk.END+"-1c")
             ventanaEdit.withdraw()
             ventanaUser.deiconify()
-        
-        
-        
 
 def mandarRegistro(salida,salida2,salida3):
     res = requests.get(f'{base_url}/Registro/' + f'{salida}' + "/" + f'{salida2}' + "/" +  f'{salida3}')
     data = res.text#convertimos la respuesta en dict
-    #print(data)
     cerrandoRegistro()    
-    
 
 def cerrandoRegistro():
     print("llegando")
@@ -114,11 +113,11 @@ def mandarLogin(usuario, contra):
     res = requests.get(f'{base_url}/Login/' + f'{usuario}' + "/" + f'{contra}')
     data = res.text#convertimos la respuesta en dict
     print(data)
-    if (data == "admin"):
+    if data == "admin":
         ventanaLog.withdraw()
         MessageBox.showinfo("Exito!", "Inicio de sesion correcto")
         ventanaAdmin.deiconify()
-    if (data == "correcto"):
+    if data == "correcto":
         ventanaLog.withdraw()
         MessageBox.showinfo("Exito!", "Inicio de sesion correcto")
         res = requests.get(f'{base_url}/Log/' + f'{usuario}' + "/" + f'{contra}')
@@ -132,19 +131,17 @@ def mandarLogin(usuario, contra):
         textoEdadC.insert(INSERT,edadd)
         usuariobusqueda = name
         ventanaUser.deiconify()
-    if (data == "incorrecto"):
+    if data == "incorrecto":
         MessageBox.showinfo("Error!", "Usuario o contraseña incorrectos")
         ventanaLog.deiconify()
-    if (data == "inexistente"):
+    if data == "inexistente":
         MessageBox.showinfo("Inesperado!", "El usuario no existe")
         ventanaLog.deiconify()
 
 
 def mandarDatos(usuario):
-    global pruebaa
     res = requests.get(f'{base_url}/Log/' + f'{usuario}')
     data = res.text#convertimos la respuesta en dict
-    pruebaa = data
     print(data)
 
 def verusuario():
@@ -181,7 +178,7 @@ def EliminarCuenta():
     datos_diccionario1 = json.loads(data)
     idd = datos_diccionario1["Id"]
     est = datos_diccionario1["estado"]
-    if (est == "encontrado"):
+    if est == "encontrado":
         res = requests.get(f'{base_url}/Eliminando/' + f'{usuariobusqueda}' + "/" + f'{idd}')
         data = res.text
         mes = MessageBox.askquestion('Eliminar cuenta', '¿Esta seguro de eliminar esta cuenta?')
@@ -191,13 +188,57 @@ def EliminarCuenta():
             ventanaLog.deiconify()
         else:
             MessageBox.showinfo('Regresar', 'Regresando al menu')
-    
 
 def Tutorial():
     print("Tutorial")
 
 
+def MostrarTienda():
+    #print("Tienda")
+    global ides
+    res = requests.get(f'{base_url}/Tienda/')
+    data = res.text#convertimos la respuesta en dict
+    #print(data)
+    articulos = json.loads(data)
+
+    idAr = []
+    nombresAr = []
+    cateAr =[]
+    precioAr = []
+    for articulo in articulos:
+        #print(articulo.get('Id'))
+        
+        ides = articulo.get('Id')
+        nombr = articulo.get('nombre')
+        catt = articulo.get('categoria')
+        prec = articulo.get('precio')
+        #print(articulo.get('categoria'))
+       
+        #print(articulo.get('precio'))
+        #print(articulo.get('nombre'))
+        
+        idAr.append(ides)
+        nombresAr.append(nombr)
+        cateAr.append(catt)
+        precioAr.append(prec)
+
+    fig = go.Figure(data=[go.Table(
+        
+        header=dict(values=['ID','Nombre','Categoria','Precio']), 
+        cells=dict(values=[idAr,nombresAr,cateAr,precioAr
+                    ])) 
+            ])
+    fig.update_layout(title = "Tienda", title_x=0.5)
+    
+    fig.show()
+
+
+    
+def GraficoTienda():
+    print("hola")
+
 def Partida():
+    global Portaaviones, Submarino, Destructores, Buques
     Portaav = 1
     Subma = 2
     Destruc = 3
@@ -206,9 +247,9 @@ def Partida():
     # B(m) = ((m-1)/10)+1
     dimens = textoDimension.get(1.0,tk.END+"-1c")
     dimen = int(dimens)
-    if (dimen<10):
+    if dimen<10:
         MessageBox.showerror("Advertencia", "El Numero minimo para el tablero es de 10")
-    if (dimen==10):
+    if dimen==10:
         B = int(((dimen-1)/10))+1
         #print(B)
         Portaaviones = Portaav * B
@@ -219,8 +260,9 @@ def Partida():
         print("Submarinos : ", Submarino)
         print("Destructores: ", Destructores)
         print("Buques : " , Buques)
+        #LLamado(dimen,Portaaviones)
         MessageBox.showinfo("Exito", "Tablero creado con exito")
-    if (dimen>10 and dimen <= 20):
+    if dimen>10 and dimen <= 20:
         B = int(((dimen-1)/10))+1
         #print(B)
         Portaaviones = Portaav * B
@@ -231,8 +273,9 @@ def Partida():
         print("Submarinos : ", Submarino)
         print("Destructores: ", Destructores)
         print("Buques : " , Buques)
+        #LLamado(dimen,Portaaviones)
         MessageBox.showinfo("Exito", "Tablero creado con exito")
-    if (dimen>20):
+    if dimen>20:
         B = int(((dimen-1)/10))+1
         #print(B)
         Portaaviones = Portaav * B
@@ -243,9 +286,99 @@ def Partida():
         print("Submarinos : ", Submarino)
         print("Destructores: ", Destructores)
         print("Buques : " , Buques)
+        #LLamado(dimen,Portaaviones)
         MessageBox.showinfo("Exito", "Tablero creado con exito")
     #print(dimen)
     print("Partida")
+
+
+#---------------------------------CREACION DEL JUEGO ------------------------------
+class Casilla:
+    def __init__(self):
+        self.Visible = False
+        self.TieneMina = False
+        self.MinaMarcada = 0
+        self.NumMinasAdyacentes = 0
+
+
+class prueba:
+    def __init__(self, tam, numMinas):
+        self.Tamano = tam
+        self.Tablero = []
+        self.Pendientes = tam*tam
+        self.Estado = ""
+        self.XError = None
+        self.YError = None
+        for fila in range(tam):
+            f = []
+            for j in range(tam):
+                f.append(Casilla())
+            self.Tablero.append(f)
+        num = 0
+        #numF = numMinas + numMinas2
+        while num < numMinas:
+            rndx = random.randint(0,tam-1)
+            rndy = random.randint(0,tam-1)
+            if not self.Tablero[rndx][rndy].TieneMina:
+                self.Tablero[rndx][rndy].TieneMina = True
+                #self.Tablero[rndx][rndy].TieneOtro = True
+                filaIni = max(rndx-1,0)
+                filaFin = min(rndx+1,tam-1)
+                colIni = max(rndy-1,0)
+                colFin = min(rndy+1,tam-1)
+                for i in range(filaIni, filaFin+1,1):
+                    for j in range(colIni,colFin+1,1):
+                        if i !=rndx or j != rndy:
+                            self.Tablero[i][j].NumMinasAdyacentes += 1
+                num += 1
+
+
+    '''def Pintar(self,avv):
+        global lblsalida
+        lblsalida = avv
+        plt.text(0, self.Tamano + 1.5, "Portaaviones: " + str(lblsalida) , fontdict=None)
+        for n in range(self.Tamano+1):
+            plt.plot ([0,self.Tamano],[n,n], color="black", linewidth=1)
+            plt.plot ([n,n],[0,self.Tamano], color="black", linewidth=1)
+        for i in range(self.Tamano):
+            for j in range(self.Tamano):
+                px = j + 0.5
+                py = self.Tamano - (i + 0.5)
+                if self.Tablero[i][j].Visible:
+                    if self.Tablero[i][j].TieneMina:
+                        plt.plot([px], [py], linestyle='None', marker='.', markersize=8, color='red')
+                    else:
+                        if self.Tablero[i][j].NumMinasAdyacentes != 0:
+                            plt.text(px,py, str(self.Tablero[i][j].NumMinasAdyacentes),horizontalalignment='center', verticalalignment='center',
+                            color = 'green', fontsize=12)
+                else: 
+                    plt.plot([px], [py], linestyle='None', marker='.', markersize=4,color='black') '''
+
+
+    '''def on_click(self,event):
+        y = math.floor(event.xdata)
+        x = self.Tamano - math.floor(event.ydata) - 1
+        if str(event.button) == "MouseButton.LEFT":
+            if self.Tablero[x][y].TieneMina:
+                pass
+                #print("Mina")
+            elif not self.Tablero[x][y].Visible:
+                self.Tablero[x][y].Visible = True
+        plt.clf()
+        self.Pintar(lblsalida)
+        plt.draw() '''
+
+'''
+def LLamado(dimension,portaa):
+    Busca = prueba(dimension,portaa)
+    plt.connect('button_press_event', Busca.on_click)
+    plt.ion()
+    #print("ejecutados")
+    Busca.Pintar(portaa)
+    plt.draw()
+    plt.pause(100)
+
+'''
 
 def cerrar():
     MessageBox.showinfo("Adios", "Gracias por usar el programa")
@@ -386,7 +519,7 @@ btnEliminarCuenta = Button(ventanaUser, height=2, width=15, text="Eliminar mi cu
 btnEliminarCuenta.place(x=180, y=250)
 btnVerTutorial = Button(ventanaUser, height=2, width=15, text="Mostrar Tutorial", command = lambda: [Tutorial()], background="#368807", font=("Verdana",10), fg="black")
 btnVerTutorial.place(x=180, y=300)
-btnVerTienda = Button(ventanaUser, height=2, width=15, text="Tienda", command = lambda: [verArticulos()], background="#368807", font=("Verdana",10), fg="black")
+btnVerTienda = Button(ventanaUser, height=2, width=15, text="Tienda", command = lambda: [MostrarTienda()], background="#368807", font=("Verdana",10), fg="black")
 btnVerTienda.place(x=180, y=350)
 btnPartida = Button(ventanaUser, height=2, width=15, text="Iniciar Partida", command = lambda: [ventanaObtenerDimension.deiconify()], background="#368807", font=("Verdana",10), fg="black")
 btnPartida.place(x=180, y=400)
