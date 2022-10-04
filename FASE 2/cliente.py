@@ -187,6 +187,10 @@ def EliminarCuenta():
             MessageBox.showinfo('Regresar', 'Regresando al menu')
 
 def Tutorial():
+    res = requests.get(f'{base_url}/Tutorial/')
+    data = res.text#convertimos la respuesta en dict
+    im = Image.open('GraficoTutorial.png')
+    im.show()
     print("Tutorial")
 
 
@@ -228,7 +232,6 @@ def MostrarTienda():
     fig.show()
 
 
-    
 def GraficoTienda():
     print("hola")
 
@@ -245,6 +248,9 @@ def Partida():
     if dimen<10:
         MessageBox.showerror("Advertencia", "El Numero minimo para el tablero es de 10")
     if dimen==10:
+        ventanaObtenerDimension.withdraw() 
+        textoDimension.delete(1.0, tk.END+"-1c")
+        vidas = 3
         B = int(((dimen-1)/10))+1
         #print(B)
         Portaaviones = Portaav * B
@@ -256,8 +262,11 @@ def Partida():
         print("Destructores: ", Destructores)
         print("Buques : " , Buques)
         MessageBox.showinfo("Exito", "Tablero creado con exito")
-        LLamado(dimen,Buques,monedasusuario)
+        LLamado(dimen,Buques,monedasusuario,vidas)
     if dimen>10 and dimen <= 20:
+        ventanaObtenerDimension.withdraw() 
+        textoDimension.delete(1.0, tk.END+"-1c")
+        vidas = 3
         B = int(((dimen-1)/10))+1
         #print(B)
         Portaaviones = Portaav * B
@@ -269,8 +278,11 @@ def Partida():
         print("Destructores: ", Destructores)
         print("Buques : " , Buques)
         MessageBox.showinfo("Exito", "Tablero creado con exito")
-        LLamado(dimen,Buques,monedasusuario)
+        LLamado(dimen,Buques,monedasusuario,vidas)
     if dimen>20:
+        ventanaObtenerDimension.withdraw() 
+        textoDimension.delete(1.0, tk.END+"-1c")
+        vidas = 3
         B = int(((dimen-1)/10))+1
         #print(B)
         Portaaviones = Portaav * B
@@ -282,7 +294,7 @@ def Partida():
         print("Destructores: ", Destructores)
         print("Buques : " , Buques)
         MessageBox.showinfo("Exito", "Tablero creado con exito")
-        LLamado(dimen,Buques,monedasusuario)
+        LLamado(dimen,Buques,monedasusuario,vidas)
     #print(dimen)
     print("Partida")
 
@@ -312,7 +324,9 @@ class prueba:
         while num < numBuques:
             rndx = random.randint(0,tam-1)
             rndy = random.randint(0,tam-1)
-            print("X: ",rndx, "Y: ", rndy)
+            print("Y: ", rndx+1, "X: ", rndy+1)
+            #print("X: ", rndy+1)
+            #print("X: ",rndx, "Y: ", rndy)
             if not self.Tablero[rndx][rndy].TieneBuque:
                 self.Tablero[rndx][rndy].TieneBuque = True
                 filaIni = max(rndx-1,0)
@@ -326,18 +340,26 @@ class prueba:
                 num += 1
 
 
-    def Pintar(self,avv,puntos):
+    def Pintar(self,avv,puntos,vida):
         global lblsalida 
         global lblpuntos
         global lblvidas
         #doc = open("Python/" + "Prueba" + ".txt", "w")
-        
-        vida = 3
-        lblvidas = vida
+
+
+        if self.Estado == "G":
+            #plt.suptitle("Has Ganado :D")
+            MessageBox.showinfo("Felicidades", "Has ganado el juego ")
+        elif self.Estado == "P":
+            MessageBox.showinfo("Siguie intentando", "Has perdido el juego ")
+            #plt.suptitle("Has Perdido :(")
+        else:
+            
         #lblpuntos = 0
         #punts = lblpuntos
-        lblsalida = avv
-        lblpuntos = puntos
+            lblsalida = avv
+            lblpuntos = puntos
+            lblvidas = vida
         plt.text(0, self.Tamano + 1.5, "Buques: " + str(avv) , fontdict=None)
         plt.text(4,self.Tamano  + 2, "Puntos: " + str(puntos) , fontdict=None )
         plt.text(8,self.Tamano  + 2, "Vidas: " + str(vida) , fontdict=None )
@@ -361,50 +383,52 @@ class prueba:
 
 
     def on_click(self,event):
-        global otrooooo, addpuntos, sall
-        sall = monedasusuario
+        global otrooooo, addpuntos, vidamenos, pruebapuntos
+        pruebapuntos = 0
         y = math.floor(event.xdata)
         x = self.Tamano - math.floor(event.ydata) - 1
         if str(event.button) == "MouseButton.LEFT":
             if self.Tablero[x][y].TieneBuque:
                 self.Tablero[x][y].Visible = True
                 addpuntos = lblpuntos+20
-                #otroa = addpuntos
                 otrooooo = lblsalida-1
-                print("X: ", y+1)
-                print("Y: ", x+1)
+                pruebapuntos + 20
                 lblpuntos + 20
-                #pass
-                print("Mina")
-                if otrooooo == 5:
-                    print("ya faltan 5")
-            #elif self.Tablero[x][y].NumBuquesAdyacentes:
+                if otrooooo == 0:
+                    self.Estado = "G"
+                    #MessageBox.showinfo("Felicidades", "Has ganado el juego ")
             elif not self.Tablero[x][y].Visible:
-                #self.Tablero[x][y].Visible = True
                 self.Tablero[x][y].Visible = True
                 otrooooo = lblsalida
                 addpuntos = lblpuntos
-                #addpuntos = otroa
+                vidamenos = lblvidas-1
                 yfinal = y+1
                 xfinal = x+1
-                res = requests.post(f'{base_url}/Movimiento/' + f'{xfinal}' + "/" + f'{yfinal}')
-                data = res.text#convertimos la respuesta en dict
+                if vidamenos == 0:
+                    #print("Llega a  0")
+                    self.Estado == "P"
+                    #MessageBox.showinfo("Siguie intentando", "Has perdido el juego ")
+                    res = requests.post(f'{base_url}/Movimiento/' + f'{xfinal}' + "/" + f'{yfinal}')
+                    data = res.text#convertimos la respuesta en dict
                 #print("X: ", y+1)
                 #print("Y: ", x+1)
         plt.clf()
-        self.Pintar(otrooooo,addpuntos)
+        self.Pintar(otrooooo,addpuntos,vidamenos)
         plt.draw()
 
 
-def LLamado(dimension,portaa,monedas):
+def LLamado(dimension,portaa,monedas,vida):
     Busca = prueba(dimension,portaa)
     plt.connect('button_press_event', Busca.on_click)
     plt.ion()
-    #print("ejecutados")
-    Busca.Pintar(portaa,monedas)
+    Busca.Pintar(portaa,monedas,vida)
     plt.draw()
-    #plt.show()
-    plt.pause(500)
+    while Busca.Estado == "":
+        plt.pause(0.1)
+    plt.ioff()
+    #Busca.Pintar(0,monedas,vida)
+    plt.show()
+    #plt.pause(500)
 
 def cerrar():
     MessageBox.showinfo("Adios", "Gracias por usar el programa")
@@ -605,8 +629,6 @@ textoDimension.place(x=150, y=110)
 btnCrearT = Button(ventanaObtenerDimension, height=2, width=15, text="Crear", command = lambda:[Partida()], background="#368807", font=("Verdana",10), fg="black")
 btnCrearT.place(x=80, y=190)
 ventanaObtenerDimension.withdraw()
-
-
 
 #--------------------------------- INICIANDO INTERFAZ------------------------------
 ventana.mainloop()

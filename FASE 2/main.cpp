@@ -110,7 +110,7 @@ public:
             int eddi = std::stoi(edadi);
             int monedi = std::stoi(monedasi);
             ListaUsuarios.registro_usuarioJ(contadorusuarios,nombreuser, encriptado, monedi, eddi, contra);
-            Arbol.insertar(contadorusuarios,nombreuser);
+            //Arbol.insertar(contadorusuarios,nombreuser);
             contadorusuarios++;
         }
 
@@ -161,7 +161,7 @@ public:
     archivo.close();
 
     response << "{ "
-                 << jsonkv("status", "ok ha sido enviado") << ",\n"
+                << jsonkv("status", "ok ha sido enviado") << ",\n"
                 " }";
     return;
     }
@@ -249,9 +249,27 @@ class Servidor5{
 
     void post(GloveHttpRequest &request, GloveHttpResponse &response)
     {
+
+        
+
+	    nodoUsuarios *inicio = ListaUsuarios.primero;
+
+	    cout << "  "<< left << setw( 15 ) << "NICK"<< " "<< left << setw( 12 ) << "Monedas"<< "   "<< left << setw( 12 ) << "Edad"<< " "<< left << setw( 15 ) << "Contra"<< " "<<endl;	
+	    while(inicio)
+	    {
+		cout << "  "<< left << setw( 15 ) <<inicio->nombreuser<< " "<< left << setw( 12 ) << inicio->monedas<< "   "<< left << setw( 12 ) << inicio->edad<< " "<< left << setw( 12 ) <<inicio->contracifrada<< " "<<endl;
+        Arbol.insertar(inicio->id,inicio->nombreuser);
+		inicio = inicio->siguiente;
+		if(inicio == ListaUsuarios.primero){
+			break;
+		    }
+	    }
+	    cout<<"\n\n";
+
+        
         Arbol.Grafo();
         response << "{ "
-                 << jsonkv("status", "ok ha sido enviado") << ",\n"
+                << jsonkv("status", "ok ha sido enviado") << ",\n"
                 " }";
         return;
 
@@ -315,7 +333,7 @@ class Servidor8{
     {
         ListaUsuarios.ordenarUsuarioDESC();
         response << "{ "
-                 << jsonkv("status", "ok ha sido enviado") << ",\n"
+                << jsonkv("status", "ok ha sido enviado") << ",\n"
                 " }";
         return;
 
@@ -437,6 +455,30 @@ class Servidor14{
     
 };
 
+
+class Servidor15{
+    public:
+    Servidor15(){
+
+    }
+        /*
+        void get(GloveHttpRequest &request, GloveHttpResponse &response)
+    {
+        response << ListTutorial.getTutorial();        
+    }
+        */
+        
+
+        void post(GloveHttpRequest &request, GloveHttpResponse &response)
+    {
+        ListTutorial.GraficoTutorial();
+        response << "{ "
+                << jsonkv("status", "ok ha sido enviado") << ",\n"
+                " }";
+        return;
+    }
+};
+
 int main(int argc, char *argv[])
 {
     Servidor cine;
@@ -453,6 +495,7 @@ int main(int argc, char *argv[])
     Servidor12 Modificando;
     Servidor13 Tienda;
     Servidor14 Pila;
+    Servidor15 Tuto;
 
     GloveHttpServer serv(8080, "", 2048);
     serv.compression("gzip, deflate");
@@ -501,6 +544,9 @@ int main(int argc, char *argv[])
     serv.addRest("/Movimiento/$X/$Y", 1,
                 GloveHttpServer::jsonApiErrorCall,
                 std::bind(&Servidor14::post, &Pila, ph::_1, ph::_2));
+    serv.addRest("/Tutorial/", 1,
+                GloveHttpServer::jsonApiErrorCall,
+                std::bind(&Servidor15::post, &Tuto, ph::_1, ph::_2));
     
     while (1)
     {
