@@ -79,7 +79,7 @@ public:
         string ruta;
         string pruebaa;
         string texto;
-        string nombreuser,contra,monedas,edad;
+        string iduser,nombreuser,contra,monedas,edad;
         string idarticuloo, categoriarticulo,precioarticuloo,nombrearticulo,srcarticulo;
         string alt, anch, x1, y1;
         ruta = request.special["Ruta"];
@@ -95,6 +95,7 @@ public:
         reader.parse(archivo, obj); 
         const Json::Value& usuariosJ = obj["usuarios"]; 
         for (int i = 0; i < usuariosJ.size(); i++){
+            iduser = usuariosJ[i]["id"].asString();
             //cout << "\nNick: " << usuariosJ[i]["nick"].asString();
             nombreuser = usuariosJ[i]["nick"].asString();
             //cout << "\nPass: " << usuariosJ[i]["password"].asString();
@@ -105,13 +106,15 @@ public:
             monedas = usuariosJ[i]["monedas"].asString();
             //cout << "\nEdad: " << usuariosJ[i]["edad"].asString();
             edad = usuariosJ[i]["edad"].asString();
+            std ::string idi = iduser;
             std ::string edadi = edad;
             std ::string monedasi = monedas;
+            int iddi = std::stoi(idi);
             int eddi = std::stoi(edadi);
             int monedi = std::stoi(monedasi);
-            ListaUsuarios.registro_usuarioJ(contadorusuarios,nombreuser, encriptado, monedi, eddi, contra);
+            ListaUsuarios.registro_usuarioJ(iddi,nombreuser, encriptado, monedi, eddi, contra);
             //Arbol.insertar(contadorusuarios,nombreuser);
-            contadorusuarios++;
+            //contadorusuarios++;
         }
 
         const Json::Value& articulosJ = obj["articulos"]; 
@@ -249,25 +252,25 @@ class Servidor5{
 
     void post(GloveHttpRequest &request, GloveHttpResponse &response)
     {
-
-        
-
-	    nodoUsuarios *inicio = ListaUsuarios.primero;
+        Arbol.vaciar();
+        nodoUsuarios *actual = new nodoUsuarios();
+	    actual = ListaUsuarios.primero;
 
 	    cout << "  "<< left << setw( 15 ) << "NICK"<< " "<< left << setw( 12 ) << "Monedas"<< "   "<< left << setw( 12 ) << "Edad"<< " "<< left << setw( 15 ) << "Contra"<< " "<<endl;	
-	    while(inicio)
+	    while(actual)
 	    {
-		cout << "  "<< left << setw( 15 ) <<inicio->nombreuser<< " "<< left << setw( 12 ) << inicio->monedas<< "   "<< left << setw( 12 ) << inicio->edad<< " "<< left << setw( 12 ) <<inicio->contracifrada<< " "<<endl;
-        Arbol.insertar(inicio->id,inicio->nombreuser);
-		inicio = inicio->siguiente;
-		if(inicio == ListaUsuarios.primero){
+		cout << "  "<< left << setw( 15 ) <<actual->nombreuser<< " "<< left << setw( 12 ) << actual->monedas<< "   "<< left << setw( 12 ) << actual->edad<< " "<< left << setw( 12 ) <<actual->contracifrada<< " "<<endl;
+        Arbol.insertar(actual->id,actual->nombreuser);
+		actual = actual->siguiente;
+        
+		if(actual == ListaUsuarios.primero){
 			break;
 		    }
 	    }
 	    cout<<"\n\n";
 
+        Arbol.Grafo();        
         
-        Arbol.Grafo();
         response << "{ "
                 << jsonkv("status", "ok ha sido enviado") << ",\n"
                 " }";

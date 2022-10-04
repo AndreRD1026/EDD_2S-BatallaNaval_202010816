@@ -38,10 +38,6 @@ def Login():
     labelUser.place(x=50, y=220)
     labelPass = Label (ventanaLog, text ="Ingrese Contraseña", font=("Verdana",16), background="#044D9A", fg="white")
     labelPass.place(x=50, y=280)
-
-    #img = PhotoImage(file="Python/usser.jpeg")
-    #labelPhoto = Label(ventanaLog, image=img)
-    #labelPhoto.place(x=230,y=30)
     textoUsuario = Text(ventanaLog, height=2, width=30, fg="white", font=("Consolas", 11)) 
     textoUsuario.place(x=230, y=210)
     textoPass = Entry(ventanaLog, fg="white", show="*", font=("Consolas", 11), width=30) 
@@ -82,8 +78,5 @@ btnSalir.place(x=180, y=330)
 #Labels
 labelEditor = Label (ventana, text ="BATALLA NAVAL", font=("Verdana",16), background="#044D9A", fg="white")
 labelEditor.place(x=180, y=90)
-
-
-
 
 ventana.mainloop()

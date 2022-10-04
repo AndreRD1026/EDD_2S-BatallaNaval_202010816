@@ -25,6 +25,7 @@ public:
     string GrafoArbolAbb(NodoB*rama);
     string GrafoRamas(NodoB*rama);
     string GrafoConexionRamas(NodoB*rama);
+    void vaciar();
 private:
 
 };

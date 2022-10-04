@@ -16,12 +16,6 @@ import requests
 
 base_url = "http://127.0.0.1:8080/"
 
-'''
-def abrirArchivo1():
-    res = requests.post(f'{base_url}/Carga/otro.json')
-    data = res.text#convertimos la respuesta en dict
-    print(data)
-'''
 def abrirArchivo1():
     try:
         global archivo

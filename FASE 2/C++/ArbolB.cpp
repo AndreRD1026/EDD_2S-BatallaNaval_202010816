@@ -1,6 +1,5 @@
 #include "ArbolB.h"
 
-//#include <windows.h> 
 #include <fstream>
 #include <string>
 #include <sstream>
@@ -18,6 +17,12 @@ void ArbolB::insertar(int id, string nombreuser) {
             raiz = obj;
         }
     }
+}
+
+void ArbolB::vaciar(){
+    NodoB* prueba;
+    prueba = raiz;
+    raiz = NULL;
 }
 
 /**

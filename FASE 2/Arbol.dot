@@ -1,0 +1,22 @@
+digraph G {
+node[shape=record]
+		//Agregar Nodos Rama
+R0x12c2043e0[label="<C1>|ID: 15\n Nick: rada|<C2>"];
+R0x12c204360[label="<C1>|ID: 9\n Nick: harold|<C2>|ID: 12\n Nick: ludwing|<C3>"];
+R0x12af05ae0[label="<C1>|ID: 3\n Nick: angel|<C2>|ID: 6\n Nick: andre1|<C3>"];
+R0x12af05700[label="ID: 0\n Nick: EDD|ID: 2\n Nick: luis"];
+R0x12af058a0[label="ID: 4\n Nick: pedro|ID: 5\n Nick: emilio"];
+R0x12af05a20[label="ID: 7\n Nick: luis1|ID: 8\n Nick: diego"];
+R0x12c204120[label="ID: 10\n Nick: enrique|ID: 11\n Nick: juan"];
+R0x12c2042a0[label="ID: 13\n Nick: pablo_quan|ID: 14\n Nick: marcos1"];
+R0x12c204420[label="ID: 16\n Nick: rada12"];
+		//Agregar conexiones
+R0x12c2043e0:C1->R0x12c204360;
+R0x12c204360:C1->R0x12af05ae0;
+R0x12af05ae0:C1->R0x12af05700;
+R0x12af05ae0:C2->R0x12af058a0;
+R0x12af05ae0:C3->R0x12af05a20;
+R0x12c204360:C2->R0x12c204120;
+R0x12c204360:C3->R0x12c2042a0;
+R0x12c2043e0:C2->R0x12c204420;
+}
