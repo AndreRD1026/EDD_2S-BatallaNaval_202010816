@@ -9,8 +9,6 @@ class ListaCircular{
 public:
     nodoUsuarios*primero;
     nodoUsuarios*ultimo;
-
-
     ListaCircular(){
         primero = NULL;
         ultimo = NULL;
@@ -18,7 +16,6 @@ public:
     void registro_usuario(int id,string nombreuser, string contracifrada, int monedas ,int edad, string contra);
     void registro_usuarioJ(int id,string nombreuser, string contracifrada, int monedas ,int edad, string contra);
     void lista_usuarios();
-    //void GraficoListaCDobleEnlace();
     void ordenarUsuarioASC();
     void ordenarUsuarioDESC();
     void ListaUsuarioASC(nodoUsuarios *cabeza);

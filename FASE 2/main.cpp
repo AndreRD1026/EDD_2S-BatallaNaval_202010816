@@ -15,7 +15,6 @@
 
 
 int contadorusuarios = 0;
-
 ListaCircular ListaUsuarios;
 ListaArticulos ListaArt;
 ListaTutorial ListTutorial;
@@ -67,7 +66,7 @@ public:
         else
         {
             response << "{ "
-                 << jsonkv("status", "ok tengo el get") << ",\n"
+                << jsonkv("status", "ok tengo el get") << ",\n"
                 " }";
         }
         
@@ -113,8 +112,6 @@ public:
             int eddi = std::stoi(edadi);
             int monedi = std::stoi(monedasi);
             ListaUsuarios.registro_usuarioJ(iddi,nombreuser, encriptado, monedi, eddi, contra);
-            //Arbol.insertar(contadorusuarios,nombreuser);
-            //contadorusuarios++;
         }
 
         const Json::Value& articulosJ = obj["articulos"]; 
@@ -168,7 +165,6 @@ public:
                 " }";
     return;
     }
-
 };
 
 

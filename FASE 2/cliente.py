@@ -1,5 +1,3 @@
-from audioop import add
-from optparse import Values
 import sys
 import json
 from tkinter import*
@@ -339,8 +337,6 @@ class prueba:
         global lblpuntos
         global lblvidas
         #doc = open("Python/" + "Prueba" + ".txt", "w")
-
-
         if self.Estado == "G":
             #plt.suptitle("Has Ganado :D")
             MessageBox.showinfo("Felicidades", "Has ganado el juego ")
@@ -401,7 +397,7 @@ class prueba:
                 if vidamenos == 0:
                     #print("Llega a  0")
                     self.Estado == "P"
-                    #MessageBox.showinfo("Siguie intentando", "Has perdido el juego ")
+                    MessageBox.showinfo("Siguie intentando", "Has perdido el juego ")
                     res = requests.post(f'{base_url}/Movimiento/' + f'{xfinal}' + "/" + f'{yfinal}')
                     data = res.text#convertimos la respuesta en dict
                 #print("X: ", y+1)
@@ -420,7 +416,6 @@ def LLamado(dimension,portaa,monedas,vida):
     while Busca.Estado == "":
         plt.pause(0.1)
     plt.ioff()
-    #Busca.Pintar(0,monedas,vida)
     plt.show()
     #plt.pause(500)
 
