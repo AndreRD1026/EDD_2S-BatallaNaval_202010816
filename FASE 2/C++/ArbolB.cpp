@@ -344,15 +344,15 @@ void ArbolB::Grafo() {
 
     //------->escribir archivo
     ofstream file;
-    file.open("Pruebas.dot");
+    file.open("Arbol.dot");
     file << dotFull;
     file.close();
 
     //------->generar png
-    system(("dot -Tpng Pruebas.dot -o  Pruebas.png"));
+    system(("dot -Tpng Arbol.dot -o  Arbol.png"));
 
     //------>abrir archivo
-    system(("Pruebas.png"));
+    system(("Arbol.png"));
 
 }
 

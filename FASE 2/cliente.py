@@ -145,7 +145,7 @@ def verusuario():
     res = requests.get(f'{base_url}/Usuarios/')
     data = res.text#convertimos la respuesta en dict
     #print(data)
-    im = Image.open('Pruebas.png')
+    im = Image.open('Arbol.png')
     im.show()
 
 def verArticulos():
