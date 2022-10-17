@@ -12,6 +12,9 @@ import os
 from PIL import Image
 import requests
 
+ListaUsuarios = []
+ListaArticulos = []
+
 base_url = "http://127.0.0.1:8080/"
 
 def abrirArchivo1():
@@ -19,11 +22,44 @@ def abrirArchivo1():
         global archivo
         archivo = filedialog.askopenfilename(title="Seleccionar archivo", filetypes=[("json", "*.json")])
         #print(archivo)
-        prueba = os.path.split(archivo)
+        otro = open(archivo)
+        otro1 = otro.read()
+        dicc = json.loads(otro1)
+        print(dicc['usuarios'])
+        #print(otro.read())
+        #same = json.loads(otro1)
+        #for user in otro1:
+
+            #diccionario = json.loads(user)
+            #print(user['id'])
+            #for uss in user:
+            #   print(uss.get('id'))
+        '''
+            idAr = []
+            nombresAr = []
+            cateAr =[]
+            precioAr = []
+            for pruebaaa in otro:
+                ides = pruebaaa.get('Id')
+                nombr = pruebaaa.get('nombre')
+                catt = pruebaaa.get('categoria')
+                prec = pruebaaa.get('precio')
+            #print(articulo.get('Id'))
+            #print(articulo.get('categoria'))
+            #print(articulo.get('precio'))
+            #print(articulo.get('nombre'))
+            
+                idAr.append(ides)
+                nombresAr.append(nombr)
+                cateAr.append(catt)
+                precioAr.append(prec)
+            
+            '''
+        #prueba = os.path.split(archivo)
         #print(prueba)
-        res = requests.post(f'{base_url}/Carga/' + f'{prueba[1]}')
-        data = res.text#convertimos la respuesta en dict
-        print(data)
+        #res = requests.post(f'{base_url}/Carga/' + f'{prueba[1]}')
+        #data = res.text#convertimos la respuesta en dict
+        #print(data)
         MessageBox.showinfo("Exito!", "Archivo Cargado con exito")
     except:
         MessageBox.showwarning("Alerta", "Debe cargar un archivo")
@@ -298,6 +334,11 @@ class Casilla:
         self.TieneBuque = False
         self.NumBuquesAdyacentes = 0
 
+    def __str__(self):
+        if self.Visible:
+            return "X"
+        return "?"
+
 class prueba:
     def __init__(self, tam, numBuques):
         self.Tamano = tam
@@ -310,15 +351,13 @@ class prueba:
             f = []
             for j in range(tam):
                 f.append(Casilla())
+                
             self.Tablero.append(f)
-            #print(self.Tablero.append(f))
         num = 0
         while num < numBuques:
             rndx = random.randint(0,tam-1)
             rndy = random.randint(0,tam-1)
             print("Y: ", rndx+1, "X: ", rndy+1)
-            #print("X: ", rndy+1)
-            #print("X: ",rndx, "Y: ", rndy)
             if not self.Tablero[rndx][rndy].TieneBuque:
                 self.Tablero[rndx][rndy].TieneBuque = True
                 filaIni = max(rndx-1,0)
@@ -331,12 +370,13 @@ class prueba:
                             self.Tablero[i][j].NumBuquesAdyacentes += 1
                 num += 1
 
+    def imprimiendo(self):
+        print(self.Tablero)
 
     def Pintar(self,avv,puntos,vida):
         global lblsalida 
         global lblpuntos
         global lblvidas
-        #doc = open("Python/" + "Prueba" + ".txt", "w")
         if self.Estado == "G":
             #plt.suptitle("Has Ganado :D")
             MessageBox.showinfo("Felicidades", "Has ganado el juego ")
@@ -358,17 +398,25 @@ class prueba:
             plt.plot ([n,n],[0,self.Tamano], color="black", linewidth=1)
         for i in range(self.Tamano):
             for j in range(self.Tamano):
+                prueb = j
+                #print("Sale? ", prueb)
                 px = j + 0.5
                 py = self.Tamano - (i + 0.5)
                 if self.Tablero[i][j].Visible:
                     if self.Tablero[i][j].TieneBuque:
                         plt.plot([px], [py], linestyle='None', marker='.', markersize=8, color='teal')
-                        #doc.write([px] + '\n')
+                        #print("Hola ",px)
+                        #print("px: ", px)
+                        #print("py", py)
                     else:
                         #if self.Tablero[i][j].NumBuquesAdyacentes != 0:
                         plt.plot([px], [py], linestyle='None', marker='.', markersize=8, color='red')
                 else: 
                     plt.plot([px], [py], linestyle='None', marker='.', markersize=4,color='black')
+                    #print("*".strip())
+                    #print("px1: ", px)
+                    #print("py2: ", py)
+
         #doc.close()
 
 
@@ -412,6 +460,7 @@ def LLamado(dimension,portaa,monedas,vida):
     plt.connect('button_press_event', Busca.on_click)
     plt.ion()
     Busca.Pintar(portaa,monedas,vida)
+    Busca.imprimiendo()
     plt.draw()
     while Busca.Estado == "":
         plt.pause(0.1)
