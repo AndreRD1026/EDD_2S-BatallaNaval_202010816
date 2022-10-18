@@ -66,10 +66,6 @@ def Comprobar(salida,salida2,salida3):
 
     for uss in ListaUsuarios:
         if salida == uss.nick:
-            #print("Existe")
-            #print(uss.id)
-            #print(uss.passw)
-            #encontrado = True
             return True
     return False
 
@@ -153,16 +149,66 @@ def mandarRegistro(salida,salida2,salida3):
     cerrandoRegistro()    
 
 def cerrandoRegistro():
-    #print("llegando")
     MessageBox.showinfo("Exito!", "Usuario Registrado con exito")
     ventana.deiconify()
 
 
-def mandarLogin(usuario, contra):
+def verificarLogin(usuario, contra):
+    global usuariologin, contralogin,edadlogin,monedaslogin
+    cifrada = hashlib.sha256(contra.encode('utf-8')).hexdigest()
+    for uss in ListaUsuarios:
+        if usuario == uss.nick and cifrada == uss.passcifrada:
+            if usuario == "EDD":
+                usuariologin = usuario
+                contralogin = uss.passw
+                edadlogin = uss.edad
+                monedaslogin = uss.monedas
+                return True
+            else:
+                usuariologin = usuario
+                contralogin = uss.passw
+                edadlogin = uss.edad
+                monedaslogin = uss.monedas
+                return "Normal"
+    return False
+
+def mandarLogin(usuario,contra):
     global usuariobusqueda, monedasusuario
-    print(usuario)
+    verificado = verificarLogin(usuario,contra)
+    if verificado == True:
+        ventanaLog.withdraw() 
+        MessageBox.showinfo("Exito!", "Inicio de sesion correcto")
+        ventanaAdmin.deiconify()
+    if verificado == "Normal":
+        ventanaLog.withdraw()
+        MessageBox.showinfo("Exito!", "Inicio de sesion correcto")
+        textoUsuarioC.insert(INSERT, usuariologin)
+        textoPassC.insert(INSERT, contralogin)
+        textoEdadC.insert(INSERT,edadlogin)
+        usuariobusqueda = usuariologin
+        monedasusuario = int(monedaslogin)
+        ventanaUser.deiconify()
+        print("Monedas usuario : ", monedaslogin)
+    if verificado == False:
+        MessageBox.showinfo("Error!", "Usuario o contraseña incorrectos")
+        ventanaLog.deiconify()
+
+    '''print(usuario)
     print(contra)
-    res = requests.get(f'{base_url}/Login/' + f'{usuario}' + "/" + f'{contra}')
+    cifrada = hashlib.sha256(contra.encode('utf-8')).hexdigest()
+    for uss in ListaUsuarios:
+        if usuario == uss.nick and cifrada == uss.passcifrada:
+            if usuario == "EDD":
+                print(uss.edad)
+                print("admin")
+                ventanaLog.withdraw() 
+                MessageBox.showinfo("Exito!", "Inicio de sesion correcto")
+                ventanaAdmin.deiconify()
+            else:
+                print("Encontrado")
+    return False'''
+
+    '''res = requests.get(f'{base_url}/Login/' + f'{usuario}' + "/" + f'{contra}')
     data = res.text#convertimos la respuesta en dict
     print(data)
     if data == "admin":
@@ -190,7 +236,7 @@ def mandarLogin(usuario, contra):
         ventanaLog.deiconify()
     if data == "inexistente":
         MessageBox.showinfo("Inesperado!", "El usuario no existe")
-        ventanaLog.deiconify()
+        ventanaLog.deiconify() '''
 
 
 def mandarDatos(usuario):
@@ -399,9 +445,6 @@ class prueba:
                             self.Tablero[i][j].NumBuquesAdyacentes += 1
                 num += 1
 
-    def imprimiendo(self):
-        print(self.Tablero)
-
     def Pintar(self,avv,puntos,vida):
         global lblsalida 
         global lblpuntos
@@ -427,7 +470,7 @@ class prueba:
             plt.plot ([n,n],[0,self.Tamano], color="black", linewidth=1)
         for i in range(self.Tamano):
             for j in range(self.Tamano):
-                prueb = j
+                #prueb = j
                 #print("Sale? ", prueb)
                 px = j + 0.5
                 py = self.Tamano - (i + 0.5)
@@ -475,8 +518,8 @@ class prueba:
                     #print("Llega a  0")
                     self.Estado == "P"
                     MessageBox.showinfo("Siguie intentando", "Has perdido el juego ")
-                    res = requests.post(f'{base_url}/Movimiento/' + f'{xfinal}' + "/" + f'{yfinal}')
-                    data = res.text#convertimos la respuesta en dict
+                    #res = requests.post(f'{base_url}/Movimiento/' + f'{xfinal}' + "/" + f'{yfinal}')
+                    #data = res.text#convertimos la respuesta en dict
                 #print("X: ", y+1)
                 #print("Y: ", x+1)
         plt.clf()
@@ -489,7 +532,7 @@ def LLamado(dimension,portaa,monedas,vida):
     plt.connect('button_press_event', Busca.on_click)
     plt.ion()
     Busca.Pintar(portaa,monedas,vida)
-    Busca.imprimiendo()
+    #Busca.imprimiendo()
     plt.draw()
     while Busca.Estado == "":
         plt.pause(0.1)
