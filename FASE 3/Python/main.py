@@ -18,7 +18,14 @@ import hashlib
 ListaUsuarios = []
 ListaArticulos = []
 
+contauser = 0
+
 base_url = "http://127.0.0.1:8080/"
+
+
+admincifrado = hashlib.sha256("edd123".encode('utf-8')).hexdigest()
+administrador =Usuario(0,"EDD","edd123",0,50,admincifrado)
+ListaUsuarios.append(administrador)
 
 def abrirArchivo1():
     try:
@@ -55,28 +62,38 @@ def abrirArchivo1():
     except:
         MessageBox.showwarning("Alerta", "Debe cargar un archivo")
 
-def verusuarios():
-    k = 0
-    y = 0
-    while k < len(ListaUsuarios):
-        #if 'andre1' == ListaUsuarios[k].nick:
-        #    print("encontrado")
-        #    print(ListaUsuarios[k].id)
-        #    print(ListaUsuarios[k].passw)
-        #    print(ListaUsuarios[k].monedas)
-        #    print(ListaUsuarios[k].edad)
-        print(ListaUsuarios[k].id, " ", ListaUsuarios[k].nick)
-        #else:
-        #    print("No existe")
-        k+=1
-    
-    while y < len(ListaArticulos):
-        print(ListaArticulos[y].idArticulo, " ", ListaArticulos[y].nombreArticulo)
-        y+=1
-
-
-
 def Comprobar(salida,salida2,salida3):
+
+    for uss in ListaUsuarios:
+        if salida == uss.nick:
+            #print("Existe")
+            #print(uss.id)
+            #print(uss.passw)
+            #encontrado = True
+            return True
+    return False
+
+
+def RegistroUser():
+    validar = Comprobar(textoUsuario.get(1.0, tk.END+"-1c"),textoPass.get(1.0, tk.END+"-1c"),textoEdad.get(1.0, tk.END+"-1c"))
+    if validar == False:
+        iduser = 1
+        nickuser = textoUsuario.get(1.0, tk.END+"-1c")
+        passnormal = textoPass.get(1.0, tk.END+"-1c")
+        monedasuser = 0
+        eddaduser = textoEdad.get(1.0, tk.END+"-1c")
+        passcifrada=hashlib.sha256(passnormal.encode('utf-8')).hexdigest()
+        nuevoRegistro = Usuario(iduser,nickuser,passnormal,monedasuser,eddaduser,passcifrada)
+        ListaUsuarios.append(nuevoRegistro)
+        textoUsuario.delete(1.0, tk.END+"-1c")
+        textoPass.delete(1.0, tk.END+"-1c")
+        textoEdad.delete(1.0, tk.END+"-1c")
+        ventanaReg.withdraw()
+        cerrandoRegistro()
+    if validar == True:
+        MessageBox.showinfo("Problema", "Ya existe un usuario con este Nick")
+    
+    '''
     res = requests.get(f'{base_url}/Verificar/' + f'{salida}' + "/" + f'{salida2}' + "/" +  f'{salida3}')
     data = res.text#convertimos la respuesta en dict
 
@@ -93,6 +110,7 @@ def Comprobar(salida,salida2,salida3):
         textoPass.delete(1.0, tk.END+"-1c")
         textoEdad.delete(1.0, tk.END+"-1c")
         ventanaReg.withdraw()
+    '''
 
 def ComprobarCambio(salidaa,salidaa2,salidaa3):
 
@@ -497,9 +515,8 @@ ventana.geometry(posicion)
 #Botones
 btnCargarArchivo = Button(ventana, height=2, width=15, text="Cargar Usuarios", command = abrirArchivo1, background="#368807", font=("Verdana",10), fg="black")
 btnCargarArchivo.place(x=180, y=150)
-btnRegistrar = Button(ventana, height=2, width=15, text="Registrar Usuario", command=lambda:[verusuarios()], background="#10139E", font=("Verdana",10), fg="black")
-
-#btnRegistrar = Button(ventana, height=2, width=15, text="Registrar Usuario", command=lambda:[ ventana.withdraw(),ventanaReg.deiconify()], background="#10139E", font=("Verdana",10), fg="black")
+#btnRegistrar = Button(ventana, height=2, width=15, text="Registrar Usuario", command=lambda:[verusuarios()], background="#10139E", font=("Verdana",10), fg="black")
+btnRegistrar = Button(ventana, height=2, width=15, text="Registrar Usuario", command=lambda:[ ventana.withdraw(),ventanaReg.deiconify()], background="#10139E", font=("Verdana",10), fg="black")
 btnRegistrar.place(x=180, y=210)
 btnLogin = Button(ventana, height=2, width=15, text="Login",command=lambda:[ventana.withdraw(),ventanaLog.deiconify()], background="#8E8C08", font=("Verdana",10), fg="black")
 btnLogin.place(x=180, y=270)
@@ -534,7 +551,7 @@ textoPass = Text(ventanaReg, height=2, width=30, fg="white", font=("Consolas", 1
 textoPass.place(x=230, y=255)
 textoEdad = Text(ventanaReg, height=2, width=30, fg="white", font=("Consolas", 11))
 textoEdad.place(x=230,y=330)
-btnRegistro = Button(ventanaReg, height=2, width=15, text="Registrar", command = lambda:[Comprobar(textoUsuario.get(1.0, tk.END+"-1c"),textoPass.get(1.0, tk.END+"-1c"),textoEdad.get(1.0, tk.END+"-1c"))], background="#368807", font=("Verdana",10), fg="black")
+btnRegistro = Button(ventanaReg, height=2, width=15, text="Registrar", command = lambda:[RegistroUser()], background="#368807", font=("Verdana",10), fg="black")
 #btnRegistro = Button(ventanaReg, height=2, width=15, text="Registrar", command = lambda:[Comprobar(textoUsuario.get(1.0, tk.END+"-1c"),textoPass.get(1.0, tk.END+"-1c"),textoEdad.get(1.0, tk.END+"-1c"))], background="#368807", font=("Verdana",10), fg="black")
 btnRegistro.place(x=180, y=400)
 btnRegreso = Button(ventanaReg, height=2, width=8, text="Regresar", command = lambda:[textoUsuario.delete(1.0, tk.END+"-1c"),textoPass.delete(1.0, tk.END+"-1c"),textoEdad.delete(1.0, tk.END+"-1c"), ventanaReg.withdraw(), ventana.deiconify()], background="#368807", font=("Verdana",10), fg="black")
