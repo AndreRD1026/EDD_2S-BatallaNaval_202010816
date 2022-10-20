@@ -1,3 +1,5 @@
+from curses.ascii import SUB
+from pickle import MARK
 import sys
 import json
 from tkinter import*
@@ -9,6 +11,8 @@ import plotly.graph_objects as go
 import random
 import math
 import os
+import numpy as np
+import pandas as pd
 from PIL import Image
 import requests
 from usuario import Usuario
@@ -18,7 +22,7 @@ import hashlib
 ListaUsuarios = []
 ListaArticulos = []
 
-contauser = 0
+contauser = 1
 
 base_url = "http://127.0.0.1:8080/"
 
@@ -336,70 +340,85 @@ def MostrarTienda():
 
 
 def GraficoTienda():
+    #definir figura y ejes
+    fig, ax = plt.subplots()
+    idAr1 = []
+    nombresAr = []
+    categArt = []
+#crear valores para la tabla
+    for art in ListaArticulos:
+        print(art.idArticulo)
+        ides = art.idArticulo
+        cates = art.categoriaArticulo
+        idAr1.append(ides)
+        categArt.append(cates)
+        table_data = [[idAr1, categArt]]
+    columns = ("ID", "Categoria")
+
+
+    
+    
+    '''table_data = [ ["Id", "Nombre"],
+        ["Jugador 1", 30],
+        ["Jugador 2", 20],
+        ["Jugador 3", 33],
+        ["Jugador 4", 25],
+        ["Jugador 5", 12]
+    ]'''
+
+    #create table
+    table = ax.table(cellText = table_data, loc = 'center')
+
+    #modificar tabla de
+    table.set_fontsize (14)
+    table.scale(1,4)
+    ax.axis('off')
+
+    #plt.table(cellText=table_data, colLabels=columns, loc="bottom")
+
+    #display table
+    plt.show()
     print("hola")
 
-def Partida():
-    global Portaaviones, Submarino, Destructores, Buques
-    Portaav = 1
-    Subma = 2
-    Destruc = 3
-    Buq = 4
-    # Formula para determinar la cantidad de barcos por tablero
-    # B(m) = ((m-1)/10)+1
-    dimens = textoDimension.get(1.0,tk.END+"-1c")
-    dimen = int(dimens)
-    if dimen<10:
-        MessageBox.showerror("Advertencia", "El Numero minimo para el tablero es de 10")
-    if dimen==10:
-        ventanaObtenerDimension.withdraw() 
-        textoDimension.delete(1.0, tk.END+"-1c")
-        vidas = 3
-        B = int(((dimen-1)/10))+1
-        #print(B)
-        Portaaviones = Portaav * B
-        Submarino = Subma * B
-        Destructores = Destruc * B
-        Buques = Buq * B
-        print("Portaaviones: ", Portaaviones)
-        print("Submarinos : ", Submarino)
-        print("Destructores: ", Destructores)
-        print("Buques : " , Buques)
-        MessageBox.showinfo("Exito", "Tablero creado con exito")
-        LLamado(dimen,Buques,monedasusuario,vidas)
-    if dimen>10 and dimen <= 20:
-        ventanaObtenerDimension.withdraw() 
-        textoDimension.delete(1.0, tk.END+"-1c")
-        vidas = 3
-        B = int(((dimen-1)/10))+1
-        #print(B)
-        Portaaviones = Portaav * B
-        Submarino = Subma * B
-        Destructores = Destruc * B
-        Buques = Buq * B
-        print("Portaaviones: ", Portaaviones)
-        print("Submarinos : ", Submarino)
-        print("Destructores: ", Destructores)
-        print("Buques : " , Buques)
-        MessageBox.showinfo("Exito", "Tablero creado con exito")
-        LLamado(dimen,Buques,monedasusuario,vidas)
-    if dimen>20:
-        ventanaObtenerDimension.withdraw() 
-        textoDimension.delete(1.0, tk.END+"-1c")
-        vidas = 3
-        B = int(((dimen-1)/10))+1
-        #print(B)
-        Portaaviones = Portaav * B
-        Submarino = Subma * B
-        Destructores = Destruc * B
-        Buques = Buq * B
-        print("Portaaviones: ", Portaaviones)
-        print("Submarinos : ", Submarino)
-        print("Destructores: ", Destructores)
-        print("Buques : " , Buques)
-        MessageBox.showinfo("Exito", "Tablero creado con exito")
-        LLamado(dimen,Buques,monedasusuario,vidas)
-    #print(dimen)
-    print("Partida")
+def GraficoTiendaaa():
+    idAr1 = []
+    nombresAr = []
+    categArt =[]
+    precioAr = []
+    #Haga que este ejemplo sea reproducible
+    np.random.seed(0)
+
+    #definir figura y ejes
+    fig, ax = plt.subplots()
+
+    # ocultar los ejes
+    fig.patch.set_visible(False)
+    ax.axis ('off')
+    ax.axis ('off')
+
+    for art in ListaArticulos:
+        print(art.idArticulo)
+        ides = art.idArticulo
+        cates = art.categoriaArticulo
+        nombrear = art.nombreArticulo
+        precioar = art.precioArticulo
+        idAr1.append(ides)
+        nombresAr.append(nombrear)
+        categArt.append(cates)
+        precioAr.append(precioar)
+        #df = pd.DataFrame(idAr1,nombresAr, columns=['ID',"Nombre"])
+        df = pd.DataFrame(data=[idAr1,nombresAr], columns=["ID", "NOMBRE"])
+
+    #create data
+    #df = pd.DataFrame(np.random.rand(20, 2), columns=[' First ', ' Second '])
+
+    #create table
+    table = ax.table(cellText = df.values, colLabels = df.columns, loc = 'center')
+
+    #display table
+    fig.tight_layout()
+    plt.show()
+
 
 
 #---------------------------------CREACION DEL JUEGO ------------------------------
@@ -526,7 +545,6 @@ class prueba:
         self.Pintar(otrooooo,addpuntos,vidamenos)
         plt.draw()
 
-
 def LLamado(dimension,portaa,monedas,vida):
     Busca = prueba(dimension,portaa)
     plt.connect('button_press_event', Busca.on_click)
@@ -540,9 +558,480 @@ def LLamado(dimension,portaa,monedas,vida):
     plt.show()
     #plt.pause(500)
 
+#---------------------------------CREACION DEL JUEGO 2.0 ------------------------------
+def Partida():
+    global Portaaviones, Submarino, Destructores, Buques
+    global FILAS, COLUMNAS, MAR
+    global BUQUE, DESTRUCTOR, SUBMARINO, DESTRUCTOR_VERTICAL, SUBMARINO_VERTICAL
+    global PORTAAVIONES, PORTAAVIONES_VERTICAL, DISPARO_FALLADO, DISPARO_ACERTADO, DISPAROS_INICIALES
+    global CANTIDAD_BARCOS_INICIALES, JUGADOR_1, JUGADOR_2
+    
+    MAR = " "
+    BUQUE = "B"  # Ocupa una celda
+    DESTRUCTOR = "D"  # Ocupa dos celdas
+    SUBMARINO = "S" # Ocupa tres celdas
+    DESTRUCTOR_VERTICAL = "A"  # Ocupa dos celdas
+    SUBMARINO_VERTICAL = "C" # Ocupa tres celdas
+    PORTAAVIONES = "P" # Ocupa cuatro celdas
+    PORTAAVIONES_VERTICAL = "V" # Ocupa cuatro celdas
+    DISPARO_FALLADO = "-"
+    DISPARO_ACERTADO = "*"
+    DISPAROS_INICIALES = 5
+    CANTIDAD_BARCOS_INICIALES = 10
+    JUGADOR_1 = "J1"
+    JUGADOR_2 = "J2"
+    Portaav = 1
+    Subma = 2
+    Destruc = 3
+    Buq = 4
+    # Formula para determinar la cantidad de barcos por tablero
+    # B(m) = ((m-1)/10)+1
+    dimens = textoDimension.get(1.0,tk.END+"-1c")
+    dimen = int(dimens)
+    if dimen<10:
+        MessageBox.showerror("Advertencia", "El Numero minimo para el tablero es de 10")
+    if dimen==10:
+        FILAS = dimen
+        COLUMNAS = dimen
+        ventanaObtenerDimension.withdraw() 
+        textoDimension.delete(1.0, tk.END+"-1c")
+        vidas = 3
+        B = int(((dimen-1)/10))+1
+        #print(B)
+        Portaaviones = Portaav * B
+        Submarino = Subma * B
+        Destructores = Destruc * B
+        Buques = Buq * B
+        print("Portaaviones: ", Portaaviones)
+        print("Submarinos : ", Submarino)
+        print("Destructores: ", Destructores)
+        print("Buques : " , Buques)
+        MessageBox.showinfo("Exito", "Tablero creado con exito")
+        jugar()
+    if dimen>10 and dimen <= 20:
+        FILAS = dimen
+        COLUMNAS = dimen
+        ventanaObtenerDimension.withdraw() 
+        textoDimension.delete(1.0, tk.END+"-1c")
+        vidas = 3
+        B = int(((dimen-1)/10))+1
+        #print(B)
+        Portaaviones = Portaav * B
+        Submarino = Subma * B
+        Destructores = Destruc * B
+        Buques = Buq * B
+        print("Portaaviones: ", Portaaviones)
+        print("Submarinos : ", Submarino)
+        print("Destructores: ", Destructores)
+        print("Buques : " , Buques)
+        MessageBox.showinfo("Exito", "Tablero creado con exito")
+        jugar()
+    if dimen>20:
+        FILAS = dimen
+        COLUMNAS = dimen
+        ventanaObtenerDimension.withdraw() 
+        textoDimension.delete(1.0, tk.END+"-1c")
+        vidas = 3
+        B = int(((dimen-1)/10))+1
+        #print(B)
+        Portaaviones = Portaav * B
+        Submarino = Subma * B
+        Destructores = Destruc * B
+        Buques = Buq * B
+        print("Portaaviones: ", Portaaviones)
+        print("Submarinos : ", Submarino)
+        print("Destructores: ", Destructores)
+        print("Buques : " , Buques)
+        MessageBox.showinfo("Exito", "Tablero creado con exito")
+        jugar()
+    print("Partida")
+
+
+
+def obtener_matriz_inicial():
+    matriz = []
+    for y in range(FILAS):
+        # Agregamos un arreglo a la matriz, que sería una fila básicamente
+        matriz.append([])
+        for x in range(COLUMNAS):
+            # Y luego agregamos una celda a esa fila. Por defecto lleva "Mar"
+            matriz[y].append(MAR)
+    return matriz
+
+
+def imprimir_columna_de_numeros():
+    print("|   ", end="")
+    for x in range(FILAS):
+        print(f"| {x+1} ", end="")
+    print("|")
+
+
+
+def imprimir_separador_horizontal():
+    # Imprimir un renglón dependiendo de las columnas
+    for _ in range(COLUMNAS+1):
+        print("+---", end="")
+    print("+")
+
+
+def imprimir_fila_de_numeros():
+    print("|   ", end="")
+    for x in range(COLUMNAS):
+        print(f"| {x+1} ", end="")
+    print("|")
+
+
+# Indica si una coordenada de la matriz está vacía
+def es_mar(x, y, matriz):
+    return matriz[y][x] == MAR
+
+
+def coordenada_en_rango(x, y):
+    return x >= 0 and x <= COLUMNAS-1 and y >= 0 and y <= FILAS-1
+
+def colocar_e_imprimir_barcos(matriz, cantidad_barcos, jugador):
+    # Dividimos y redondeamos a entero hacia abajo (ya que no podemos colocar una parte no entera de un barco)
+    barcos_una_celda = 4
+    barcos_dos_celdas_verticales = 2
+    barcos_dos_celdas_horizontales = 1
+    barcos_tres_celdas_verticales = 1
+    barcos_tres_celdas_horizontales = 1
+    barcos_cuatro_celdas_horizontiles = 1
+    barcos_cuatro_celdas_verticales = 0
+
+    if jugador == JUGADOR_1:
+        print("Imprimiendo barcos del jugador 1 ")
+    else:
+        print("Imprimiendo barcos del jugador 2 ")
+    print(f"Barcos de una celda: {barcos_una_celda}\nBarcos verticales de dos celdas: {barcos_dos_celdas_verticales}\nBarcos horizontales de dos celdas: {barcos_dos_celdas_horizontales}\nTotal: {barcos_una_celda+barcos_dos_celdas_verticales+barcos_dos_celdas_horizontales}")
+    # Primero colocamos los de dos celdas para que se acomoden bien
+    matriz = colocar_barcos_de_cuatro_celdas_horizontal(
+        barcos_cuatro_celdas_horizontiles, PORTAAVIONES, matriz)
+    matriz = colocar_barcos_de_cuatro_celdas_vertical(
+        barcos_cuatro_celdas_verticales, PORTAAVIONES_VERTICAL, matriz)
+    matriz = colocar_barcos_de_tres_celdas_horizontal(
+        barcos_tres_celdas_horizontales, SUBMARINO, matriz)
+    matriz = colocar_barcos_de_tres_celdas_vertical(
+        barcos_tres_celdas_verticales, SUBMARINO_VERTICAL, matriz)
+    matriz = colocar_barcos_de_dos_celdas_horizontal(
+        barcos_dos_celdas_horizontales, DESTRUCTOR, matriz)
+    matriz = colocar_barcos_de_dos_celdas_vertical(
+        barcos_dos_celdas_verticales, DESTRUCTOR_VERTICAL, matriz)
+    matriz = colocar_barcos_de_una_celda(barcos_una_celda, BUQUE, matriz)
+    return matriz
+
+def obtener_x_aleatoria():
+    return random.randint(0, COLUMNAS-1)
+
+
+def obtener_y_aleatoria():
+    return random.randint(0, FILAS-1)
+
+
+def colocar_barcos_de_una_celda(cantidad, tipo_barco, matriz):
+    barcos_colocados = 0
+    while True:
+        x = obtener_x_aleatoria()
+        y = obtener_y_aleatoria()
+        if es_mar(x, y, matriz):
+            matriz[y][x] = tipo_barco
+            barcos_colocados += 1
+        if barcos_colocados >= cantidad:
+            break
+    return matriz
+
+
+def colocar_barcos_de_dos_celdas_horizontal(cantidad, tipo_barco, matriz):
+    barcos_colocados = 0
+    while True:
+        x = obtener_x_aleatoria()
+        y = obtener_y_aleatoria()
+        x2 = x+1
+        if coordenada_en_rango(x, y) and coordenada_en_rango(x2, y) and es_mar(x, y, matriz) and es_mar(x2, y, matriz):
+            matriz[y][x] = tipo_barco
+            matriz[y][x2] = tipo_barco
+            barcos_colocados += 1
+        if barcos_colocados >= cantidad:
+            break
+    return matriz
+
+
+def colocar_barcos_de_dos_celdas_vertical(cantidad, tipo_barco, matriz):
+    barcos_colocados = 0
+    while True:
+        x = obtener_x_aleatoria()
+        y = obtener_y_aleatoria()
+        y2 = y+1
+        if coordenada_en_rango(x, y) and coordenada_en_rango(x, y2) and es_mar(x, y, matriz) and es_mar(x, y2, matriz):
+            matriz[y][x] = tipo_barco
+            matriz[y2][x] = tipo_barco
+            barcos_colocados += 1
+        if barcos_colocados >= cantidad:
+            break
+    return matriz
+
+def colocar_barcos_de_tres_celdas_horizontal(cantidad, tipo_barco, matriz):
+    barcos_colocados = 0
+    while True:
+        x = obtener_x_aleatoria()
+        y = obtener_y_aleatoria()
+        x2 = x+1
+        x3 = x+2
+        if coordenada_en_rango(x, y) and coordenada_en_rango(x2, y) and coordenada_en_rango(x3, y) and es_mar(x, y, matriz) and es_mar(x2, y, matriz) and es_mar(x3, y, matriz):
+            matriz[y][x] = tipo_barco
+            matriz[y][x2] = tipo_barco
+            matriz[y][x3] = tipo_barco
+            barcos_colocados += 1
+        if barcos_colocados >= cantidad:
+            break
+    return matriz
+
+def colocar_barcos_de_tres_celdas_vertical(cantidad, tipo_barco, matriz):
+    barcos_colocados = 0
+    while True:
+        x = obtener_x_aleatoria()
+        y = obtener_y_aleatoria()
+        y2 = y+1
+        y3 = y+2
+        if coordenada_en_rango(x, y) and coordenada_en_rango(x, y2) and coordenada_en_rango(x, y3) and es_mar(x, y, matriz) and es_mar(x, y2, matriz) and es_mar(x, y3, matriz):
+            matriz[y][x] = tipo_barco
+            matriz[y2][x] = tipo_barco
+            matriz[y3][x] = tipo_barco
+            barcos_colocados += 1
+        if barcos_colocados >= cantidad:
+            break
+    return matriz
+
+def colocar_barcos_de_cuatro_celdas_horizontal(cantidad, tipo_barco, matriz):
+    barcos_colocados = 0
+    while True:
+        x = obtener_x_aleatoria()
+        y = obtener_y_aleatoria()
+        x2 = x+1
+        x3 = x+2
+        x4 = x+3
+        if coordenada_en_rango(x, y) and coordenada_en_rango(x2, y) and coordenada_en_rango(x3, y) and coordenada_en_rango(x4, y) and es_mar(x, y, matriz) and es_mar(x2, y, matriz) and es_mar(x3, y, matriz) and es_mar(x4, y, matriz):
+            matriz[y][x] = tipo_barco
+            matriz[y][x2] = tipo_barco
+            matriz[y][x3] = tipo_barco
+            matriz[y][x4] = tipo_barco
+            barcos_colocados += 1
+        if barcos_colocados >= cantidad:
+            break
+    return matriz
+
+def colocar_barcos_de_cuatro_celdas_vertical(cantidad, tipo_barco, matriz):
+    barcos_colocados = 0
+    while True:
+        x = obtener_x_aleatoria()
+        y = obtener_y_aleatoria()
+        y2 = y+1
+        y3 = y+2
+        y4 = y+3
+        if coordenada_en_rango(x, y) and coordenada_en_rango(x, y2) and coordenada_en_rango(x, y3) and coordenada_en_rango(x, y4) and es_mar(x, y, matriz) and es_mar(x, y2, matriz) and es_mar(x, y3, matriz) and es_mar(x, y4, matriz):
+            matriz[y][x] = tipo_barco
+            matriz[y2][x] = tipo_barco
+            matriz[y3][x] = tipo_barco
+            matriz[y4][x] = tipo_barco
+            barcos_colocados += 1
+        if barcos_colocados >= cantidad:
+            break
+    return matriz
+
+
+def imprimir_disparos_restantes(disparos_restantes, jugador):
+    print(f"Disparos restantes de {jugador}: {disparos_restantes}")
+
+
+def imprimir_matriz(matriz, deberia_mostrar_barcos, jugador):
+    print(f"Este es el mar del jugador {jugador}: ")
+    doc = open("Prueba.txt", "w")
+    letra = 1
+    for y in range(FILAS):
+        imprimir_separador_horizontal()
+        print(f"| {letra} ", end="")
+        for x in range(COLUMNAS):
+            celda = matriz[y][x]
+            valor_real = celda
+            if not deberia_mostrar_barcos and valor_real != MAR and valor_real != DISPARO_FALLADO and valor_real != DISPARO_ACERTADO:
+                valor_real = "X"
+            print(f"| {valor_real} ", end="")
+            doc.write(f" {valor_real} ")
+            
+
+        #letra = incrementar_letra(letra)
+        letra+=1
+        print("|",)  # Salto de línea
+        doc.write("\n",)
+        
+    imprimir_separador_horizontal()
+    imprimir_fila_de_numeros()
+    imprimir_separador_horizontal()
+    doc.close()
+
+
+def Pintar(matriz, deberia_mostrar_barcos, jugador):
+    for n in range(FILAS+1):
+        plt.plot([0,FILAS], [n,n], color="black", linewidth=1)
+        plt.plot ([n,n],[0,COLUMNAS], color="black", linewidth=1)
+    for y in range(FILAS):
+        #plt.plot([0,10], [y,y], color="black", linewidth=1)
+        for x in range(COLUMNAS):
+            #plt.plot ([x,x],[0,10], color="black", linewidth=1)
+            celda = matriz[y][x]
+            valor_real = celda
+            if not deberia_mostrar_barcos and valor_real != MAR and valor_real != DISPARO_FALLADO and valor_real != DISPARO_ACERTADO:
+                valor_real = "X"
+                px = x + 0.5
+                py = y + 0.5
+                plt.text(0,-1.5, "Atacando a : " + jugador , fontdict=None)
+
+                plt.plot([px],[py], linestyle='None', marker='.', markersize=8, color='teal')
+                #plt.plot([px],[py], linestyle='None', marker='.', markersize=8, color='teal')
+    plt.axis("off")
+    ax = plt.gca()
+    ax.set_ylim(ax.get_ylim()[::-1])
+    # Home button
+    #axButn1 = plt.axes([0.1, 0.1, 0.1, 0.1])
+    #btn1 = BT(
+    #axButn1, label="Home", color='pink', hovercolor='tomato')
+    #btn1.on_clicked(ventanaLog.deiconify())
+    plt.show()
+
+
+def solicitar_coordenadas(jugador):
+    print(f"Solicitando coordenadas de disparo al jugador {jugador}")
+    # Ciclo infinito. Se rompe cuando ingresan una fila correcta
+    y = None
+    x = None
+    while True:
+        try:
+            y = int(input("Ingresa el número de fila: "))
+            if coordenada_en_rango(y-1, 0):
+                y = y-1  # Queremos el índice, así que restamos un 1 siempre
+                break
+            else:
+                print("Fila inválida")
+        except:
+            print("Ingresa un número válido")
+    # Hacemos lo mismo pero para la columna
+    while True:
+        try:
+            x = int(input("Ingresa el número de columna: "))
+            if coordenada_en_rango(x-1, 0):
+                x = x-1  # Queremos el índice, así que restamos un 1 siempre
+                break
+            else:
+                print("Columna inválida")
+        except:
+            print("Ingresa un número válido")
+
+    return x, y
+
+
+def disparar(x, y, matriz) -> bool:
+    if es_mar(x, y, matriz):
+        matriz[y][x] = DISPARO_FALLADO
+        return False
+    # Si ya había disparado antes, se le cuenta como falla igualmente
+    elif matriz[y][x] == DISPARO_FALLADO or matriz[y][x] == DISPARO_ACERTADO:
+        return False
+    else:
+        matriz[y][x] = DISPARO_ACERTADO
+        return True
+
+
+def oponente_de_jugador(jugador):
+    if jugador == JUGADOR_1:
+        return JUGADOR_2
+    else:
+        return JUGADOR_1
+
+
+def todos_los_barcos_hundidos(matriz):
+    for y in range(FILAS):
+        for x in range(COLUMNAS):
+            celda = matriz[y][x]
+            # Si no es mar o un disparo, significa que todavía hay un barco por ahí
+            if celda != MAR and celda != DISPARO_ACERTADO and celda != DISPARO_FALLADO:
+                return False
+    # Acabamos de recorrer toda la matriz y no regresamos en la línea anterior. Entonces todos los barcos han sido hundidos
+    return True
+
+
+def indicar_victoria(jugador):
+    print(f"Fin del juego\nEl jugador {jugador} es el ganador")
+
+
+def indicar_fracaso(jugador):
+    print(
+        f"Fin del juego\nEl jugador {jugador} pierde. Se han acabado sus disparos")
+
+
+def imprimir_matrices_con_barcos(matriz_j1, matriz_j2):
+    print("Mostrando ubicación de los barcos de ambos jugadores:")
+    imprimir_matriz(matriz_j1, True, JUGADOR_1)
+    imprimir_matriz(matriz_j2, True, JUGADOR_2)
+
+
+def jugar():
+    disparos_restantes_j1 = DISPAROS_INICIALES
+    disparos_restantes_j2 = DISPAROS_INICIALES
+    cantidad_barcos = 5
+    matriz_j1, matriz_j2 = obtener_matriz_inicial(), obtener_matriz_inicial()
+    matriz_j1 = colocar_e_imprimir_barcos(
+        matriz_j1, cantidad_barcos, JUGADOR_1)
+    matriz_j2 = colocar_e_imprimir_barcos(
+        matriz_j2, cantidad_barcos, JUGADOR_2)
+    turno_actual = JUGADOR_1
+    print("===============")
+    while True:
+        print(f"Turno de {turno_actual}")
+        disparos_restantes = disparos_restantes_j2
+        if turno_actual == JUGADOR_1:
+            disparos_restantes = disparos_restantes_j1
+        imprimir_disparos_restantes(disparos_restantes, turno_actual)
+        matriz_oponente = matriz_j1
+        if turno_actual == JUGADOR_1:
+            matriz_oponente = matriz_j2
+        imprimir_matriz(matriz_oponente, False,
+                        oponente_de_jugador(turno_actual))
+        Pintar(matriz_oponente, False, oponente_de_jugador(turno_actual))
+        x, y = solicitar_coordenadas(turno_actual)
+        acertado = disparar(x, y, matriz_oponente)
+        if turno_actual == JUGADOR_1:
+            disparos_restantes_j1 -= 1
+        else:
+            disparos_restantes_j2 -= 1
+
+        imprimir_matriz(matriz_oponente, False,
+                        oponente_de_jugador(turno_actual))
+        Pintar(matriz_oponente,False, oponente_de_jugador(turno_actual))
+        if acertado:
+            print("Disparo acertado")
+            #reproducir_sonido_acertado()
+            if todos_los_barcos_hundidos(matriz_oponente):
+                indicar_victoria(turno_actual)
+                imprimir_matrices_con_barcos(matriz_j1, matriz_j2)
+                break
+        else:
+            print("Disparo fallado")
+            #reproducir_sonido_error()
+            if disparos_restantes-1 <= 0:
+                indicar_fracaso(turno_actual)
+                imprimir_matrices_con_barcos(matriz_j1, matriz_j2)
+                break
+            turno_actual = oponente_de_jugador(turno_actual)
+
+
+
+
+#---------------------------------CERRANDO ------------------------------
+
 def cerrar():
     MessageBox.showinfo("Adios", "Gracias por usar el programa")
     sys.exit()
+    
 
 #---------------------------------VENTANA PRINCIPAL ------------------------------
 
@@ -681,7 +1170,8 @@ btnEliminarCuenta = Button(ventanaUser, height=2, width=15, text="Eliminar mi cu
 btnEliminarCuenta.place(x=180, y=250)
 btnVerTutorial = Button(ventanaUser, height=2, width=15, text="Mostrar Tutorial", command = lambda: [Tutorial()], background="#368807", font=("Verdana",10), fg="black")
 btnVerTutorial.place(x=180, y=300)
-btnVerTienda = Button(ventanaUser, height=2, width=15, text="Tienda", command = lambda: [MostrarTienda()], background="#368807", font=("Verdana",10), fg="black")
+btnVerTienda = Button(ventanaUser, height=2, width=15, text="Tienda", command = lambda: [GraficoTienda()], background="#368807", font=("Verdana",10), fg="black")
+#btnVerTienda = Button(ventanaUser, height=2, width=15, text="Tienda", command = lambda: [MostrarTienda()], background="#368807", font=("Verdana",10), fg="black")
 btnVerTienda.place(x=180, y=350)
 btnPartida = Button(ventanaUser, height=2, width=15, text="Iniciar Partida", command = lambda: [ventanaObtenerDimension.deiconify()], background="#368807", font=("Verdana",10), fg="black")
 btnPartida.place(x=180, y=400)
