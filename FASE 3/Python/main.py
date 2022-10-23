@@ -1,4 +1,3 @@
-from signal import pause
 import sys
 import json
 from tkinter import*
@@ -19,7 +18,6 @@ from articulos import Articulo
 import hashlib
 from MatrizDispersa import MatrizDispersa
 from MatrizDispersa1 import MatrizDispersa1
-import time
 
 matrizD = MatrizDispersa(0)
 matriPrueba = MatrizDispersa1(0)
@@ -426,145 +424,6 @@ def GraficoTiendaaa():
     fig.tight_layout()
     plt.show()
 
-
-
-#---------------------------------CREACION DEL JUEGO ------------------------------
-class Casilla:
-    def __init__(self):
-        self.Visible = False
-        self.TieneBuque = False
-        self.NumBuquesAdyacentes = 0
-
-    def __str__(self):
-        if self.Visible:
-            return "X"
-        return "?"
-
-class prueba:
-    def __init__(self, tam, numBuques):
-        self.Tamano = tam
-        self.Tablero = []
-        self.Pendientes = tam*tam
-        self.Estado = ""
-        self.XError = None
-        self.YError = None
-        for fila in range(tam):
-            f = []
-            for j in range(tam):
-                f.append(Casilla())
-                
-            self.Tablero.append(f)
-        num = 0
-        while num < numBuques:
-            rndx = random.randint(0,tam-1)
-            rndy = random.randint(0,tam-1)
-            print("Y: ", rndx+1, "X: ", rndy+1)
-            if not self.Tablero[rndx][rndy].TieneBuque:
-                self.Tablero[rndx][rndy].TieneBuque = True
-                filaIni = max(rndx-1,0)
-                filaFin = min(rndx+1,tam-1)
-                colIni = max(rndy-1,0)
-                colFin = min(rndy+1,tam-1)
-                for i in range(filaIni, filaFin+1,1):
-                    for j in range(colIni,colFin+1,1):
-                        if i !=rndx or j != rndy:
-                            self.Tablero[i][j].NumBuquesAdyacentes += 1
-                num += 1
-
-    def Pintar(self,avv,puntos,vida):
-        global lblsalida 
-        global lblpuntos
-        global lblvidas
-        if self.Estado == "G":
-            #plt.suptitle("Has Ganado :D")
-            MessageBox.showinfo("Felicidades", "Has ganado el juego ")
-        elif self.Estado == "P":
-            MessageBox.showinfo("Siguie intentando", "Has perdido el juego ")
-            #plt.suptitle("Has Perdido :(")
-        else:
-            
-        #lblpuntos = 0
-        #punts = lblpuntos
-            lblsalida = avv
-            lblpuntos = puntos
-            lblvidas = vida
-        plt.text(0, self.Tamano + 1.5, "Buques: " + str(avv) , fontdict=None)
-        plt.text(4,self.Tamano  + 2, "Puntos: " + str(puntos) , fontdict=None )
-        plt.text(8,self.Tamano  + 2, "Vidas: " + str(vida) , fontdict=None )
-        for n in range(self.Tamano+1):
-            plt.plot ([0,self.Tamano],[n,n], color="black", linewidth=1)
-            plt.plot ([n,n],[0,self.Tamano], color="black", linewidth=1)
-        for i in range(self.Tamano):
-            for j in range(self.Tamano):
-                #prueb = j
-                #print("Sale? ", prueb)
-                px = j + 0.5
-                py = self.Tamano - (i + 0.5)
-                if self.Tablero[i][j].Visible:
-                    if self.Tablero[i][j].TieneBuque:
-                        plt.plot([px], [py], linestyle='None', marker='.', markersize=8, color='teal')
-                        #print("Hola ",px)
-                        #print("px: ", px)
-                        #print("py", py)
-                    else:
-                        #if self.Tablero[i][j].NumBuquesAdyacentes != 0:
-                        plt.plot([px], [py], linestyle='None', marker='.', markersize=8, color='red')
-                else: 
-                    plt.plot([px], [py], linestyle='None', marker='.', markersize=4,color='black')
-                    #print("*".strip())
-                    #print("px1: ", px)
-                    #print("py2: ", py)
-
-        #doc.close()
-
-
-    def on_click(self,event):
-        global otrooooo, addpuntos, vidamenos, pruebapuntos
-        pruebapuntos = 0
-        y = math.floor(event.xdata)
-        x = self.Tamano - math.floor(event.ydata) - 1
-        if str(event.button) == "MouseButton.LEFT":
-            if self.Tablero[x][y].TieneBuque:
-                self.Tablero[x][y].Visible = True
-                addpuntos = lblpuntos+20
-                otrooooo = lblsalida-1
-                pruebapuntos + 20
-                lblpuntos + 20
-                if otrooooo == 0:
-                    self.Estado = "G"
-                    #MessageBox.showinfo("Felicidades", "Has ganado el juego ")
-            elif not self.Tablero[x][y].Visible:
-                self.Tablero[x][y].Visible = True
-                otrooooo = lblsalida
-                addpuntos = lblpuntos
-                vidamenos = lblvidas-1
-                yfinal = y+1
-                xfinal = x+1
-                if vidamenos == 0:
-                    #print("Llega a  0")
-                    self.Estado == "P"
-                    MessageBox.showinfo("Siguie intentando", "Has perdido el juego ")
-                    #res = requests.post(f'{base_url}/Movimiento/' + f'{xfinal}' + "/" + f'{yfinal}')
-                    #data = res.text#convertimos la respuesta en dict
-                #print("X: ", y+1)
-                #print("Y: ", x+1)
-        plt.clf()
-        self.Pintar(otrooooo,addpuntos,vidamenos)
-        plt.draw()
-
-def LLamado(dimension,portaa,monedas,vida):
-    Busca = prueba(dimension,portaa)
-    plt.connect('button_press_event', Busca.on_click)
-    plt.ion()
-    Busca.Pintar(portaa,monedas,vida)
-    #Busca.imprimiendo()
-    plt.draw()
-    while Busca.Estado == "":
-        plt.pause(0.1)
-    plt.ioff()
-    plt.show()
-    #plt.pause(500)
-
 #---------------------------------CREACION DEL JUEGO 2.0 ------------------------------
 def Partida():
     global Portaaviones, Submarino, Destructores, Buques
@@ -614,7 +473,8 @@ def Partida():
         print("Destructores: ", Destructores)
         print("Buques : " , Buques)
         MessageBox.showinfo("Exito", "Tablero creado con exito")
-        jugar2()
+        #jugar2()
+        pruebanueva()
     if dimen>10 and dimen <= 20:
         FILAS = dimen
         COLUMNAS = dimen
@@ -890,8 +750,48 @@ def imprimir_matriz(matriz, deberia_mostrar_barcos, jugador):
     imprimir_separador_horizontal()
     imprimir_fila_de_numeros()
     imprimir_separador_horizontal()
-    #time.sleep(1)
-    #insertaTodo()
+    insertaTodo()
+
+
+def imprimir_matriz2(matriz, deberia_mostrar_barcos, jugador):
+    print(f"Este es el mar del jugador {jugador}: ")
+    doc = open("Prueba1.txt", "w")
+    letra = 1
+    for y in range(FILAS):
+        imprimir_separador_horizontal()
+        print(f"| {letra} ", end="")
+        for x in range(COLUMNAS):
+            celda = matriz[y][x]
+            valor_real = celda
+            if not deberia_mostrar_barcos and valor_real != MAR and valor_real != DISPARO_FALLADO and valor_real != DISPARO_ACERTADO:
+                valor_real = "X"
+            print(f"| {valor_real} ", end="")
+            doc.write(f"{valor_real}")
+            
+
+        #letra = incrementar_letra(letra)
+        letra+=1
+        print("|",)  # Salto de línea
+        doc.write("\n",)
+    doc.close()
+    '''with open('Prueba1.txt') as archivo:
+        l = 0
+        c = 0
+        lineas = archivo.readlines()
+        for linea in lineas:
+            columnas = linea
+            l += 1
+            for col in columnas:
+                if col != '\n':
+                    c += 1
+                    matrizD.insert(l, c, col)
+            c = 0
+            matrizD.graficarNeato('Salida1')'''
+    imprimir_separador_horizontal()
+    imprimir_fila_de_numeros()
+    imprimir_separador_horizontal()
+    insertaTodo1()
+    
 
 
 def Pintar(matriz, deberia_mostrar_barcos, jugador):
@@ -937,6 +837,21 @@ def insertaTodo():
             c = 0
             matrizD.graficarNeato('Salida')
 
+def insertaTodo1():
+    with open('Prueba1.txt') as archivo:
+        l = 0
+        c = 0
+        lineas = archivo.readlines()
+        for linea in lineas:
+            columnas = linea
+            l += 1
+            for col in columnas:
+                if col != '\n':
+                    c += 1
+                    matrizD.insert(l, c, col)
+            c = 0
+            matrizD.graficarNeato('Salida1')
+
 
 def solicitar_coordenadas(jugador):
     print(f"Solicitando coordenadas de disparo al jugador {jugador}")
@@ -971,7 +886,66 @@ def solicitar_coordenadas(jugador):
 
 
 def solicitando_coordenadas():
-    pass
+    global XDisparo, YDisparo
+
+    y = None
+    x = None
+
+    while True:
+        try:
+            y = ataqueY
+            if coordenada_en_rango(y-1, 0):
+                y = y-1
+                YDisparo = y
+                break
+            else:
+                print("Fila invalida")
+        except:
+            print("Ingrese una coordenada valida")
+    while True:
+        try:
+            x = ataqueX
+            if coordenada_en_rango(x-1,0):
+                x = x-1
+                XDisparo = x
+                break
+            else:
+                print("Columna invalida")
+        except:
+            print("Ingrese una coordenada valida")
+    disparar()
+
+def solicitando_coordenadas2():
+    global XDisparo2, YDisparo2
+
+    y = None
+    x = None
+
+    while True:
+        try:
+            y = ataqueY2
+            if coordenada_en_rango(y-1, 0):
+                y = y-1
+                YDisparo2 = y
+                break
+            else:
+                print("Fila invalida")
+        except:
+            print("Ingrese una coordenada valida")
+    while True:
+        try:
+            x = ataqueX2
+            if coordenada_en_rango(x-1,0):
+                x = x-1
+                XDisparo2 = x
+                break
+            else:
+                print("Columna invalida")
+        except:
+            print("Ingrese una coordenada valida")
+    disparar2()
+
+
 
 def mandarpos(x,y):
     global disparoX, disparoY
@@ -983,8 +957,7 @@ def mandarpos(x,y):
 
 
 def abrirventana():
-    #ultimaprueba()
-    global ventanaNueva
+    #global ventanaNueva
     ventanaNueva = Toplevel()
     ventanaNueva.title("Matriz")
     ventanaNueva.resizable(0,0)
@@ -1009,10 +982,37 @@ def abrirventana():
     textoPoosX.place(x=900, y=140)
     textoPoosY = Text(ventanaNueva, height=2, width=8, fg="white", font=("Consolas", 12)) 
     textoPoosY.place(x=900, y=240)
-    btnAtaque = Button(ventanaNueva, height=2, width=8, text="Atacar",command=lambda:[sacarcoordenadas(textoPoosX.get(1.0, tk.END+"-1c"),textoPoosY.get(1.0, tk.END+"-1c")), obtenerdisparo()] , background="#B03314", font=("Verdana",10), fg="black")
+    btnAtaque = Button(ventanaNueva, height=2, width=8, text="Atacar",command=lambda:[sacarcoordenadas(textoPoosX.get(1.0, tk.END+"-1c"),textoPoosY.get(1.0, tk.END+"-1c")), obtenerdisparo(), pruebanueva1()] , background="#B03314", font=("Verdana",10), fg="black")
     btnAtaque.place(x=900, y=330)
 
-    #ventanaNueva.withdraw()
+def abrirventana2():
+    #global ventanaNueva
+    ventanaNueva = Toplevel()
+    ventanaNueva.title("Matriz2")
+    ventanaNueva.resizable(0,0)
+    ancho_ventanaN = 1000
+    alto_ventanaN = 800
+    x_ventanaN = ventanaNueva.winfo_screenwidth() // 2 - ancho_ventanaN // 2
+    y_ventanaN = ventanaNueva.winfo_screenheight() // 2 - alto_ventanaN // 2
+    posicionN = str(ancho_ventanaN) + "x" + str(alto_ventanaN) + "+" + str(x_ventanaN) + "+" + str(y_ventanaN)
+    ventanaNueva.geometry(posicionN)
+    image = Image.open("matriz_Salida1.png")
+    resize_image = image.resize((700, 700))
+    img = ImageTk.PhotoImage(resize_image)
+    labelPhotoN = Label(ventanaNueva, image=img)
+    labelPhotoN.image = img
+    labelPhotoN.place(x=30,y=60)
+    labelPhotoN.pack()
+    labelPoosX = Label (ventanaNueva, text ="Pos X", font=("Verdana",16), background="#044D9A", fg="white")
+    labelPoosX.place(x=900, y=90)
+    labelPoosY = Label (ventanaNueva, text ="Pos Y", font=("Verdana",16), background="#044D9A", fg="white")
+    labelPoosY.place(x=900, y=200)
+    textoPoosX = Text(ventanaNueva, height=2, width=8, fg="white", font=("Consolas", 12)) 
+    textoPoosX.place(x=900, y=140)
+    textoPoosY = Text(ventanaNueva, height=2, width=8, fg="white", font=("Consolas", 12)) 
+    textoPoosY.place(x=900, y=240)
+    btnAtaque = Button(ventanaNueva, height=2, width=8, text="Atacar",command=lambda:[sacarcoordenadas2(textoPoosX.get(1.0, tk.END+"-1c"),textoPoosY.get(1.0, tk.END+"-1c")), obtenerdisparo()] , background="#B03314", font=("Verdana",10), fg="black")
+    btnAtaque.place(x=900, y=330)
 
 
 def sacarcoordenadas(nuevoX, nuevoY):
@@ -1021,32 +1021,64 @@ def sacarcoordenadas(nuevoX, nuevoY):
     ataqueY = int(nuevoY)
     print("X: ", ataqueX)
     print("Y: ", ataqueY)
-    disparar()
-    #disparar()
+    solicitando_coordenadas()
+
+def sacarcoordenadas2(nuevoX, nuevoY):
+    global ataqueX2, ataqueY2
+    ataqueX2 = int(nuevoX)
+    ataqueY2 = int(nuevoY)
+    print("X: ", ataqueX2)
+    print("Y: ", ataqueY2)
+    solicitando_coordenadas2()
     
 
 def disparar() -> bool:
 #def disparar(x,y,matriz) -> bool:
-    x = ataqueX
-    y = ataqueY
+    x = int(YDisparo)
+    y = int(XDisparo)
     matriz = MatrizActual
     if es_mar(x, y, matriz):
         matriz[y][x] = DISPARO_FALLADO
-        #px = x + 0.5
-        #py = y + 0.5
-        #plt.plot([py],[px], linestyle='None', marker='.', markersize=8, color='black')
+        print("Fallado")
+        imprimir_matriz(MatrizActual, False,
+                    oponente_de_jugador(turno_actual1))
         return False
     # Si ya había disparado antes, se le cuenta como falla igualmente
     elif matriz[y][x] == DISPARO_FALLADO or matriz[y][x] == DISPARO_ACERTADO:
-        #px = x + 0.5
-        #py = y + 0.5
-        #plt.plot([py],[px], linestyle='None', marker='.', markersize=8, color='black')
+        print("De nuevo")
+        imprimir_matriz(MatrizActual, False,
+                    oponente_de_jugador(turno_actual1))
         return False
     else:
         matriz[y][x] = DISPARO_ACERTADO
-        #px = x + 0.5
-        #py = y + 0.5
-        #plt.plot([py],[px], linestyle='None', marker='.', markersize=8, color='green')
+        print("Acertado")
+        imprimir_matriz(MatrizActual, False,
+                    oponente_de_jugador(turno_actual1))
+        return True
+
+def disparar2() -> bool:
+#def disparar(x,y,matriz) -> bool:
+    x = int(YDisparo2)
+    y = int(XDisparo2)
+    matriz = MatrizActual2
+    if es_mar(x, y, matriz):
+        matriz[y][x] = DISPARO_FALLADO
+        print("Fallado")
+        imprimir_matriz2(MatrizActual2, False,
+                    oponente_de_jugador(turno_actual1))
+        
+        return False
+    # Si ya había disparado antes, se le cuenta como falla igualmente
+    elif matriz[y][x] == DISPARO_FALLADO or matriz[y][x] == DISPARO_ACERTADO:
+        print("De nuevo")
+        imprimir_matriz2(MatrizActual2, False,
+                    oponente_de_jugador(turno_actual1))
+        return False
+    else:
+        matriz[y][x] = DISPARO_ACERTADO
+        print("Acertado")
+        imprimir_matriz2(MatrizActual2, False,
+                    oponente_de_jugador(turno_actual1))
         return True
 
 
@@ -1064,7 +1096,7 @@ def obtenerdisparo():
                 indicar_fracaso(turno_actual)
                 imprimir_matrices_con_barcos(matriz_j1, matriz_j2)
                 break'''
-        actualTurno = oponente_de_jugador(actualTurno)
+        #actualTurno = oponente_de_jugador(actualTurno)
         #juegoActual
         #turno_actual = oponente_de_jugador(turno_actual)
 
@@ -1231,6 +1263,84 @@ def jugar2():
 
 
 
+def pruebanueva():
+    global MatrizActual, turno_actual1
+    DERROTADO = FALSE
+    disparos_restantes_j1 = DISPAROS_INICIALES
+    disparos_restantes_j2 = DISPAROS_INICIALES
+    cantidad_barcos = 5
+    matriz_j1, matriz_j2 = obtener_matriz_inicial(), obtener_matriz_inicial()
+    matriz_j1 = colocar_e_imprimir_barcos(
+        matriz_j1, cantidad_barcos, JUGADOR_1)
+    matriz_j2 = colocar_e_imprimir_barcos(
+        matriz_j2, cantidad_barcos, JUGADOR_2)
+    turno_actual1 = JUGADOR_1
+    turno_actual2 = JUGADOR_2
+    while DERROTADO == False:
+        print("Turno de: ", turno_actual1)
+        if turno_actual1:
+            print("jugador uno")
+            disparos_restantes = disparos_restantes_j1
+            imprimir_disparos_restantes(disparos_restantes, turno_actual1)
+            matriz_oponente = matriz_j1
+            imprimir_matriz(matriz_oponente, False,
+                        oponente_de_jugador(turno_actual1))
+            #Pintar(matriz_oponente,False)
+            MatrizActual = matriz_oponente
+            abrirventana()
+            #x, y = solicitar_coordenadas(turno_actual1)
+            #acertado = disparar(x, y, matriz_oponente)
+            #DERROTADO = True
+            DERROTADO = TRUE
+            #turno_actual = oponente_de_jugador(turno_actual)
+    # while DERROTADO == False:
+    #     print("Turno de: ", turno_actual2)
+    #     if turno_actual2:
+    #         print("jugador dos")
+    #         disparos_restantes = disparos_restantes_j2
+    #         imprimir_disparos_restantes(disparos_restantes, turno_actual2)
+    #         matriz_oponente = matriz_j2
+    #         imprimir_matriz(matriz_oponente, False,
+    #                     oponente_de_jugador(turno_actual2))
+    #         #Pintar(matriz_oponente,False)
+    #         MatrizActual = matriz_oponente
+    #         abrirventana()
+    #         #x, y = solicitar_coordenadas(turno_actual1)
+    #         #acertado = disparar(x, y, matriz_oponente)
+    #         DERROTADO = True
+
+
+
+def pruebanueva1():
+    global  MatrizActual2
+    DERROTADO = FALSE
+    disparos_restantes_j1 = DISPAROS_INICIALES
+    disparos_restantes_j2 = DISPAROS_INICIALES
+    cantidad_barcos = 5
+    matriz_j1, matriz_j2 = obtener_matriz_inicial(), obtener_matriz_inicial()
+    matriz_j1 = colocar_e_imprimir_barcos(
+        matriz_j1, cantidad_barcos, JUGADOR_1)
+    matriz_j2 = colocar_e_imprimir_barcos(
+        matriz_j2, cantidad_barcos, JUGADOR_2)
+    turno_actual1 = JUGADOR_1
+    turno_actual2 = JUGADOR_2
+    while DERROTADO == False:
+        print("Turno de: ", turno_actual2)
+        if turno_actual2:
+            print("jugador dos")
+            disparos_restantes = disparos_restantes_j2
+            imprimir_disparos_restantes(disparos_restantes, turno_actual2)
+            matriz_oponente = matriz_j2
+            imprimir_matriz2(matriz_oponente, False,
+                        oponente_de_jugador(turno_actual2))
+            #Pintar(matriz_oponente,False)
+            MatrizActual2 = matriz_oponente
+            abrirventana2()
+            #x, y = solicitar_coordenadas(turno_actual1)
+            #acertado = disparar(x, y, matriz_oponente)
+            #DERROTADO = True
+            DERROTADO = TRUE
+
 #---------------------------------CERRANDO ------------------------------
 
 def cerrar():
@@ -1240,10 +1350,10 @@ def cerrar():
 
 
 def pruebas():
-    f = open ('Prueba.txt','r')
+    f = open ('Prueba.txt', "r")
     l = 0
     c = 0
-    lineas = f.readline()
+    lineas = f.readlines()
     for linea in lineas:
         columnas = linea
         l += 1
@@ -1323,7 +1433,7 @@ textoPass = Text(ventanaReg, height=2, width=30, fg="white", font=("Consolas", 1
 textoPass.place(x=230, y=255)
 textoEdad = Text(ventanaReg, height=2, width=30, fg="white", font=("Consolas", 11))
 textoEdad.place(x=230,y=330)
-btnRegistro = Button(ventanaReg, height=2, width=15, text="Registrar", command = lambda:[ultimaprueba()], background="#368807", font=("Verdana",10), fg="black")
+btnRegistro = Button(ventanaReg, height=2, width=15, text="Registrar", command = lambda:[pruebas()], background="#368807", font=("Verdana",10), fg="black")
 #btnRegistro = Button(ventanaReg, height=2, width=15, text="Registrar", command = lambda:[Comprobar(textoUsuario.get(1.0, tk.END+"-1c"),textoPass.get(1.0, tk.END+"-1c"),textoEdad.get(1.0, tk.END+"-1c"))], background="#368807", font=("Verdana",10), fg="black")
 btnRegistro.place(x=180, y=400)
 btnRegreso = Button(ventanaReg, height=2, width=8, text="Regresar", command = lambda:[textoUsuario.delete(1.0, tk.END+"-1c"),textoPass.delete(1.0, tk.END+"-1c"),textoEdad.delete(1.0, tk.END+"-1c"), ventanaReg.withdraw(), ventana.deiconify()], background="#368807", font=("Verdana",10), fg="black")
