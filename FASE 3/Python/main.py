@@ -21,6 +21,7 @@ from MatrizDispersa1 import MatrizDispersa1
 matrizD = MatrizDispersa(0)
 matriz2 = MatrizDispersa(0)
 matriPrueba = MatrizDispersa1(0)
+matriPrueba2 = MatrizDispersa1(0)
 
 ListaUsuarios = []
 ListaArticulos = []
@@ -358,11 +359,10 @@ def Partida():
     global totalmonedas,tokensjugador, totalmonedas2, tokensjugador2
     global FILAS, COLUMNAS, MAR
     global BUQUE, DESTRUCTOR, SUBMARINO, DESTRUCTOR_VERTICAL, SUBMARINO_VERTICAL
-    global PORTAAVIONES, PORTAAVIONES_VERTICAL, DISPARO_FALLADO, DISPARO_ACERTADO, DISPAROS_INICIALES
-    global CANTIDAD_BARCOS_INICIALES, JUGADOR_1, JUGADOR_2
+    global PORTAAVIONES, PORTAAVIONES_VERTICAL, DISPARO_FALLADO, DISPARO_ACERTADO
+    global JUGADOR_1, JUGADOR_2
 
     jugador2 = textoNombre.get(1.0, tk.END+"-1c")
-
     MAR = " "
     BUQUE = "B"  # Ocupa una celda
     DESTRUCTOR = "D"  # Ocupa dos celdas
@@ -373,8 +373,7 @@ def Partida():
     PORTAAVIONES_VERTICAL = "V" # Ocupa cuatro celdas
     DISPARO_FALLADO = "E"
     DISPARO_ACERTADO = "*"
-    DISPAROS_INICIALES = 5
-    CANTIDAD_BARCOS_INICIALES = 10
+    #CANTIDAD_BARCOS_INICIALES = 10
     JUGADOR_1 = usuariobusqueda
     JUGADOR_2 = jugador2
     Portaav = 1
@@ -399,10 +398,10 @@ def Partida():
         Submarino = Subma * B
         Destructores = Destruc * B
         Buques = Buq * B
-        print("Portaaviones: ", Portaaviones)
-        print("Submarinos : ", Submarino)
-        print("Destructores: ", Destructores)
-        print("Buques : " , Buques)
+        # print("Portaaviones: ", Portaaviones)
+        # print("Submarinos : ", Submarino)
+        # print("Destructores: ", Destructores)
+        # print("Buques : " , Buques)
         TotalBarcos = Portaaviones + Submarino + Destructores + Buques
         otroB = TotalBarcos
         nuevocontador = otroB
@@ -428,10 +427,10 @@ def Partida():
         Submarino = Subma * B
         Destructores = Destruc * B
         Buques = Buq * B
-        print("Portaaviones: ", Portaaviones)
-        print("Submarinos : ", Submarino)
-        print("Destructores: ", Destructores)
-        print("Buques : " , Buques)
+        # print("Portaaviones: ", Portaaviones)
+        # print("Submarinos : ", Submarino)
+        # print("Destructores: ", Destructores)
+        # print("Buques : " , Buques)
         TotalBarcos = Portaaviones + Submarino + Destructores + Buques
         otroB = TotalBarcos
         nuevocontador = otroB
@@ -457,10 +456,10 @@ def Partida():
         Submarino = Subma * B
         Destructores = Destruc * B
         Buques = Buq * B
-        print("Portaaviones: ", Portaaviones)
-        print("Submarinos : ", Submarino)
-        print("Destructores: ", Destructores)
-        print("Buques : " , Buques)
+        # print("Portaaviones: ", Portaaviones)
+        # print("Submarinos : ", Submarino)
+        # print("Destructores: ", Destructores)
+        # print("Buques : " , Buques)
         TotalBarcos = Portaaviones + Submarino + Destructores + Buques
         otroB = TotalBarcos
         nuevocontador = otroB
@@ -475,7 +474,6 @@ def Partida():
         pruebanueva()
 
 
-
 def obtener_matriz_inicial():
     matriz = []
     for y in range(FILAS):
@@ -485,29 +483,6 @@ def obtener_matriz_inicial():
             # Y luego agregamos una celda a esa fila. Por defecto lleva "Mar"
             matriz[y].append(MAR)
     return matriz
-
-
-def imprimir_columna_de_numeros():
-    print("|   ", end="")
-    for x in range(FILAS):
-        print(f"| {x+1} ", end="")
-    print("|")
-
-
-
-def imprimir_separador_horizontal():
-    # Imprimir un renglón dependiendo de las columnas
-    for _ in range(COLUMNAS+1):
-        print("+---", end="")
-    print("+")
-
-
-def imprimir_fila_de_numeros():
-    print("|   ", end="")
-    for x in range(COLUMNAS):
-        print(f"| {x+1} ", end="")
-    print("|")
-
 
 # Indica si una coordenada de la matriz está vacía
 def es_mar(x, y, matriz):
@@ -519,35 +494,53 @@ def coordenada_en_rango(x, y):
 
 def colocar_e_imprimir_barcos(matriz, cantidad_barcos, jugador):
     # Dividimos y redondeamos a entero hacia abajo (ya que no podemos colocar una parte no entera de un barco)
-    barcos_una_celda = 4
-    barcos_dos_celdas_verticales = 2
-    barcos_dos_celdas_horizontales = 1
-    barcos_tres_celdas_verticales = 1
-    barcos_tres_celdas_horizontales = 1
-    barcos_cuatro_celdas_horizontiles = 1
-    barcos_cuatro_celdas_verticales = 0
+    salidadestructores = int((Destructores)/2)
+    salidasubmarinos = int((Submarino)/2)
+    salidaportaav = int((Portaaviones)/2)
+    destructoresverticales = Destructores - salidadestructores
+    submarinosverticales = Submarino - salidasubmarinos
+    portaavionesvertical = Portaaviones - salidaportaav
+    barcos_una_celda = Buques
+    barcos_dos_celdas_verticales = destructoresverticales
+    barcos_dos_celdas_horizontales = salidadestructores
+    barcos_tres_celdas_verticales = submarinosverticales
+    barcos_tres_celdas_horizontales = salidasubmarinos
+    barcos_cuatro_celdas_horizontiles = portaavionesvertical
+    barcos_cuatro_celdas_verticales = salidaportaav
 
     if jugador == JUGADOR_1:
-        #print("Imprimiendo barcos del jugador 1 ")
         print("")
     else:
-        #print("Imprimiendo barcos del jugador 2 ")
         print("")
-    #print(f"Barcos de una celda: {barcos_una_celda}\nBarcos verticales de dos celdas: {barcos_dos_celdas_verticales}\nBarcos horizontales de dos celdas: {barcos_dos_celdas_horizontales}\nTotal: {barcos_una_celda+barcos_dos_celdas_verticales+barcos_dos_celdas_horizontales}")
-    # Primero colocamos los de dos celdas para que se acomoden bien
-    matriz = colocar_barcos_de_cuatro_celdas_horizontal(
-        barcos_cuatro_celdas_horizontiles, PORTAAVIONES, matriz)
-    matriz = colocar_barcos_de_cuatro_celdas_vertical(
-        barcos_cuatro_celdas_verticales, PORTAAVIONES_VERTICAL, matriz)
-    matriz = colocar_barcos_de_tres_celdas_horizontal(
-        barcos_tres_celdas_horizontales, SUBMARINO, matriz)
-    matriz = colocar_barcos_de_tres_celdas_vertical(
-        barcos_tres_celdas_verticales, SUBMARINO_VERTICAL, matriz)
-    matriz = colocar_barcos_de_dos_celdas_horizontal(
-        barcos_dos_celdas_horizontales, DESTRUCTOR, matriz)
-    matriz = colocar_barcos_de_dos_celdas_vertical(
-        barcos_dos_celdas_verticales, DESTRUCTOR_VERTICAL, matriz)
-    matriz = colocar_barcos_de_una_celda(barcos_una_celda, BUQUE, matriz)
+    # Primero colocamos los de cuatro celdas para que se acomoden bien
+    if barcos_cuatro_celdas_verticales == 0 :
+        matriz = colocar_barcos_de_cuatro_celdas_horizontal(
+            barcos_cuatro_celdas_horizontiles, PORTAAVIONES, matriz)
+        #matriz = colocar_barcos_de_cuatro_celdas_vertical(
+        #    barcos_cuatro_celdas_verticales, PORTAAVIONES_VERTICAL, matriz)
+        matriz = colocar_barcos_de_tres_celdas_horizontal(
+            barcos_tres_celdas_horizontales, SUBMARINO, matriz)
+        matriz = colocar_barcos_de_tres_celdas_vertical(
+            barcos_tres_celdas_verticales, SUBMARINO_VERTICAL, matriz)
+        matriz = colocar_barcos_de_dos_celdas_horizontal(
+            barcos_dos_celdas_horizontales, DESTRUCTOR, matriz)
+        matriz = colocar_barcos_de_dos_celdas_vertical(
+            barcos_dos_celdas_verticales, DESTRUCTOR_VERTICAL, matriz)
+        matriz = colocar_barcos_de_una_celda(barcos_una_celda, BUQUE, matriz)
+    else:
+        matriz = colocar_barcos_de_cuatro_celdas_horizontal(
+            barcos_cuatro_celdas_horizontiles, PORTAAVIONES, matriz)
+        matriz = colocar_barcos_de_cuatro_celdas_vertical(
+            barcos_cuatro_celdas_verticales, PORTAAVIONES_VERTICAL, matriz)
+        matriz = colocar_barcos_de_tres_celdas_horizontal(
+            barcos_tres_celdas_horizontales, SUBMARINO, matriz)
+        matriz = colocar_barcos_de_tres_celdas_vertical(
+            barcos_tres_celdas_verticales, SUBMARINO_VERTICAL, matriz)
+        matriz = colocar_barcos_de_dos_celdas_horizontal(
+            barcos_dos_celdas_horizontales, DESTRUCTOR, matriz)
+        matriz = colocar_barcos_de_dos_celdas_vertical(
+            barcos_dos_celdas_verticales, DESTRUCTOR_VERTICAL, matriz)
+        matriz = colocar_barcos_de_una_celda(barcos_una_celda, BUQUE, matriz)
     return matriz
 
 def obtener_x_aleatoria():
@@ -668,18 +661,10 @@ def colocar_barcos_de_cuatro_celdas_vertical(cantidad, tipo_barco, matriz):
             break
     return matriz
 
-
-def imprimir_disparos_restantes(disparos_restantes, jugador):
-    print(f"Disparos restantes de {jugador}: {disparos_restantes}")
-
-
 def imprimir_matriz(matriz, deberia_mostrar_barcos, jugador):
-    print(f"Este es el mar del jugador {jugador}: ")
     doc = open("Prueba.txt", "w")
     letra = 1
     for y in range(FILAS):
-        #imprimir_separador_horizontal()
-        #print(f"| {letra} ", end="")
         for x in range(COLUMNAS):
             celda = matriz[y][x]
             valor_real = celda
@@ -700,13 +685,9 @@ def imprimir_matriz(matriz, deberia_mostrar_barcos, jugador):
                     valor_real == "V"
                 else:
                     valor_real = "X"
-            #print(f"| {valor_real} ", end="")
             doc.write(f"{valor_real}")
             
-
-        #letra = incrementar_letra(letra)
         letra+=1
-        #print("|",)  # Salto de línea
         doc.write("\n",)
     doc.close()
     with open('Prueba.txt') as archivo:
@@ -725,12 +706,9 @@ def imprimir_matriz(matriz, deberia_mostrar_barcos, jugador):
 
 
 def imprimir_matriz2(matriz, deberia_mostrar_barcos, jugador):
-    print(f"Este es el mar del jugador {jugador}: ")
     doc = open("Prueba1.txt", "w")
     letra = 1
     for y in range(FILAS):
-        #imprimir_separador_horizontal()
-        #print(f"| {letra} ", end="")
         for x in range(COLUMNAS):
             celda = matriz[y][x]
             valor_real = celda
@@ -751,13 +729,9 @@ def imprimir_matriz2(matriz, deberia_mostrar_barcos, jugador):
                     valor_real == "V"
                 else:
                     valor_real = "X"
-            #print(f"| {valor_real} ", end="")
             doc.write(f"{valor_real}")
             
-
-        #letra = incrementar_letra(letra)
         letra+=1
-        #print("|",)  # Salto de línea
         doc.write("\n",)
     doc.close()
     with open('Prueba1.txt') as archivo1:
@@ -867,7 +841,7 @@ def solicitando_coordenadas2():
     disparar2()
 
 def abrirventana():
-    global ventanaNueva
+    global ventanaNueva, lbltokens
     lblbarcoos = nuevocontador
     lbltokens = tokensjugador
     ventanaNueva = Toplevel()
@@ -887,13 +861,21 @@ def abrirventana():
     labelPhotoN.place(x=250,y=30)
     #labelPhotoN.pack()
     labelusuarioactual = Label (ventanaNueva, text ="Turno de : " + JUGADOR_1, font=("Verdana",16), background="#044D9A", fg="white")
-    labelusuarioactual.place(x=350, y=0)
-    labelAtacando = Label (ventanaNueva, text ="Atacando a :" + JUGADOR_2, font=("Verdana",16), background="#044D9A", fg="white")
-    labelAtacando.place(x=20, y=90)
+    labelusuarioactual.place(x=550, y=0)
+    labelAtacando = Label (ventanaNueva, text ="Atacando a : " + JUGADOR_2, font=("Verdana",16), background="#044D9A", fg="white")
+    labelAtacando.place(x=20, y=100)
     labelPuntos = Label (ventanaNueva, text ="Tokens: " + str(lbltokens), font=("Verdana",16), background="#044D9A", fg="white")
-    labelPuntos.place(x=20, y=120)
+    labelPuntos.place(x=20, y=130)
     labelBarcos = Label (ventanaNueva, text ="Barcos Restantes: " + str(lblbarcoos), font=("Verdana",16), background="#044D9A", fg="white")
-    labelBarcos.place(x=20, y=150)
+    labelBarcos.place(x=20, y=160)
+    labelBuques = Label (ventanaNueva, text ="Buques: " + str(Buques), font=("Verdana",16), background="#044D9A", fg="white")
+    labelBuques.place(x=20, y=190)
+    labelDestructor = Label (ventanaNueva, text ="Destructores: " + str(Destructores), font=("Verdana",16), background="#044D9A", fg="white")
+    labelDestructor.place(x=20, y=220)
+    labelSubmarinos = Label (ventanaNueva, text ="Submarinos: " + str(Submarino), font=("Verdana",16), background="#044D9A", fg="white")
+    labelSubmarinos.place(x=20, y=250)
+    labelPortaa = Label (ventanaNueva, text ="Portaaviones: " + str(Portaaviones), font=("Verdana",16), background="#044D9A", fg="white")
+    labelPortaa.place(x=20, y=280)
     labelPoosX = Label (ventanaNueva, text ="Pos X", font=("Verdana",16), background="#044D9A", fg="white")
     labelPoosX.place(x=1000, y=90)
     labelPoosY = Label (ventanaNueva, text ="Pos Y", font=("Verdana",16), background="#044D9A", fg="white")
@@ -902,8 +884,10 @@ def abrirventana():
     textoPoosX.place(x=1000, y=140)
     textoPoosY = Text(ventanaNueva, height=2, width=8, fg="white", font=("Consolas", 12)) 
     textoPoosY.place(x=1000, y=240)
+    btnAbandonar = Button(ventanaNueva, height=2, width=8, text="Abandonar",command=lambda:[abandonarpartida()] , background="#B03314", font=("Verdana",10), fg="black")
+    btnAbandonar.place(x=20, y=320)
     btnAtaque = Button(ventanaNueva, height=2, width=8, text="Atacar",command=lambda:[sacarcoordenadas(textoPoosX.get(1.0, tk.END+"-1c"),textoPoosY.get(1.0, tk.END+"-1c")), pruebanueva1()] , background="#B03314", font=("Verdana",10), fg="black")
-    btnAtaque.place(x=1000, y=320)
+    btnAtaque.place(x=990, y=320)
 
 def abrirventana2():
     global ventanaNueva2
@@ -926,13 +910,21 @@ def abrirventana2():
     labelPhotoN.place(x=250,y=30)
     #labelPhotoN.pack()
     labelusuarioactual = Label (ventanaNueva2, text ="Turno del jugador : " + JUGADOR_2, font=("Verdana",16), background="#044D9A", fg="white")
-    labelusuarioactual.place(x=450, y=0)
+    labelusuarioactual.place(x=550, y=0)
     labelAtacando = Label (ventanaNueva2, text ="Atacando a: " + JUGADOR_1, font=("Verdana",16), background="#044D9A", fg="white")
     labelAtacando.place(x=20, y=90)
     labelPuntos = Label (ventanaNueva2, text ="Tokens: " + str(lbltokens2), font=("Verdana",16), background="#044D9A", fg="white")
     labelPuntos.place(x=20, y=120)
     labelBarcos = Label (ventanaNueva2, text ="Barcos Restantes: " + str(lblbarcoos2), font=("Verdana",16), background="#044D9A", fg="white")
     labelBarcos.place(x=20, y=150)
+    labelBuques = Label (ventanaNueva2, text ="Buques: " + str(Buques), font=("Verdana",16), background="#044D9A", fg="white")
+    labelBuques.place(x=20, y=190)
+    labelDestructor = Label (ventanaNueva2, text ="Destructores: " + str(Destructores), font=("Verdana",16), background="#044D9A", fg="white")
+    labelDestructor.place(x=20, y=220)
+    labelSubmarinos = Label (ventanaNueva2, text ="Submarinos: " + str(Submarino), font=("Verdana",16), background="#044D9A", fg="white")
+    labelSubmarinos.place(x=20, y=250)
+    labelPortaa = Label (ventanaNueva2, text ="Portaaviones: " + str(Portaaviones), font=("Verdana",16), background="#044D9A", fg="white")
+    labelPortaa.place(x=20, y=280)
     labelPoosX = Label (ventanaNueva2, text ="Pos X", font=("Verdana",16), background="#044D9A", fg="white")
     labelPoosX.place(x=1000, y=90)
     labelPoosY = Label (ventanaNueva2, text ="Pos Y", font=("Verdana",16), background="#044D9A", fg="white")
@@ -949,29 +941,26 @@ def sacarcoordenadas(nuevoX, nuevoY):
     global ataqueX, ataqueY
     ataqueX = int(nuevoX)
     ataqueY = int(nuevoY)
-    print("X: ", ataqueX)
-    print("Y: ", ataqueY)
     solicitando_coordenadas()
 
 def sacarcoordenadas2(nuevoX, nuevoY):
     global ataqueX2, ataqueY2
     ataqueX2 = int(nuevoX)
     ataqueY2 = int(nuevoY)
-    print("X: ", ataqueX2)
-    print("Y: ", ataqueY2)
     solicitando_coordenadas2()
     
 
 def disparar() -> bool:
-    global nuevocontador, tokensjugador
-    #barcoos = TotalBarcos
+    global nuevocontador, tokensjugador, barcosdestruidos, tokensganados
+    barcosdestruidos = 0
+    tokensganados = 0
     x = int(YDisparo)
     y = int(XDisparo)
     matriz = MatrizActual
     if es_mar(x, y, matriz):
         matriz[y][x] = DISPARO_FALLADO
         #print("Fallado")
-        MessageBox.showinfo("Fallo", "El disparo ha sido fallado")
+        MessageBox.showinfo("Fallo", "Disparo fallado")
         imprimir_matriz(MatrizActual, False,
                     oponente_de_jugador(turno_actual1))
         return False
@@ -988,38 +977,39 @@ def disparar() -> bool:
         #nuevocontador = nuevocontador - 1
         nuevocontador -= 1
         tokensjugador += 20
-        #nuevocontador = barcoos
+        barcosdestruidos += 1
+        tokensganados += 20
         #print("Acertado")
         imprimir_matriz(MatrizActual, False,
                     oponente_de_jugador(turno_actual1))
         return True
 
 def disparar2() -> bool:
-    global nuevocontador2, tokensjugador2
+    global nuevocontador2, tokensjugador2, barcosdestruidos2, tokensganados2
+    barcosdestruidos2 = 0
+    tokensganados2 = 0
     x = int(YDisparo2)
     y = int(XDisparo2)
     matriz = MatrizActual2
     if es_mar(x, y, matriz):
         matriz[y][x] = DISPARO_FALLADO
         #print("Fallado")
-        MessageBox.showinfo("Fallo", "El disparo ha sido fallado")
+        MessageBox.showinfo("Fallo", "Disparo fallado")
         imprimir_matriz2(MatrizActual2, False,
                     oponente_de_jugador(turno_actual1))
         
         return False
-    # Si ya había disparado antes, se le cuenta como falla igualmente
     elif matriz[y][x] == DISPARO_FALLADO or matriz[y][x] == DISPARO_ACERTADO:
-        #print("De nuevo")
-        #MessageBox.showinfo("Fallo", "El disparo ya ha sido fallado")
         imprimir_matriz2(MatrizActual2, False,
                     oponente_de_jugador(turno_actual1))
         return False
     else:
         matriz[y][x] = DISPARO_ACERTADO
-        #print("Acertado")
         MessageBox.showinfo("Exito", "El disparo ha impactado en un barco")
         nuevocontador2 -= 1
         tokensjugador2 += 20
+        barcosdestruidos2 += 1
+        tokensganados2 += 20
         imprimir_matriz2(MatrizActual2, False,
                     oponente_de_jugador(turno_actual1))
         return True
@@ -1030,27 +1020,6 @@ def oponente_de_jugador(jugador):
     else:
         return JUGADOR_1
 
-
-def todos_los_barcos_hundidos(matriz):
-    for y in range(FILAS):
-        for x in range(COLUMNAS):
-            celda = matriz[y][x]
-            # Si no es mar o un disparo, significa que todavía hay un barco por ahí
-            if celda != MAR and celda != DISPARO_ACERTADO and celda != DISPARO_FALLADO:
-                return False
-    # Acabamos de recorrer toda la matriz y no regresamos en la línea anterior. Entonces todos los barcos han sido hundidos
-    return True
-
-
-def indicar_victoria(jugador):
-    print(f"Fin del juego\nEl jugador {jugador} es el ganador")
-
-
-def indicar_fracaso(jugador):
-    print(
-        f"Fin del juego\nEl jugador {jugador} pierde. Se han acabado sus disparos")
-
-
 def imprimir_matrices_con_barcos(matriz_j1, matriz_j2):
     print("Mostrando ubicación de los barcos de ambos jugadores:")
     imprimir_matriz(matriz_j1, True, JUGADOR_1)
@@ -1059,7 +1028,7 @@ def imprimir_matrices_con_barcos(matriz_j1, matriz_j2):
 
 def creartableros():
     global matriz_j1, matriz_j2
-    cantidad_barcos = 5
+    cantidad_barcos = TotalBarcos
     matriz_j1, matriz_j2 = obtener_matriz_inicial(), obtener_matriz_inicial()
     matriz_j1 = colocar_e_imprimir_barcos(
         matriz_j1, cantidad_barcos, JUGADOR_1)
@@ -1070,25 +1039,20 @@ def creartableros():
 def pruebanueva():
     global MatrizActual, turno_actual1
     DERROTADO = FALSE
-    disparos_restantes_j1 = DISPAROS_INICIALES
     turno_actual1 = JUGADOR_1
     while DERROTADO == False:
-        print("Turno de: ", turno_actual1)
         if turno_actual1:
-            print("jugador uno")
-            disparos_restantes = disparos_restantes_j1
-            imprimir_disparos_restantes(disparos_restantes, turno_actual1)
             matriz_oponente = matriz_j1
             imprimir_matriz(matriz_oponente, False,
                         oponente_de_jugador(turno_actual1))
             MatrizActual = matriz_oponente
             abrirventana()
-            if nuevocontador == 0 :
-                MessageBox.showinfo("Exito", "Has ganado la partida")
+            if nuevocontador == 9 :
+                MessageBox.showinfo("Exito", "La partida ha terminado")
                 resultadojugador1()
                 ventanaNueva.destroy()
-                ventanaUser.deiconify()
-                print("Se termina")
+                mostrarjugador1()
+                #print("Se termina")
                 break
             DERROTADO = TRUE
 
@@ -1109,21 +1073,30 @@ def resultadojugador1():
             matriPrueba.graficarNeato('Adyacencia')
 
 def resultadojugador2():
-    pass
+    with open('Prueba1.txt') as archivo:
+        l = 0
+        c = 0
+        lineas = archivo.readlines()
+        for linea in lineas:
+            columnas = linea
+            l += 1
+            for col in columnas:
+                if col != '\n':
+                    c += 1
+                    matriPrueba.insert(l, c, col)
+            c = 0
+            matriPrueba.graficarNeato('Adyacencia')
 
 
 def pruebanueva1():
     global  MatrizActual2
     ventanaNueva.destroy()
     DERROTADO = FALSE
-    disparos_restantes_j2 = DISPAROS_INICIALES
     turno_actual2 = JUGADOR_2
     while DERROTADO == False:
         print("Turno de: ", turno_actual2)
         if turno_actual2:
             print("jugador dos")
-            disparos_restantes = disparos_restantes_j2
-            imprimir_disparos_restantes(disparos_restantes, turno_actual2)
             matriz_oponente = matriz_j2
             imprimir_matriz2(matriz_oponente, False,
                         oponente_de_jugador(turno_actual2))
@@ -1131,10 +1104,61 @@ def pruebanueva1():
             abrirventana2()
             if nuevocontador == 0 :
                 MessageBox.showinfo("Exito", "Has ganado la partida")
-                resultadojugador2()
-                print("Se termina")
+                resultadojugador1()
+                ventanaNueva.destroy()
+                mostrarjugador1()
+                #resultadojugador2()
                 break
             DERROTADO = TRUE
+
+def agregarpuntos():
+    print("Metodo agregando tokens")
+
+def quitarpuntos():
+    print("quitar puntos")
+
+def abandonarpartida():
+    global quitartokens
+    quitartokens = 20
+    mes = MessageBox.askquestion('Abandonar', '¿Esta seguro de abandonar esta partida? Perderá 20 tokens')
+    if mes == 'yes':
+        finaltokens = lbltokens - quitartokens
+        print("Tokens final : ", finaltokens)
+        #quitartokens -= 20
+        MessageBox.showinfo('Cerrando', 'Ha terminado la partida')
+        ventanaNueva.destroy()
+        ventanaUser.deiconify()
+    else:
+        MessageBox.showinfo('Regresar', 'Regresando al menu')
+
+def mostrarjugador1():
+    ventanaGanador = Toplevel()
+    ventanaGanador.title("Jugador Logeado")
+    ventanaGanador.resizable(0,0)
+    ancho_ventanaGanador = 400
+    alto_ventanaGanador = 400
+    x_ventanaGanador = ventanaGanador.winfo_screenwidth() // 2 - ancho_ventanaGanador // 2
+    y_ventanaGanador = ventanaGanador.winfo_screenheight() // 2 - alto_ventanaGanador // 2
+    posicionNombre = str(ancho_ventanaGanador) + "x" + str(alto_ventanaGanador) + "+" + str(x_ventanaGanador) + "+" + str(y_ventanaGanador)
+    ventanaGanador.geometry(posicionNombre)
+    labelNombreGanador= Label (ventanaGanador, text ="Resultados del usuario : " + usuariobusqueda, font=("Verdana",16), background="#044D9A", fg="white")
+    labelNombreGanador.place(x=75, y=30)
+    labelDestruidos = Label (ventanaGanador, text ="Barcos Destruidos : " + str(barcosdestruidos), font=("Verdana",16), background="#044D9A", fg="white")
+    labelDestruidos.place(x=50, y=90)
+    labeLTokensG = Label (ventanaGanador, text ="Tokens Ganados : " + str(tokensganados), font=("Verdana",16), background="#044D9A", fg="white")
+    labeLTokensG.place(x=50, y=120)
+    btnDisparos = Button(ventanaGanador, height=2, width=12, text="Ver tablero", command = lambda:[resultadojugador1()], background="#368807", font=("Verdana",10), fg="black")
+    btnDisparos.place(x=50, y=200)
+    btnListaA = Button(ventanaGanador, height=2, width=12, text="Lista de Jugadas", command = lambda:[print("Hola")], background="#368807", font=("Verdana",10), fg="black")
+    btnListaA.place(x=200, y=200)
+    btnGrafo = Button(ventanaGanador, height=2, width=12, text="Grafo de Jugadas", command = lambda:[print("Hola")], background="#368807", font=("Verdana",10), fg="black")
+    btnGrafo.place(x=50, y=250)
+    btnVolverJuego = Button(ventanaGanador, height=2, width=12, text="Volver a jugar", command = lambda:[print("Hola")], background="#368807", font=("Verdana",10), fg="black")
+    btnVolverJuego.place(x=200, y=250)
+    btnRegresarM = Button(ventanaGanador, height=2, width=12, text="Regresar al menu", command = lambda:[print("Hola"), ventanaGanador.withdraw(), ventanaUser.deiconify()], background="#368807", font=("Verdana",10), fg="black")
+    btnRegresarM.place(x=130, y=300)
+    #ventanaGanador.withdraw()
+
 
 #---------------------------------CERRANDO ------------------------------
 
@@ -1225,8 +1249,7 @@ textoPass = Text(ventanaReg, height=2, width=30, fg="white", font=("Consolas", 1
 textoPass.place(x=230, y=255)
 textoEdad = Text(ventanaReg, height=2, width=30, fg="white", font=("Consolas", 11))
 textoEdad.place(x=230,y=330)
-btnRegistro = Button(ventanaReg, height=2, width=15, text="Registrar", command = lambda:[resultadojugador1()], background="#368807", font=("Verdana",10), fg="black")
-#btnRegistro = Button(ventanaReg, height=2, width=15, text="Registrar", command = lambda:[Comprobar(textoUsuario.get(1.0, tk.END+"-1c"),textoPass.get(1.0, tk.END+"-1c"),textoEdad.get(1.0, tk.END+"-1c"))], background="#368807", font=("Verdana",10), fg="black")
+btnRegistro = Button(ventanaReg, height=2, width=15, text="Registrar", command = lambda:[Comprobar(textoUsuario.get(1.0, tk.END+"-1c"),textoPass.get(1.0, tk.END+"-1c"),textoEdad.get(1.0, tk.END+"-1c"))], background="#368807", font=("Verdana",10), fg="black")
 btnRegistro.place(x=180, y=400)
 btnRegreso = Button(ventanaReg, height=2, width=8, text="Regresar", command = lambda:[textoUsuario.delete(1.0, tk.END+"-1c"),textoPass.delete(1.0, tk.END+"-1c"),textoEdad.delete(1.0, tk.END+"-1c"), ventanaReg.withdraw(), ventana.deiconify()], background="#368807", font=("Verdana",10), fg="black")
 btnRegreso.place(x=405, y=5)

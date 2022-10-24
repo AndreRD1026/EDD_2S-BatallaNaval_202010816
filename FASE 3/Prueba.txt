@@ -1,12 +1,10 @@
-A       E   
-AE B    E   
-B           
-    E      C
-E     DD  C
-    E     C
-   SSS      
-   APPPP    
-* BA        
-E     E     
-* E   E  E B
-            
+ BDD      
+C       B 
+C   PPPP  
+C         
+          
+     B A  
+       A  
+     B    
+     A    
+ SSS A    
