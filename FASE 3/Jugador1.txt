@@ -1,0 +1,12 @@
+            
+ CB     DD  
+ C  A       
+ CB A       
+BSSSASSS    
+B DDA  B    
+  PPPP      
+V         DD
+V      BA   
+V      CA   
+V      CB   
+     B C    

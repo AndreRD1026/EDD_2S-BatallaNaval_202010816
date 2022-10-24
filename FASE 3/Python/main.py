@@ -353,16 +353,27 @@ def GraficoTiendaaa():
     fig.tight_layout()
     plt.show()
 
+
+#-------------------------------GUARDANDO DATOS PARA VOLVER A JUGAR-------------------------
+
+def GuardarConfiguracion():
+    global nombrejugador2, dimensionestablero
+    nombrejugador2 = textoNombre.get(1.0, tk.END+"-1c")
+    dimensionestablero = textoDimension.get(1.0,tk.END+"-1c")
+
 #---------------------------------CREACION DEL JUEGO 2.0 ------------------------------
 def Partida():
     global Portaaviones, Submarino, Destructores, Buques, TotalBarcos, nuevocontador, nuevocontador2
-    global totalmonedas,tokensjugador, totalmonedas2, tokensjugador2
+    global totalmonedas,tokensjugador, totalmonedas2, tokensjugador2, jugador2
     global FILAS, COLUMNAS, MAR
     global BUQUE, DESTRUCTOR, SUBMARINO, DESTRUCTOR_VERTICAL, SUBMARINO_VERTICAL
     global PORTAAVIONES, PORTAAVIONES_VERTICAL, DISPARO_FALLADO, DISPARO_ACERTADO
     global JUGADOR_1, JUGADOR_2
 
-    jugador2 = textoNombre.get(1.0, tk.END+"-1c")
+    #jugador2 = textoNombre.get(1.0, tk.END+"-1c")
+
+    jugador2 = nombrejugador2
+    
     MAR = " "
     BUQUE = "B"  # Ocupa una celda
     DESTRUCTOR = "D"  # Ocupa dos celdas
@@ -382,7 +393,8 @@ def Partida():
     Buq = 4
     # Formula para determinar la cantidad de barcos por tablero
     # B(m) = ((m-1)/10)+1
-    dimens = textoDimension.get(1.0,tk.END+"-1c")
+    #dimens = textoDimension.get(1.0,tk.END+"-1c")
+    dimens = dimensionestablero
     dimen = int(dimens)
     if dimen<10:
         MessageBox.showerror("Advertencia", "El Numero minimo para el tablero es de 10")
@@ -391,6 +403,7 @@ def Partida():
         COLUMNAS = dimen
         ventanaObtenerDimension.withdraw() 
         textoDimension.delete(1.0, tk.END+"-1c")
+        textoNombre.delete(1.0, tk.END+"-1c")
         vidas = 3
         B = int(((dimen-1)/10))+1
         #print(B)
@@ -420,6 +433,7 @@ def Partida():
         COLUMNAS = dimen
         ventanaObtenerDimension.withdraw() 
         textoDimension.delete(1.0, tk.END+"-1c")
+        textoNombre.delete(1.0, tk.END+"-1c")
         vidas = 3
         B = int(((dimen-1)/10))+1
         #print(B)
@@ -449,6 +463,7 @@ def Partida():
         COLUMNAS = dimen
         ventanaObtenerDimension.withdraw() 
         textoDimension.delete(1.0, tk.END+"-1c")
+        textoNombre.delete(1.0, tk.END+"-1c")
         vidas = 3
         B = int(((dimen-1)/10))+1
         #print(B)
@@ -662,7 +677,7 @@ def colocar_barcos_de_cuatro_celdas_vertical(cantidad, tipo_barco, matriz):
     return matriz
 
 def imprimir_matriz(matriz, deberia_mostrar_barcos, jugador):
-    doc = open("Prueba.txt", "w")
+    doc = open("Jugador1.txt", "w")
     letra = 1
     for y in range(FILAS):
         for x in range(COLUMNAS):
@@ -690,7 +705,7 @@ def imprimir_matriz(matriz, deberia_mostrar_barcos, jugador):
         letra+=1
         doc.write("\n",)
     doc.close()
-    with open('Prueba.txt') as archivo:
+    with open('Jugador1.txt') as archivo:
         l = 0
         c = 0
         lineas = archivo.readlines()
@@ -702,11 +717,11 @@ def imprimir_matriz(matriz, deberia_mostrar_barcos, jugador):
                     c += 1
                     matrizD.insert(l, c, col)
             c = 0
-            matrizD.graficarNeato('Salida')
+            matrizD.graficarNeato('Jugador1')
 
 
 def imprimir_matriz2(matriz, deberia_mostrar_barcos, jugador):
-    doc = open("Prueba1.txt", "w")
+    doc = open("Jugador2.txt", "w")
     letra = 1
     for y in range(FILAS):
         for x in range(COLUMNAS):
@@ -734,7 +749,7 @@ def imprimir_matriz2(matriz, deberia_mostrar_barcos, jugador):
         letra+=1
         doc.write("\n",)
     doc.close()
-    with open('Prueba1.txt') as archivo1:
+    with open('Jugador2.txt') as archivo1:
         l1 = 0
         c1 = 0
         lineas1 = archivo1.readlines()
@@ -746,9 +761,9 @@ def imprimir_matriz2(matriz, deberia_mostrar_barcos, jugador):
                     c1 += 1
                     matriz2.insert(l1, c1, col1)
             c1 = 0
-            matriz2.graficarNeato1('Salida1')
+            matriz2.graficarNeato1('Jugador2')
 
-    
+
 def insertaTodo():
     with open('Prueba.txt') as archivo:
         l = 0
@@ -853,7 +868,7 @@ def abrirventana():
     y_ventanaN = ventanaNueva.winfo_screenheight() // 2 - alto_ventanaN // 2
     posicionN = str(ancho_ventanaN) + "x" + str(alto_ventanaN) + "+" + str(x_ventanaN) + "+" + str(y_ventanaN)
     ventanaNueva.geometry(posicionN)
-    image = Image.open("matriz_Salida.png")
+    image = Image.open("Salida/matriz_Jugador1.png")
     resize_image = image.resize((700, 700))
     img = ImageTk.PhotoImage(resize_image)
     labelPhotoN = Label(ventanaNueva, image=img)
@@ -902,7 +917,7 @@ def abrirventana2():
     y_ventanaN = ventanaNueva2.winfo_screenheight() // 2 - alto_ventanaN // 2
     posicionN = str(ancho_ventanaN) + "x" + str(alto_ventanaN) + "+" + str(x_ventanaN) + "+" + str(y_ventanaN)
     ventanaNueva2.geometry(posicionN)
-    image = Image.open("matriz_Salida1.png")
+    image = Image.open("Salida/matriz_Jugador2.png")
     resize_image = image.resize((700, 700))
     img = ImageTk.PhotoImage(resize_image)
     labelPhotoN = Label(ventanaNueva2, image=img)
@@ -1020,12 +1035,6 @@ def oponente_de_jugador(jugador):
     else:
         return JUGADOR_1
 
-def imprimir_matrices_con_barcos(matriz_j1, matriz_j2):
-    print("Mostrando ubicación de los barcos de ambos jugadores:")
-    imprimir_matriz(matriz_j1, True, JUGADOR_1)
-    imprimir_matriz(matriz_j2, True, JUGADOR_2)
-
-
 def creartableros():
     global matriz_j1, matriz_j2
     cantidad_barcos = TotalBarcos
@@ -1049,6 +1058,7 @@ def pruebanueva():
             abrirventana()
             if nuevocontador == 9 :
                 MessageBox.showinfo("Exito", "La partida ha terminado")
+                agregarpuntos()
                 resultadojugador1()
                 ventanaNueva.destroy()
                 mostrarjugador1()
@@ -1094,16 +1104,16 @@ def pruebanueva1():
     DERROTADO = FALSE
     turno_actual2 = JUGADOR_2
     while DERROTADO == False:
-        print("Turno de: ", turno_actual2)
+        #print("Turno de: ", turno_actual2)
         if turno_actual2:
-            print("jugador dos")
+            #print("jugador dos")
             matriz_oponente = matriz_j2
             imprimir_matriz2(matriz_oponente, False,
                         oponente_de_jugador(turno_actual2))
             MatrizActual2 = matriz_oponente
             abrirventana2()
             if nuevocontador == 0 :
-                MessageBox.showinfo("Exito", "Has ganado la partida")
+                MessageBox.showinfo("Exito", "La partida ha terminado")
                 resultadojugador1()
                 ventanaNueva.destroy()
                 mostrarjugador1()
@@ -1111,20 +1121,14 @@ def pruebanueva1():
                 break
             DERROTADO = TRUE
 
-def agregarpuntos():
-    print("Metodo agregando tokens")
-
-def quitarpuntos():
-    print("quitar puntos")
-
 def abandonarpartida():
-    global quitartokens
-    quitartokens = 20
+    global quitartokens, finaltokens
+    quitartokens = 0
     mes = MessageBox.askquestion('Abandonar', '¿Esta seguro de abandonar esta partida? Perderá 20 tokens')
     if mes == 'yes':
-        finaltokens = lbltokens - quitartokens
-        print("Tokens final : ", finaltokens)
-        #quitartokens -= 20
+        quitartokens -= 20
+        finaltokens = lbltokens + quitartokens
+        quitarpuntos()
         MessageBox.showinfo('Cerrando', 'Ha terminado la partida')
         ventanaNueva.destroy()
         ventanaUser.deiconify()
@@ -1153,12 +1157,21 @@ def mostrarjugador1():
     btnListaA.place(x=200, y=200)
     btnGrafo = Button(ventanaGanador, height=2, width=12, text="Grafo de Jugadas", command = lambda:[print("Hola")], background="#368807", font=("Verdana",10), fg="black")
     btnGrafo.place(x=50, y=250)
-    btnVolverJuego = Button(ventanaGanador, height=2, width=12, text="Volver a jugar", command = lambda:[print("Hola")], background="#368807", font=("Verdana",10), fg="black")
+    btnVolverJuego = Button(ventanaGanador, height=2, width=12, text="Volver a jugar", command = lambda:[Partida()], background="#368807", font=("Verdana",10), fg="black")
     btnVolverJuego.place(x=200, y=250)
     btnRegresarM = Button(ventanaGanador, height=2, width=12, text="Regresar al menu", command = lambda:[print("Hola"), ventanaGanador.withdraw(), ventanaUser.deiconify()], background="#368807", font=("Verdana",10), fg="black")
     btnRegresarM.place(x=130, y=300)
     #ventanaGanador.withdraw()
 
+def agregarpuntos():
+    for uss in ListaUsuarios:
+        if usuariobusqueda == uss.nick:
+            uss.monedas = lbltokens
+
+def quitarpuntos():
+    for uss in ListaUsuarios:
+        if usuariobusqueda == uss.nick:
+            uss.monedas = finaltokens
 
 #---------------------------------CERRANDO ------------------------------
 
@@ -1393,7 +1406,7 @@ labelNum = Label (ventanaObtenerDimension, text ="Numero", font=("Verdana",16), 
 labelNum.place(x=50, y=115)
 textoDimension = Text(ventanaObtenerDimension, height=2, width=12 ,fg="white", font=("Consolas", 12)) 
 textoDimension.place(x=150, y=110)
-btnCrearT = Button(ventanaObtenerDimension, height=2, width=15, text="Crear", command = lambda:[Partida()], background="#368807", font=("Verdana",10), fg="black")
+btnCrearT = Button(ventanaObtenerDimension, height=2, width=15, text="Crear", command = lambda:[GuardarConfiguracion(),Partida()], background="#368807", font=("Verdana",10), fg="black")
 btnCrearT.place(x=80, y=190)
 ventanaObtenerDimension.withdraw()
 

@@ -226,10 +226,10 @@ class MatrizDispersa():
                 
         contenido += '\n}'
         #--- se genera DOT y se procede a ecjetuar el comando
-        dot = "matriz_{}_dot.txt".format(nombre)
+        dot = "Graficos/" + "matriz_{}_dot.txt".format(nombre)
         with open(dot, 'w') as grafo:
             grafo.write(contenido)
-        result = "matriz_{}.png".format(nombre)
+        result = "Salida/" + "matriz_{}.png".format(nombre)
         os.system("neato -Tpng " + dot + " -o " + result)
         #os.system("neato -Tpng matriz_Salida.dot.txt -o matriz_Salida.png")
         webbrowser.open(result)
@@ -359,10 +359,10 @@ class MatrizDispersa():
                 
         contenido += '\n}'
         #--- se genera DOT y se procede a ecjetuar el comando
-        dot = "matriz_{}_dot.txt".format(nombre)
+        dot = "Graficos/" + "matriz_{}_dot.txt".format(nombre)
         with open(dot, 'w') as grafo:
             grafo.write(contenido)
-        result = "matriz_{}.png".format(nombre)
+        result = "Salida/" + "matriz_{}.png".format(nombre)
         os.system("neato -Tpng " + dot + " -o " + result)
         #os.system("neato -Tpng matriz_Salida.dot.txt -o matriz_Salida.png")
         webbrowser.open(result)
