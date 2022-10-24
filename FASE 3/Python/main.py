@@ -20,12 +20,11 @@ from MatrizDispersa import MatrizDispersa
 from MatrizDispersa1 import MatrizDispersa1
 
 matrizD = MatrizDispersa(0)
+matriz2 = MatrizDispersa(0)
 matriPrueba = MatrizDispersa1(0)
 
 ListaUsuarios = []
 ListaArticulos = []
-
-rutaa = "matriz_Salida.png"
 
 contauser = 1
 
@@ -62,11 +61,6 @@ def abrirArchivo1():
             SRCArticulo = arrt['src']
             nuevoArticulo = Articulo(idArticulo,catArticulo,precioArticulo,nombreArticulo,SRCArticulo)
             ListaArticulos.append(nuevoArticulo)
-        #prueba = os.path.split(archivo)
-        #print(prueba)
-        #res = requests.post(f'{base_url}/Carga/' + f'{prueba[1]}')
-        #data = res.text#convertimos la respuesta en dict
-        #print(data)
         MessageBox.showinfo("Exito!", "Archivo Cargado con exito")
     except:
         MessageBox.showwarning("Alerta", "Debe cargar un archivo")
@@ -98,25 +92,6 @@ def RegistroUser():
     if validar == True:
         MessageBox.showinfo("Problema", "Ya existe un usuario con este Nick")
     
-    '''
-    res = requests.get(f'{base_url}/Verificar/' + f'{salida}' + "/" + f'{salida2}' + "/" +  f'{salida3}')
-    data = res.text#convertimos la respuesta en dict
-
-    datos_diccionarioo = json.loads(data)
-        #idd1 = datos_diccionario2["Id"]
-    estt = datos_diccionarioo["estado"]
-    #print(data)
-
-    if estt == "existe":
-        MessageBox.showinfo("Problema", "Ya existe un usuario con este Nick")
-    if estt == "no existe":
-        mandarRegistro(salida,salida2,salida3)
-        textoUsuario.delete(1.0, tk.END+"-1c")
-        textoPass.delete(1.0, tk.END+"-1c")
-        textoEdad.delete(1.0, tk.END+"-1c")
-        ventanaReg.withdraw()
-    '''
-
 def ComprobarCambio(salidaa,salidaa2,salidaa3):
 
     if usuariobusqueda == salidaa:
@@ -201,52 +176,6 @@ def mandarLogin(usuario,contra):
     if verificado == False:
         MessageBox.showinfo("Error!", "Usuario o contraseña incorrectos")
         ventanaLog.deiconify()
-
-    '''print(usuario)
-    print(contra)
-    cifrada = hashlib.sha256(contra.encode('utf-8')).hexdigest()
-    for uss in ListaUsuarios:
-        if usuario == uss.nick and cifrada == uss.passcifrada:
-            if usuario == "EDD":
-                print(uss.edad)
-                print("admin")
-                ventanaLog.withdraw() 
-                MessageBox.showinfo("Exito!", "Inicio de sesion correcto")
-                ventanaAdmin.deiconify()
-            else:
-                print("Encontrado")
-    return False'''
-
-    '''res = requests.get(f'{base_url}/Login/' + f'{usuario}' + "/" + f'{contra}')
-    data = res.text#convertimos la respuesta en dict
-    print(data)
-    if data == "admin":
-        ventanaLog.withdraw()
-        MessageBox.showinfo("Exito!", "Inicio de sesion correcto")
-        ventanaAdmin.deiconify()
-    if data == "correcto":
-        ventanaLog.withdraw()
-        MessageBox.showinfo("Exito!", "Inicio de sesion correcto")
-        res = requests.get(f'{base_url}/Log/' + f'{usuario}' + "/" + f'{contra}')
-        data = res.text
-        datos_diccionario = json.loads(data)
-        name = datos_diccionario["nick"]
-        passw = datos_diccionario["password"]
-        edadd = datos_diccionario["edad"]
-        monedd = datos_diccionario["monedas"]
-        textoUsuarioC.insert(INSERT, name)
-        textoPassC.insert(INSERT, passw)
-        textoEdadC.insert(INSERT,edadd)
-        usuariobusqueda = name
-        monedasusuario = int(monedd)
-        ventanaUser.deiconify()
-    if data == "incorrecto":
-        MessageBox.showinfo("Error!", "Usuario o contraseña incorrectos")
-        ventanaLog.deiconify()
-    if data == "inexistente":
-        MessageBox.showinfo("Inesperado!", "El usuario no existe")
-        ventanaLog.deiconify() '''
-
 
 def mandarDatos(usuario):
     res = requests.get(f'{base_url}/Log/' + f'{usuario}')
@@ -426,7 +355,7 @@ def GraficoTiendaaa():
 
 #---------------------------------CREACION DEL JUEGO 2.0 ------------------------------
 def Partida():
-    global Portaaviones, Submarino, Destructores, Buques
+    global Portaaviones, Submarino, Destructores, Buques, TotalBarcos, nuevocontador, nuevocontador2
     global FILAS, COLUMNAS, MAR
     global BUQUE, DESTRUCTOR, SUBMARINO, DESTRUCTOR_VERTICAL, SUBMARINO_VERTICAL
     global PORTAAVIONES, PORTAAVIONES_VERTICAL, DISPARO_FALLADO, DISPARO_ACERTADO, DISPAROS_INICIALES
@@ -472,8 +401,12 @@ def Partida():
         print("Submarinos : ", Submarino)
         print("Destructores: ", Destructores)
         print("Buques : " , Buques)
+        TotalBarcos = Portaaviones + Submarino + Destructores + Buques
+        otroB = TotalBarcos
+        nuevocontador = otroB
+        nuevocontador2 = otroB
         MessageBox.showinfo("Exito", "Tablero creado con exito")
-        #jugar2()
+        creartableros()
         pruebanueva()
     if dimen>10 and dimen <= 20:
         FILAS = dimen
@@ -491,8 +424,13 @@ def Partida():
         print("Submarinos : ", Submarino)
         print("Destructores: ", Destructores)
         print("Buques : " , Buques)
+        TotalBarcos = Portaaviones + Submarino + Destructores + Buques
+        otroB = TotalBarcos
+        nuevocontador = otroB
+        nuevocontador2 = otroB
         MessageBox.showinfo("Exito", "Tablero creado con exito")
-        jugar()
+        creartableros()
+        pruebanueva()
     if dimen>20:
         FILAS = dimen
         COLUMNAS = dimen
@@ -509,9 +447,13 @@ def Partida():
         print("Submarinos : ", Submarino)
         print("Destructores: ", Destructores)
         print("Buques : " , Buques)
+        TotalBarcos = Portaaviones + Submarino + Destructores + Buques
+        otroB = TotalBarcos
+        nuevocontador = otroB
+        nuevocontador2 = otroB
         MessageBox.showinfo("Exito", "Tablero creado con exito")
-        jugar()
-    #print("Partida")
+        creartableros()
+        pruebanueva()
 
 
 
@@ -550,9 +492,6 @@ def imprimir_fila_de_numeros():
 
 # Indica si una coordenada de la matriz está vacía
 def es_mar(x, y, matriz):
-    #px = x + 0.5
-    #py = y + 0.5
-    #plt.plot([px],[py], linestyle='None', marker='.', markersize=8, color='blue')
     return matriz[y][x] == MAR
 
 
@@ -570,10 +509,12 @@ def colocar_e_imprimir_barcos(matriz, cantidad_barcos, jugador):
     barcos_cuatro_celdas_verticales = 0
 
     if jugador == JUGADOR_1:
-        print("Imprimiendo barcos del jugador 1 ")
+        #print("Imprimiendo barcos del jugador 1 ")
+        print("")
     else:
-        print("Imprimiendo barcos del jugador 2 ")
-    print(f"Barcos de una celda: {barcos_una_celda}\nBarcos verticales de dos celdas: {barcos_dos_celdas_verticales}\nBarcos horizontales de dos celdas: {barcos_dos_celdas_horizontales}\nTotal: {barcos_una_celda+barcos_dos_celdas_verticales+barcos_dos_celdas_horizontales}")
+        #print("Imprimiendo barcos del jugador 2 ")
+        print("")
+    #print(f"Barcos de una celda: {barcos_una_celda}\nBarcos verticales de dos celdas: {barcos_dos_celdas_verticales}\nBarcos horizontales de dos celdas: {barcos_dos_celdas_horizontales}\nTotal: {barcos_una_celda+barcos_dos_celdas_verticales+barcos_dos_celdas_horizontales}")
     # Primero colocamos los de dos celdas para que se acomoden bien
     matriz = colocar_barcos_de_cuatro_celdas_horizontal(
         barcos_cuatro_celdas_horizontiles, PORTAAVIONES, matriz)
@@ -718,20 +659,35 @@ def imprimir_matriz(matriz, deberia_mostrar_barcos, jugador):
     doc = open("Prueba.txt", "w")
     letra = 1
     for y in range(FILAS):
-        imprimir_separador_horizontal()
-        print(f"| {letra} ", end="")
+        #imprimir_separador_horizontal()
+        #print(f"| {letra} ", end="")
         for x in range(COLUMNAS):
             celda = matriz[y][x]
             valor_real = celda
             if not deberia_mostrar_barcos and valor_real != MAR and valor_real != DISPARO_FALLADO and valor_real != DISPARO_ACERTADO:
-                valor_real = "X"
-            print(f"| {valor_real} ", end="")
+                if valor_real == BUQUE:
+                    valor_real = "B"
+                elif valor_real == SUBMARINO:
+                    valor_real = "S"
+                elif valor_real == DESTRUCTOR:
+                    valor_real = "D"
+                elif valor_real == DESTRUCTOR_VERTICAL:
+                    valor_real == "A"
+                elif valor_real == SUBMARINO_VERTICAL:
+                    valor_real == "C"
+                elif valor_real == PORTAAVIONES:
+                    valor_real == "P"
+                elif valor_real == PORTAAVIONES_VERTICAL:
+                    valor_real == "V"
+                else:
+                    valor_real = "X"
+            #print(f"| {valor_real} ", end="")
             doc.write(f"{valor_real}")
             
 
         #letra = incrementar_letra(letra)
         letra+=1
-        print("|",)  # Salto de línea
+        #print("|",)  # Salto de línea
         doc.write("\n",)
     doc.close()
     with open('Prueba.txt') as archivo:
@@ -747,10 +703,6 @@ def imprimir_matriz(matriz, deberia_mostrar_barcos, jugador):
                     matrizD.insert(l, c, col)
             c = 0
             matrizD.graficarNeato('Salida')
-    imprimir_separador_horizontal()
-    imprimir_fila_de_numeros()
-    imprimir_separador_horizontal()
-    insertaTodo()
 
 
 def imprimir_matriz2(matriz, deberia_mostrar_barcos, jugador):
@@ -758,70 +710,52 @@ def imprimir_matriz2(matriz, deberia_mostrar_barcos, jugador):
     doc = open("Prueba1.txt", "w")
     letra = 1
     for y in range(FILAS):
-        imprimir_separador_horizontal()
-        print(f"| {letra} ", end="")
+        #imprimir_separador_horizontal()
+        #print(f"| {letra} ", end="")
         for x in range(COLUMNAS):
             celda = matriz[y][x]
             valor_real = celda
             if not deberia_mostrar_barcos and valor_real != MAR and valor_real != DISPARO_FALLADO and valor_real != DISPARO_ACERTADO:
-                valor_real = "X"
-            print(f"| {valor_real} ", end="")
+                if valor_real == BUQUE:
+                    valor_real = "B"
+                elif valor_real == SUBMARINO:
+                    valor_real = "S"
+                elif valor_real == DESTRUCTOR:
+                    valor_real = "D"
+                elif valor_real == DESTRUCTOR_VERTICAL:
+                    valor_real == "A"
+                elif valor_real == SUBMARINO_VERTICAL:
+                    valor_real == "C"
+                elif valor_real == PORTAAVIONES:
+                    valor_real == "P"
+                elif valor_real == PORTAAVIONES_VERTICAL:
+                    valor_real == "V"
+                else:
+                    valor_real = "X"
+            #print(f"| {valor_real} ", end="")
             doc.write(f"{valor_real}")
             
 
         #letra = incrementar_letra(letra)
         letra+=1
-        print("|",)  # Salto de línea
+        #print("|",)  # Salto de línea
         doc.write("\n",)
     doc.close()
-    '''with open('Prueba1.txt') as archivo:
-        l = 0
-        c = 0
-        lineas = archivo.readlines()
-        for linea in lineas:
-            columnas = linea
-            l += 1
-            for col in columnas:
-                if col != '\n':
-                    c += 1
-                    matrizD.insert(l, c, col)
-            c = 0
-            matrizD.graficarNeato('Salida1')'''
-    imprimir_separador_horizontal()
-    imprimir_fila_de_numeros()
-    imprimir_separador_horizontal()
-    insertaTodo1()
+    with open('Prueba1.txt') as archivo1:
+        l1 = 0
+        c1 = 0
+        lineas1 = archivo1.readlines()
+        for linea1 in lineas1:
+            columnas1 = linea1
+            l1 += 1
+            for col1 in columnas1:
+                if col1 != '\n':
+                    c1 += 1
+                    matriz2.insert(l1, c1, col1)
+            c1 = 0
+            matriz2.graficarNeato1('Salida1')
+
     
-
-
-def Pintar(matriz, deberia_mostrar_barcos, jugador):
-    for n in range(FILAS+1):
-        plt.plot([0,FILAS], [n,n], color="black", linewidth=1)
-        plt.plot ([n,n],[0,COLUMNAS], color="black", linewidth=1)
-    for y in range(FILAS):
-        #plt.plot([0,10], [y,y], color="black", linewidth=1)
-        for x in range(COLUMNAS):
-            #plt.plot ([x,x],[0,10], color="black", linewidth=1)
-            celda = matriz[y][x]
-            valor_real = celda
-            if not deberia_mostrar_barcos and valor_real != MAR and valor_real != DISPARO_FALLADO and valor_real != DISPARO_ACERTADO:
-                valor_real = "X"
-                px = x + 0.5
-                py = y + 0.5
-                plt.text(0,-1.5, "Atacando a : " + jugador , fontdict=None)
-
-                plt.plot([px],[py], linestyle='None', marker='.', markersize=8, color='teal')
-                #plt.plot([px],[py], linestyle='None', marker='.', markersize=8, color='teal')
-    plt.axis("off")
-    ax = plt.gca()
-    ax.set_ylim(ax.get_ylim()[::-1])
-    # Home button
-    #axButn1 = plt.axes([0.1, 0.1, 0.1, 0.1])
-    #btn1 = BT(
-    #axButn1, label="Home", color='pink', hovercolor='tomato')
-    #btn1.on_clicked(ventanaLog.deiconify())
-    plt.show()
-
 def insertaTodo():
     with open('Prueba.txt') as archivo:
         l = 0
@@ -850,39 +784,7 @@ def insertaTodo1():
                     c += 1
                     matrizD.insert(l, c, col)
             c = 0
-            matrizD.graficarNeato('Salida1')
-
-
-def solicitar_coordenadas(jugador):
-    print(f"Solicitando coordenadas de disparo al jugador {jugador}")
-    # Ciclo infinito. Se rompe cuando ingresan una fila correcta
-    y = None
-    x = None
-    while True:
-        try:
-            y = int(input("Ingresa el número de fila: "))
-            #y = ataqueY
-            if coordenada_en_rango(y-1, 0):
-                y = y-1  # Queremos el índice, así que restamos un 1 siempre
-                break
-            else:
-                print("Fila inválida")
-        except:
-            print("Ingresa un número válido")
-    # Hacemos lo mismo pero para la columna
-    while True:
-        try:
-            x = int(input("Ingresa el número de columna: "))
-            #x = ataqueX
-            if coordenada_en_rango(x-1, 0):
-                x = x-1  # Queremos el índice, así que restamos un 1 siempre
-                break
-            else:
-                print("Columna inválida")
-        except:
-            print("Ingresa un número válido")
-    #ventanaNueva.withdraw()
-    return x, y
+            matrizD.graficarNeato1('Salida1')
 
 
 def solicitando_coordenadas():
@@ -945,23 +847,13 @@ def solicitando_coordenadas2():
             print("Ingrese una coordenada valida")
     disparar2()
 
-
-
-def mandarpos(x,y):
-    global disparoX, disparoY
-    disparoX = x
-    disparoY = y
-    print("X: ", x)
-    print("Y: ", y)
-    #solicitar_coordenadas(ataquee,x,y)
-
-
 def abrirventana():
-    #global ventanaNueva
+    global ventanaNueva
+    lblbarcoos = nuevocontador
     ventanaNueva = Toplevel()
-    ventanaNueva.title("Matriz")
+    ventanaNueva.title("Tablero Jugador 1")
     ventanaNueva.resizable(0,0)
-    ancho_ventanaN = 1000
+    ancho_ventanaN = 1100
     alto_ventanaN = 800
     x_ventanaN = ventanaNueva.winfo_screenwidth() // 2 - ancho_ventanaN // 2
     y_ventanaN = ventanaNueva.winfo_screenheight() // 2 - alto_ventanaN // 2
@@ -972,47 +864,60 @@ def abrirventana():
     img = ImageTk.PhotoImage(resize_image)
     labelPhotoN = Label(ventanaNueva, image=img)
     labelPhotoN.image = img
-    labelPhotoN.place(x=30,y=60)
-    labelPhotoN.pack()
+    labelPhotoN.place(x=250,y=30)
+    #labelPhotoN.pack()
+    labelAtacando = Label (ventanaNueva, text ="Atacando a: Jugador 2", font=("Verdana",16), background="#044D9A", fg="white")
+    labelAtacando.place(x=20, y=90)
+    labelPuntos = Label (ventanaNueva, text ="Tokens: ", font=("Verdana",16), background="#044D9A", fg="white")
+    labelPuntos.place(x=20, y=120)
+    labelBarcos = Label (ventanaNueva, text ="Barcos Restantes: " + str(lblbarcoos), font=("Verdana",16), background="#044D9A", fg="white")
+    labelBarcos.place(x=20, y=150)
     labelPoosX = Label (ventanaNueva, text ="Pos X", font=("Verdana",16), background="#044D9A", fg="white")
-    labelPoosX.place(x=900, y=90)
+    labelPoosX.place(x=1000, y=90)
     labelPoosY = Label (ventanaNueva, text ="Pos Y", font=("Verdana",16), background="#044D9A", fg="white")
-    labelPoosY.place(x=900, y=200)
+    labelPoosY.place(x=1000, y=200)
     textoPoosX = Text(ventanaNueva, height=2, width=8, fg="white", font=("Consolas", 12)) 
-    textoPoosX.place(x=900, y=140)
+    textoPoosX.place(x=1000, y=140)
     textoPoosY = Text(ventanaNueva, height=2, width=8, fg="white", font=("Consolas", 12)) 
-    textoPoosY.place(x=900, y=240)
-    btnAtaque = Button(ventanaNueva, height=2, width=8, text="Atacar",command=lambda:[sacarcoordenadas(textoPoosX.get(1.0, tk.END+"-1c"),textoPoosY.get(1.0, tk.END+"-1c")), obtenerdisparo(), pruebanueva1()] , background="#B03314", font=("Verdana",10), fg="black")
-    btnAtaque.place(x=900, y=330)
+    textoPoosY.place(x=1000, y=240)
+    btnAtaque = Button(ventanaNueva, height=2, width=8, text="Atacar",command=lambda:[sacarcoordenadas(textoPoosX.get(1.0, tk.END+"-1c"),textoPoosY.get(1.0, tk.END+"-1c")), pruebanueva1()] , background="#B03314", font=("Verdana",10), fg="black")
+    btnAtaque.place(x=1000, y=320)
 
 def abrirventana2():
-    #global ventanaNueva
-    ventanaNueva = Toplevel()
-    ventanaNueva.title("Matriz2")
-    ventanaNueva.resizable(0,0)
-    ancho_ventanaN = 1000
+    global ventanaNueva2
+    #nombre2 = 
+    ventanaNueva2 = Toplevel()
+    ventanaNueva2.title("Matriz2")
+    ventanaNueva2.resizable(0,0)
+    ancho_ventanaN = 1100
     alto_ventanaN = 800
-    x_ventanaN = ventanaNueva.winfo_screenwidth() // 2 - ancho_ventanaN // 2
-    y_ventanaN = ventanaNueva.winfo_screenheight() // 2 - alto_ventanaN // 2
+    x_ventanaN = ventanaNueva2.winfo_screenwidth() // 2 - ancho_ventanaN // 2
+    y_ventanaN = ventanaNueva2.winfo_screenheight() // 2 - alto_ventanaN // 2
     posicionN = str(ancho_ventanaN) + "x" + str(alto_ventanaN) + "+" + str(x_ventanaN) + "+" + str(y_ventanaN)
-    ventanaNueva.geometry(posicionN)
+    ventanaNueva2.geometry(posicionN)
     image = Image.open("matriz_Salida1.png")
     resize_image = image.resize((700, 700))
     img = ImageTk.PhotoImage(resize_image)
-    labelPhotoN = Label(ventanaNueva, image=img)
+    labelPhotoN = Label(ventanaNueva2, image=img)
     labelPhotoN.image = img
-    labelPhotoN.place(x=30,y=60)
-    labelPhotoN.pack()
-    labelPoosX = Label (ventanaNueva, text ="Pos X", font=("Verdana",16), background="#044D9A", fg="white")
-    labelPoosX.place(x=900, y=90)
-    labelPoosY = Label (ventanaNueva, text ="Pos Y", font=("Verdana",16), background="#044D9A", fg="white")
-    labelPoosY.place(x=900, y=200)
-    textoPoosX = Text(ventanaNueva, height=2, width=8, fg="white", font=("Consolas", 12)) 
-    textoPoosX.place(x=900, y=140)
-    textoPoosY = Text(ventanaNueva, height=2, width=8, fg="white", font=("Consolas", 12)) 
-    textoPoosY.place(x=900, y=240)
-    btnAtaque = Button(ventanaNueva, height=2, width=8, text="Atacar",command=lambda:[sacarcoordenadas2(textoPoosX.get(1.0, tk.END+"-1c"),textoPoosY.get(1.0, tk.END+"-1c")), obtenerdisparo()] , background="#B03314", font=("Verdana",10), fg="black")
-    btnAtaque.place(x=900, y=330)
+    labelPhotoN.place(x=250,y=30)
+    #labelPhotoN.pack()
+    labelAtacando = Label (ventanaNueva2, text ="Atacando a: Jugador 1", font=("Verdana",16), background="#044D9A", fg="white")
+    labelAtacando.place(x=20, y=90)
+    labelPuntos = Label (ventanaNueva2, text ="Tokens: ", font=("Verdana",16), background="#044D9A", fg="white")
+    labelPuntos.place(x=20, y=120)
+    labelBarcos = Label (ventanaNueva2, text ="Barcos Restantes: ", font=("Verdana",16), background="#044D9A", fg="white")
+    labelBarcos.place(x=20, y=150)
+    labelPoosX = Label (ventanaNueva2, text ="Pos X", font=("Verdana",16), background="#044D9A", fg="white")
+    labelPoosX.place(x=1000, y=90)
+    labelPoosY = Label (ventanaNueva2, text ="Pos Y", font=("Verdana",16), background="#044D9A", fg="white")
+    labelPoosY.place(x=1000, y=200)
+    textoPoosX = Text(ventanaNueva2, height=2, width=8, fg="white", font=("Consolas", 12)) 
+    textoPoosX.place(x=1000, y=140)
+    textoPoosY = Text(ventanaNueva2, height=2, width=8, fg="white", font=("Consolas", 12)) 
+    textoPoosY.place(x=1000, y=240)
+    btnAtaque = Button(ventanaNueva2, height=2, width=8, text="Atacar",command=lambda:[sacarcoordenadas2(textoPoosX.get(1.0, tk.END+"-1c"),textoPoosY.get(1.0, tk.END+"-1c")), pruebanueva(), ventanaNueva2.destroy()] , background="#B03314", font=("Verdana",10), fg="black")
+    btnAtaque.place(x=1000, y=320)
 
 
 def sacarcoordenadas(nuevoX, nuevoY):
@@ -1033,73 +938,62 @@ def sacarcoordenadas2(nuevoX, nuevoY):
     
 
 def disparar() -> bool:
-#def disparar(x,y,matriz) -> bool:
+    global nuevocontador
+    #barcoos = TotalBarcos
     x = int(YDisparo)
     y = int(XDisparo)
     matriz = MatrizActual
     if es_mar(x, y, matriz):
         matriz[y][x] = DISPARO_FALLADO
-        print("Fallado")
+        #print("Fallado")
+        MessageBox.showinfo("Fallo", "El disparo ha sido fallado")
         imprimir_matriz(MatrizActual, False,
                     oponente_de_jugador(turno_actual1))
         return False
     # Si ya había disparado antes, se le cuenta como falla igualmente
     elif matriz[y][x] == DISPARO_FALLADO or matriz[y][x] == DISPARO_ACERTADO:
-        print("De nuevo")
+        #print("De nuevo")
+        #MessageBox.showinfo("Fallo", "El disparo ya ha sido fallado")
         imprimir_matriz(MatrizActual, False,
                     oponente_de_jugador(turno_actual1))
         return False
     else:
         matriz[y][x] = DISPARO_ACERTADO
-        print("Acertado")
+        MessageBox.showinfo("Exito", "El disparo ha impactado en un barco")
+        #nuevocontador = nuevocontador - 1
+        nuevocontador -= 1
+        #nuevocontador = barcoos
+        #print("Acertado")
         imprimir_matriz(MatrizActual, False,
                     oponente_de_jugador(turno_actual1))
         return True
 
 def disparar2() -> bool:
-#def disparar(x,y,matriz) -> bool:
     x = int(YDisparo2)
     y = int(XDisparo2)
     matriz = MatrizActual2
     if es_mar(x, y, matriz):
         matriz[y][x] = DISPARO_FALLADO
-        print("Fallado")
+        #print("Fallado")
+        MessageBox.showinfo("Fallo", "El disparo ha sido fallado")
         imprimir_matriz2(MatrizActual2, False,
                     oponente_de_jugador(turno_actual1))
         
         return False
     # Si ya había disparado antes, se le cuenta como falla igualmente
     elif matriz[y][x] == DISPARO_FALLADO or matriz[y][x] == DISPARO_ACERTADO:
-        print("De nuevo")
+        #print("De nuevo")
+        #MessageBox.showinfo("Fallo", "El disparo ya ha sido fallado")
         imprimir_matriz2(MatrizActual2, False,
                     oponente_de_jugador(turno_actual1))
         return False
     else:
         matriz[y][x] = DISPARO_ACERTADO
-        print("Acertado")
+        #print("Acertado")
+        MessageBox.showinfo("Exito", "El disparo ha impactado en un barco")
         imprimir_matriz2(MatrizActual2, False,
                     oponente_de_jugador(turno_actual1))
         return True
-
-
-def obtenerdisparo():
-    print("Que sale? ",disparar())
-    if disparar() == True:
-            print("Disparo acertado")
-            '''if todos_los_barcos_hundidos(matriz_oponente):
-                indicar_victoria(turno_actual)
-                imprimir_matrices_con_barcos(matriz_j1, matriz_j2)
-                break'''
-    else:
-        print("Disparo fallado")
-        '''if disparos_restantes-1 <= 0:
-                indicar_fracaso(turno_actual)
-                imprimir_matrices_con_barcos(matriz_j1, matriz_j2)
-                break'''
-        #actualTurno = oponente_de_jugador(actualTurno)
-        #juegoActual
-        #turno_actual = oponente_de_jugador(turno_actual)
-
 
 def oponente_de_jugador(jugador):
     if jugador == JUGADOR_1:
@@ -1131,151 +1025,24 @@ def indicar_fracaso(jugador):
 def imprimir_matrices_con_barcos(matriz_j1, matriz_j2):
     print("Mostrando ubicación de los barcos de ambos jugadores:")
     imprimir_matriz(matriz_j1, True, JUGADOR_1)
-    Pintar(matriz_j1,True, JUGADOR_1)
     imprimir_matriz(matriz_j2, True, JUGADOR_2)
 
 
-def jugar():
-    #global MatrizActual, juegoActual, pruebaturno
-    disparos_restantes_j1 = DISPAROS_INICIALES
-    disparos_restantes_j2 = DISPAROS_INICIALES
+def creartableros():
+    global matriz_j1, matriz_j2
     cantidad_barcos = 5
     matriz_j1, matriz_j2 = obtener_matriz_inicial(), obtener_matriz_inicial()
     matriz_j1 = colocar_e_imprimir_barcos(
         matriz_j1, cantidad_barcos, JUGADOR_1)
     matriz_j2 = colocar_e_imprimir_barcos(
         matriz_j2, cantidad_barcos, JUGADOR_2)
-    turno_actual = JUGADOR_1
-    print("===============")
-    
-    print(f"Turno de {turno_actual}")
-    disparos_restantes = disparos_restantes_j2
-    if turno_actual == JUGADOR_1:
-        disparos_restantes = disparos_restantes_j1
-    imprimir_disparos_restantes(disparos_restantes, turno_actual)
-    matriz_oponente = matriz_j1
-    if turno_actual == JUGADOR_1:
-        matriz_oponente = matriz_j2
-    imprimir_matriz(matriz_oponente, False,
-                    oponente_de_jugador(turno_actual))
-    pruebas()
-    #insertaTodo()
-    #MatrizActual = matriz_oponente
-    abrirventana()
-    #Pintar(matriz_oponente, False, oponente_de_jugador(turno_actual))
-    #actualTurno = turno_actual
-    #MatrizActual = matriz_oponente
-    x, y = solicitar_coordenadas(turno_actual)
-    
-    #acertado = disparar()
-    
-    acertado = disparar(x, y, matriz_oponente)
-    if turno_actual == JUGADOR_1:
-        disparos_restantes_j1 -= 1
-    else:
-        disparos_restantes_j2 -= 1
-
-    imprimir_matriz(matriz_oponente, False,
-                    oponente_de_jugador(turno_actual))
-    pruebas()
-    #insertaTodo()
-    abrirventana()
-        #Pintar(matriz_oponente,False, oponente_de_jugador(turno_actual))
-    #pruebaturno = turno_actual
-    if acertado:
-            print("Disparo acertado")
-            if todos_los_barcos_hundidos(matriz_oponente):
-                indicar_victoria(turno_actual)
-                imprimir_matrices_con_barcos(matriz_j1, matriz_j2)
-                #break
-    else:
-            print("Disparo fallado")
-            if disparos_restantes-1 <= 0:
-                indicar_fracaso(turno_actual)
-                imprimir_matrices_con_barcos(matriz_j1, matriz_j2)
-                #break
-            turno_actual = oponente_de_jugador(turno_actual)
-    #turno_actual = oponente_de_jugador(turno_actual)
-    #juegoActual = turno_actual
-
-
-def jugar2():
-    global actualTurno, MatrizActual
-    disparos_restantes_j1 = DISPAROS_INICIALES
-    disparos_restantes_j2 = DISPAROS_INICIALES
-    cantidad_barcos = 5
-    matriz_j1, matriz_j2 = obtener_matriz_inicial(), obtener_matriz_inicial()
-    matriz_j1 = colocar_e_imprimir_barcos(
-        matriz_j1, cantidad_barcos, JUGADOR_1)
-    matriz_j2 = colocar_e_imprimir_barcos(
-        matriz_j2, cantidad_barcos, JUGADOR_2)
-    turno_actual = JUGADOR_1
-    print("===============")
-    while True:
-        print(f"Turno de {turno_actual}")
-        disparos_restantes = disparos_restantes_j2
-        if turno_actual == JUGADOR_1:
-            disparos_restantes = disparos_restantes_j1
-        imprimir_disparos_restantes(disparos_restantes, turno_actual)
-        matriz_oponente = matriz_j1
-        if turno_actual == JUGADOR_1:
-            matriz_oponente = matriz_j2
-        imprimir_matriz(matriz_oponente, False,
-                        oponente_de_jugador(turno_actual))
-        pruebas()
-        #insertaTodo()
-        #MatrizActual = matriz_oponente
-        abrirventana()
-        actualTurno = turno_actual
-        MatrizActual = matriz_oponente
-        #Pintar(matriz_oponente, False, oponente_de_jugador(turno_actual))
-        #------------ Termina en esta ventana -----------------------------
-        #-------------- Actualizar esto ------------------------------------
-        #x, y = solicitar_coordenadas(turno_actual)
-        
-        #acertado = disparar()
-        #acertado = disparar(x, y, matriz_oponente)
-        if turno_actual == JUGADOR_1:
-            disparos_restantes_j1 -= 1
-        else:
-            disparos_restantes_j2 -= 1
-
-        imprimir_matriz(matriz_oponente, False,
-                        oponente_de_jugador(turno_actual))
-        pruebas()
-        #insertaTodo()
-        abrirventana()
-            #Pintar(matriz_oponente,False, oponente_de_jugador(turno_actual))
-        #pruebaturno = turno_actual
-        #if acertado:
-        #        print("Disparo acertado")
-        #        if todos_los_barcos_hundidos(matriz_oponente):
-        #            indicar_victoria(turno_actual)
-        #            imprimir_matrices_con_barcos(matriz_j1, matriz_j2)
-                    #break
-        #else:
-        #        print("Disparo fallado")
-        #        if disparos_restantes-1 <= 0:
-        #            indicar_fracaso(turno_actual)
-        #            imprimir_matrices_con_barcos(matriz_j1, matriz_j2)
-        #            #break
-        #        turno_actual = oponente_de_jugador(turno_actual)
-
 
 
 def pruebanueva():
     global MatrizActual, turno_actual1
     DERROTADO = FALSE
     disparos_restantes_j1 = DISPAROS_INICIALES
-    disparos_restantes_j2 = DISPAROS_INICIALES
-    cantidad_barcos = 5
-    matriz_j1, matriz_j2 = obtener_matriz_inicial(), obtener_matriz_inicial()
-    matriz_j1 = colocar_e_imprimir_barcos(
-        matriz_j1, cantidad_barcos, JUGADOR_1)
-    matriz_j2 = colocar_e_imprimir_barcos(
-        matriz_j2, cantidad_barcos, JUGADOR_2)
     turno_actual1 = JUGADOR_1
-    turno_actual2 = JUGADOR_2
     while DERROTADO == False:
         print("Turno de: ", turno_actual1)
         if turno_actual1:
@@ -1285,44 +1052,25 @@ def pruebanueva():
             matriz_oponente = matriz_j1
             imprimir_matriz(matriz_oponente, False,
                         oponente_de_jugador(turno_actual1))
-            #Pintar(matriz_oponente,False)
             MatrizActual = matriz_oponente
             abrirventana()
-            #x, y = solicitar_coordenadas(turno_actual1)
-            #acertado = disparar(x, y, matriz_oponente)
-            #DERROTADO = True
+            if nuevocontador == 0 :
+                MessageBox.showinfo("Exito", "Has ganado la partida")
+                resultadojugador1()
+                print("Se termina")
+                break
             DERROTADO = TRUE
-            #turno_actual = oponente_de_jugador(turno_actual)
-    # while DERROTADO == False:
-    #     print("Turno de: ", turno_actual2)
-    #     if turno_actual2:
-    #         print("jugador dos")
-    #         disparos_restantes = disparos_restantes_j2
-    #         imprimir_disparos_restantes(disparos_restantes, turno_actual2)
-    #         matriz_oponente = matriz_j2
-    #         imprimir_matriz(matriz_oponente, False,
-    #                     oponente_de_jugador(turno_actual2))
-    #         #Pintar(matriz_oponente,False)
-    #         MatrizActual = matriz_oponente
-    #         abrirventana()
-    #         #x, y = solicitar_coordenadas(turno_actual1)
-    #         #acertado = disparar(x, y, matriz_oponente)
-    #         DERROTADO = True
 
+
+def resultadojugador1():
+    pass
 
 
 def pruebanueva1():
     global  MatrizActual2
+    ventanaNueva.destroy()
     DERROTADO = FALSE
-    disparos_restantes_j1 = DISPAROS_INICIALES
     disparos_restantes_j2 = DISPAROS_INICIALES
-    cantidad_barcos = 5
-    matriz_j1, matriz_j2 = obtener_matriz_inicial(), obtener_matriz_inicial()
-    matriz_j1 = colocar_e_imprimir_barcos(
-        matriz_j1, cantidad_barcos, JUGADOR_1)
-    matriz_j2 = colocar_e_imprimir_barcos(
-        matriz_j2, cantidad_barcos, JUGADOR_2)
-    turno_actual1 = JUGADOR_1
     turno_actual2 = JUGADOR_2
     while DERROTADO == False:
         print("Turno de: ", turno_actual2)
@@ -1333,12 +1081,8 @@ def pruebanueva1():
             matriz_oponente = matriz_j2
             imprimir_matriz2(matriz_oponente, False,
                         oponente_de_jugador(turno_actual2))
-            #Pintar(matriz_oponente,False)
             MatrizActual2 = matriz_oponente
             abrirventana2()
-            #x, y = solicitar_coordenadas(turno_actual1)
-            #acertado = disparar(x, y, matriz_oponente)
-            #DERROTADO = True
             DERROTADO = TRUE
 
 #---------------------------------CERRANDO ------------------------------
@@ -1366,8 +1110,6 @@ def pruebas():
     f.close()
 
 def ultimaprueba():
-    #print("sale boton")
-    #ventanaNueva.withdraw()
     with open('Prueba.txt') as archivo:
         l = 0
         c = 0
@@ -1381,7 +1123,6 @@ def ultimaprueba():
                     matriPrueba.insert(l, c, col)
             c = 0
             matriPrueba.graficarNeato('Salida')
-    #ventanaNueva.deiconify()
 
 #---------------------------------VENTANA PRINCIPAL ------------------------------
 
@@ -1433,7 +1174,7 @@ textoPass = Text(ventanaReg, height=2, width=30, fg="white", font=("Consolas", 1
 textoPass.place(x=230, y=255)
 textoEdad = Text(ventanaReg, height=2, width=30, fg="white", font=("Consolas", 11))
 textoEdad.place(x=230,y=330)
-btnRegistro = Button(ventanaReg, height=2, width=15, text="Registrar", command = lambda:[pruebas()], background="#368807", font=("Verdana",10), fg="black")
+btnRegistro = Button(ventanaReg, height=2, width=15, text="Registrar", command = lambda:[ultimaprueba()], background="#368807", font=("Verdana",10), fg="black")
 #btnRegistro = Button(ventanaReg, height=2, width=15, text="Registrar", command = lambda:[Comprobar(textoUsuario.get(1.0, tk.END+"-1c"),textoPass.get(1.0, tk.END+"-1c"),textoEdad.get(1.0, tk.END+"-1c"))], background="#368807", font=("Verdana",10), fg="black")
 btnRegistro.place(x=180, y=400)
 btnRegreso = Button(ventanaReg, height=2, width=8, text="Regresar", command = lambda:[textoUsuario.delete(1.0, tk.END+"-1c"),textoPass.delete(1.0, tk.END+"-1c"),textoEdad.delete(1.0, tk.END+"-1c"), ventanaReg.withdraw(), ventana.deiconify()], background="#368807", font=("Verdana",10), fg="black")

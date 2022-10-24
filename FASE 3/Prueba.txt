@@ -1,10 +1,10 @@
-E    X    
-   X X    
-   X X    
-     X    
- X        
-  XXX     
- X      XX
- XX     XX
-  XXXX  X 
-X       X 
+   *SS    
+ *        
+          
+          
+     DD   
+PPPP      
+       B B
+      CBA 
+  A   C A 
+  A   C   
