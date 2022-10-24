@@ -7,7 +7,6 @@ from tkinter import messagebox as MessageBox
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go 
 import random
-import math
 import os
 import numpy as np
 import pandas as pd
@@ -356,10 +355,13 @@ def GraficoTiendaaa():
 #---------------------------------CREACION DEL JUEGO 2.0 ------------------------------
 def Partida():
     global Portaaviones, Submarino, Destructores, Buques, TotalBarcos, nuevocontador, nuevocontador2
+    global totalmonedas,tokensjugador, totalmonedas2, tokensjugador2
     global FILAS, COLUMNAS, MAR
     global BUQUE, DESTRUCTOR, SUBMARINO, DESTRUCTOR_VERTICAL, SUBMARINO_VERTICAL
     global PORTAAVIONES, PORTAAVIONES_VERTICAL, DISPARO_FALLADO, DISPARO_ACERTADO, DISPAROS_INICIALES
     global CANTIDAD_BARCOS_INICIALES, JUGADOR_1, JUGADOR_2
+
+    jugador2 = textoNombre.get(1.0, tk.END+"-1c")
 
     MAR = " "
     BUQUE = "B"  # Ocupa una celda
@@ -374,7 +376,7 @@ def Partida():
     DISPAROS_INICIALES = 5
     CANTIDAD_BARCOS_INICIALES = 10
     JUGADOR_1 = usuariobusqueda
-    JUGADOR_2 = "INVITADO"
+    JUGADOR_2 = jugador2
     Portaav = 1
     Subma = 2
     Destruc = 3
@@ -405,6 +407,12 @@ def Partida():
         otroB = TotalBarcos
         nuevocontador = otroB
         nuevocontador2 = otroB
+        totalmonedas = monedasusuario
+        pasarmoneda = totalmonedas
+        tokensjugador = pasarmoneda
+        totalmonedas2 = 0
+        pasarmoneda2 = totalmonedas2
+        tokensjugador2 = pasarmoneda2
         MessageBox.showinfo("Exito", "Tablero creado con exito")
         creartableros()
         pruebanueva()
@@ -428,6 +436,12 @@ def Partida():
         otroB = TotalBarcos
         nuevocontador = otroB
         nuevocontador2 = otroB
+        totalmonedas = monedasusuario
+        pasarmoneda = totalmonedas
+        tokensjugador = pasarmoneda
+        totalmonedas2 = 0
+        pasarmoneda2 = totalmonedas2
+        tokensjugador2 = pasarmoneda2
         MessageBox.showinfo("Exito", "Tablero creado con exito")
         creartableros()
         pruebanueva()
@@ -450,7 +464,12 @@ def Partida():
         TotalBarcos = Portaaviones + Submarino + Destructores + Buques
         otroB = TotalBarcos
         nuevocontador = otroB
-        nuevocontador2 = otroB
+        totalmonedas = monedasusuario
+        pasarmoneda = totalmonedas
+        tokensjugador = pasarmoneda
+        totalmonedas2 = 0
+        pasarmoneda2 = totalmonedas2
+        tokensjugador2 = pasarmoneda2
         MessageBox.showinfo("Exito", "Tablero creado con exito")
         creartableros()
         pruebanueva()
@@ -850,6 +869,7 @@ def solicitando_coordenadas2():
 def abrirventana():
     global ventanaNueva
     lblbarcoos = nuevocontador
+    lbltokens = tokensjugador
     ventanaNueva = Toplevel()
     ventanaNueva.title("Tablero Jugador 1")
     ventanaNueva.resizable(0,0)
@@ -866,9 +886,11 @@ def abrirventana():
     labelPhotoN.image = img
     labelPhotoN.place(x=250,y=30)
     #labelPhotoN.pack()
-    labelAtacando = Label (ventanaNueva, text ="Atacando a: Jugador 2", font=("Verdana",16), background="#044D9A", fg="white")
+    labelusuarioactual = Label (ventanaNueva, text ="Turno de : " + JUGADOR_1, font=("Verdana",16), background="#044D9A", fg="white")
+    labelusuarioactual.place(x=350, y=0)
+    labelAtacando = Label (ventanaNueva, text ="Atacando a :" + JUGADOR_2, font=("Verdana",16), background="#044D9A", fg="white")
     labelAtacando.place(x=20, y=90)
-    labelPuntos = Label (ventanaNueva, text ="Tokens: ", font=("Verdana",16), background="#044D9A", fg="white")
+    labelPuntos = Label (ventanaNueva, text ="Tokens: " + str(lbltokens), font=("Verdana",16), background="#044D9A", fg="white")
     labelPuntos.place(x=20, y=120)
     labelBarcos = Label (ventanaNueva, text ="Barcos Restantes: " + str(lblbarcoos), font=("Verdana",16), background="#044D9A", fg="white")
     labelBarcos.place(x=20, y=150)
@@ -885,9 +907,10 @@ def abrirventana():
 
 def abrirventana2():
     global ventanaNueva2
-    #nombre2 = 
+    lblbarcoos2 = nuevocontador2
+    lbltokens2 = tokensjugador2
     ventanaNueva2 = Toplevel()
-    ventanaNueva2.title("Matriz2")
+    ventanaNueva2.title("Tablero Jugador 2")
     ventanaNueva2.resizable(0,0)
     ancho_ventanaN = 1100
     alto_ventanaN = 800
@@ -902,11 +925,13 @@ def abrirventana2():
     labelPhotoN.image = img
     labelPhotoN.place(x=250,y=30)
     #labelPhotoN.pack()
-    labelAtacando = Label (ventanaNueva2, text ="Atacando a: Jugador 1", font=("Verdana",16), background="#044D9A", fg="white")
+    labelusuarioactual = Label (ventanaNueva2, text ="Turno del jugador : " + JUGADOR_2, font=("Verdana",16), background="#044D9A", fg="white")
+    labelusuarioactual.place(x=450, y=0)
+    labelAtacando = Label (ventanaNueva2, text ="Atacando a: " + JUGADOR_1, font=("Verdana",16), background="#044D9A", fg="white")
     labelAtacando.place(x=20, y=90)
-    labelPuntos = Label (ventanaNueva2, text ="Tokens: ", font=("Verdana",16), background="#044D9A", fg="white")
+    labelPuntos = Label (ventanaNueva2, text ="Tokens: " + str(lbltokens2), font=("Verdana",16), background="#044D9A", fg="white")
     labelPuntos.place(x=20, y=120)
-    labelBarcos = Label (ventanaNueva2, text ="Barcos Restantes: ", font=("Verdana",16), background="#044D9A", fg="white")
+    labelBarcos = Label (ventanaNueva2, text ="Barcos Restantes: " + str(lblbarcoos2), font=("Verdana",16), background="#044D9A", fg="white")
     labelBarcos.place(x=20, y=150)
     labelPoosX = Label (ventanaNueva2, text ="Pos X", font=("Verdana",16), background="#044D9A", fg="white")
     labelPoosX.place(x=1000, y=90)
@@ -938,7 +963,7 @@ def sacarcoordenadas2(nuevoX, nuevoY):
     
 
 def disparar() -> bool:
-    global nuevocontador
+    global nuevocontador, tokensjugador
     #barcoos = TotalBarcos
     x = int(YDisparo)
     y = int(XDisparo)
@@ -962,6 +987,7 @@ def disparar() -> bool:
         MessageBox.showinfo("Exito", "El disparo ha impactado en un barco")
         #nuevocontador = nuevocontador - 1
         nuevocontador -= 1
+        tokensjugador += 20
         #nuevocontador = barcoos
         #print("Acertado")
         imprimir_matriz(MatrizActual, False,
@@ -969,6 +995,7 @@ def disparar() -> bool:
         return True
 
 def disparar2() -> bool:
+    global nuevocontador2, tokensjugador2
     x = int(YDisparo2)
     y = int(XDisparo2)
     matriz = MatrizActual2
@@ -991,6 +1018,8 @@ def disparar2() -> bool:
         matriz[y][x] = DISPARO_ACERTADO
         #print("Acertado")
         MessageBox.showinfo("Exito", "El disparo ha impactado en un barco")
+        nuevocontador2 -= 1
+        tokensjugador2 += 20
         imprimir_matriz2(MatrizActual2, False,
                     oponente_de_jugador(turno_actual1))
         return True
@@ -1057,12 +1086,29 @@ def pruebanueva():
             if nuevocontador == 0 :
                 MessageBox.showinfo("Exito", "Has ganado la partida")
                 resultadojugador1()
+                ventanaNueva.destroy()
+                ventanaUser.deiconify()
                 print("Se termina")
                 break
             DERROTADO = TRUE
 
 
 def resultadojugador1():
+    with open('Prueba.txt') as archivo:
+        l = 0
+        c = 0
+        lineas = archivo.readlines()
+        for linea in lineas:
+            columnas = linea
+            l += 1
+            for col in columnas:
+                if col != '\n':
+                    c += 1
+                    matriPrueba.insert(l, c, col)
+            c = 0
+            matriPrueba.graficarNeato('Adyacencia')
+
+def resultadojugador2():
     pass
 
 
@@ -1083,6 +1129,11 @@ def pruebanueva1():
                         oponente_de_jugador(turno_actual2))
             MatrizActual2 = matriz_oponente
             abrirventana2()
+            if nuevocontador == 0 :
+                MessageBox.showinfo("Exito", "Has ganado la partida")
+                resultadojugador2()
+                print("Se termina")
+                break
             DERROTADO = TRUE
 
 #---------------------------------CERRANDO ------------------------------
@@ -1174,7 +1225,7 @@ textoPass = Text(ventanaReg, height=2, width=30, fg="white", font=("Consolas", 1
 textoPass.place(x=230, y=255)
 textoEdad = Text(ventanaReg, height=2, width=30, fg="white", font=("Consolas", 11))
 textoEdad.place(x=230,y=330)
-btnRegistro = Button(ventanaReg, height=2, width=15, text="Registrar", command = lambda:[ultimaprueba()], background="#368807", font=("Verdana",10), fg="black")
+btnRegistro = Button(ventanaReg, height=2, width=15, text="Registrar", command = lambda:[resultadojugador1()], background="#368807", font=("Verdana",10), fg="black")
 #btnRegistro = Button(ventanaReg, height=2, width=15, text="Registrar", command = lambda:[Comprobar(textoUsuario.get(1.0, tk.END+"-1c"),textoPass.get(1.0, tk.END+"-1c"),textoEdad.get(1.0, tk.END+"-1c"))], background="#368807", font=("Verdana",10), fg="black")
 btnRegistro.place(x=180, y=400)
 btnRegreso = Button(ventanaReg, height=2, width=8, text="Regresar", command = lambda:[textoUsuario.delete(1.0, tk.END+"-1c"),textoPass.delete(1.0, tk.END+"-1c"),textoEdad.delete(1.0, tk.END+"-1c"), ventanaReg.withdraw(), ventana.deiconify()], background="#368807", font=("Verdana",10), fg="black")
@@ -1264,7 +1315,7 @@ btnVerTutorial.place(x=180, y=300)
 btnVerTienda = Button(ventanaUser, height=2, width=15, text="Tienda", command = lambda: [GraficoTienda()], background="#368807", font=("Verdana",10), fg="black")
 #btnVerTienda = Button(ventanaUser, height=2, width=15, text="Tienda", command = lambda: [MostrarTienda()], background="#368807", font=("Verdana",10), fg="black")
 btnVerTienda.place(x=180, y=350)
-btnPartida = Button(ventanaUser, height=2, width=15, text="Iniciar Partida", command = lambda: [ventanaObtenerDimension.deiconify()], background="#368807", font=("Verdana",10), fg="black")
+btnPartida = Button(ventanaUser, height=2, width=15, text="Iniciar Partida", command = lambda: [ventanaNombre.deiconify()], background="#368807", font=("Verdana",10), fg="black")
 btnPartida.place(x=180, y=400)
 btncerrarSesionUser = Button(ventanaUser, height=2, width=15, text="Cerrar Sesion", command = lambda: [ventanaUser.withdraw(),textoUsuarioC.delete(1.0, tk.END+"-1c"),textoPassC.delete(1.0, tk.END+"-1c"),textoEdadC.delete(1.0, tk.END+"-1c"),MessageBox.showinfo("Exito", "Sesion cerrada"), ventanaLog.deiconify()], background="#368807", font=("Verdana",10), fg="black")
 btncerrarSesionUser.place(x=180, y=450)
@@ -1323,30 +1374,25 @@ btnCrearT = Button(ventanaObtenerDimension, height=2, width=15, text="Crear", co
 btnCrearT.place(x=80, y=190)
 ventanaObtenerDimension.withdraw()
 
-#---------------------------------- COORDENADAS -----------------------------------
-ventanaCord = Toplevel()
-ventanaCord.title("Coordenadas")
-ventanaCord.resizable(0,0)
-ancho_ventanaCord = 250
-alto_ventanaCord = 250
-x_ventanaCord = ventanaCord.winfo_screenwidth() // 2 - ancho_ventanaCord // 2
-y_ventanaCord = ventanaCord.winfo_screenheight() // 2 - alto_ventanaCord // 2
-posicionCord = str(ancho_ventanaCord) + "x" + str(alto_ventanaCord) + "+" + str(x_ventanaCord) + "+" + str(y_ventanaCord)
-ventanaCord.geometry(posicionCord)
-labelCord = Label (ventanaCord, text ="Coordenadas", font=("Verdana",16), background="#044D9A", fg="white")
-labelCord.place(x=65, y=30)
-labelPosX = Label (ventanaCord, text ="Pos X", font=("Verdana",16), background="#044D9A", fg="white")
-labelPosX.place(x=50, y=90)
-labelPosY = Label (ventanaCord, text ="Pos Y", font=("Verdana",16), background="#044D9A", fg="white")
-labelPosY.place(x=50, y=140)
-textoPosX = Text(ventanaCord, height=2, width=8, fg="white", font=("Consolas", 12)) 
-textoPosX.place(x=120, y=85)
-textoPosY = Text(ventanaCord, height=2, width=8, fg="white", font=("Consolas", 12)) 
-textoPosY.place(x=120, y=135)
-btnAtacar = Button(ventanaCord, height=2, width=12, text="Atacar", command = lambda:[mandarpos(textoPosX.get(1.0, tk.END+"-1c"),textoPosY.get(1.0, tk.END+"-1c"))], background="#368807", font=("Verdana",10), fg="black")
-#btnAtacar = Button(ventanaCord, height=2, width=15, text="Iniciar Sesion", command = lambda:[mandarLogin(textoUsuarioL.get(1.0, tk.END+"-1c"), textoPassL.get()), textoUsuarioL.delete(1.0, tk.END+"-1c"), textoPassL.delete(0, tk.END)], background="#368807", font=("Verdana",10), fg="black")
-btnAtacar.place(x=65, y=200)
-ventanaCord.withdraw()
+#---------------------------------- NOMBRE JUGADOR 2 -----------------------------------
+ventanaNombre = Toplevel()
+ventanaNombre.title("Jugador Invitado")
+ventanaNombre.resizable(0,0)
+ancho_ventanaNombre = 250
+alto_ventanaNombre = 250
+x_ventanaNombre = ventanaNombre.winfo_screenwidth() // 2 - ancho_ventanaNombre // 2
+y_ventanaNombre = ventanaNombre.winfo_screenheight() // 2 - alto_ventanaNombre // 2
+posicionNombre = str(ancho_ventanaNombre) + "x" + str(alto_ventanaNombre) + "+" + str(x_ventanaNombre) + "+" + str(y_ventanaNombre)
+ventanaNombre.geometry(posicionNombre)
+labelNombre = Label (ventanaNombre, text ="Jugador 2", font=("Verdana",16), background="#044D9A", fg="white")
+labelNombre.place(x=75, y=30)
+labelJugador = Label (ventanaNombre, text ="Nombre del jugador", font=("Verdana",16), background="#044D9A", fg="white")
+labelJugador.place(x=50, y=90)
+textoNombre = Text(ventanaNombre, height=2, width=8, fg="white", font=("Consolas", 12)) 
+textoNombre.place(x=100, y=130)
+btnAgregar = Button(ventanaNombre, height=2, width=16, text="Agregar", command = lambda:[ventanaObtenerDimension.deiconify(), ventanaNombre.withdraw()], background="#368807", font=("Verdana",10), fg="black")
+btnAgregar.place(x=65, y=200)
+ventanaNombre.withdraw()
 
 #--------------------------------- INICIANDO INTERFAZ------------------------------
 ventana.mainloop()

@@ -107,7 +107,7 @@ class MatrizDispersa1():
     edge[style = "bold"]
     node[label = "capa:''' + str(self.capa) +'''" fillcolor="darkolivegreen1" pos = "-1,1!"]raiz;'''
         contenido += '''label = "{}" \nfontname="Arial Black" \nfontsize="25pt" \n
-                    \n'''.format('\nMATRIZ DISPERSA')
+                    \n'''.format('\nLista Adyacencia')
 
         # --graficar nodos ENCABEZADO
         # --graficar nodos fila
@@ -120,25 +120,25 @@ class MatrizDispersa1():
             posx += 1
         pivote = self.filas.primero
         while pivote.siguiente != None:
-            contenido += '\n\tx{}->x{}[dir=none color="black"];'.format(pivote.id, pivote.siguiente.id)
-            contenido += '\n\tx{}->x{}[dir=none color="black"];'.format(pivote.id, pivote.siguiente.id)
+            #contenido += '\n\tx{}->x{}'.format(pivote.id, pivote.siguiente.id)
+            #contenido += '\n\tx{}->x{};'.format(pivote.id, pivote.siguiente.id)
             pivote = pivote.siguiente
-        contenido += '\n\traiz->x{}[dir=none color="white"];'.format(self.filas.primero.id)
+        #contenido += '\n\traiz->x{};'.format(self.filas.primero.id)
 
         # --graficar nodos columna
         pivotey = self.columnas.primero
         posy = 0
         while pivotey != None:
-            contenido += '\n\tnode[label = "{}" fillcolor="azure3" pos = "{},1!" shape=box]y{};'.format(pivotey.id, 
-            posy, pivotey.id)
+            #contenido += '\n\tnode[label = "{}" fillcolor="azure3" pos = "{},1!" shape=box]y{};'.format(pivotey.id, 
+            #posy, pivotey.id)
             pivotey = pivotey.siguiente
             posy += 1
         pivotey = self.columnas.primero
         while pivotey.siguiente != None:
-            contenido += '\n\ty{}->y{}[dir=none color="white"];'.format(pivotey.id, pivotey.siguiente.id)
-            contenido += '\n\ty{}->y{}[dir=none color="white"];'.format(pivotey.id, pivotey.siguiente.id)
+            #contenido += '\n\ty{}->y{};'.format(pivotey.id, pivotey.siguiente.id)
+            #contenido += '\n\ty{}->y{};'.format(pivotey.id, pivotey.siguiente.id)
             pivotey = pivotey.siguiente
-        contenido += '\n\traiz->y{}[dir=none color="white"];'.format(self.columnas.primero.id)
+        #contenido += '\n\traiz->y{};'.format(self.columnas.primero.id)
 
         #ya con las cabeceras graficadas, lo siguiente es los nodos internos, o nodosCelda
         pivote = self.filas.primero
@@ -153,23 +153,26 @@ class MatrizDispersa1():
                     if pivotey.id == pivote_celda.coordenadaY: break
                     posy_celda += 1
                     pivotey = pivotey.siguiente
-                if pivote_celda.caracter == 'X':
-                    contenido += '\n\tnode[label="X" fillcolor="black" pos="{},-{}!" shape=box]i{}_{};'.format( #pos="{},-{}!"
-                        posy_celda, posx, pivote_celda.coordenadaX, pivote_celda.coordenadaY
+                if pivote_celda.caracter == 'E':
+                    contenido += '\n\tnode[label="{}" fillcolor="white" pos="{},-{}!" shape=box]i{}_{};'.format( #pos="{},-{}!"
+                        pivotey.id,posy_celda, posx, pivote_celda.coordenadaX, pivote_celda.coordenadaY
+                    )
+                if pivote_celda.caracter == '*':
+                    contenido += '\n\tnode[label="{}" fillcolor="white" pos="{},-{}!" shape=box]i{}_{};'.format( #pos="{},-{}!"
+                        pivotey.id,posy_celda, posx, pivote_celda.coordenadaX, pivote_celda.coordenadaY
                     )
                 pivote_celda = pivote_celda.derecha
-            
             pivote_celda = pivote.acceso
             while pivote_celda != None:
                 if pivote_celda.derecha != None:
+                    #contenido += '\n\ti{}_{}->i{}_{};'.format(pivote_celda.coordenadaX, pivote_celda.coordenadaY,
+                    #pivote_celda.derecha.coordenadaX, pivote_celda.derecha.coordenadaY)
                     contenido += '\n\ti{}_{}->i{}_{};'.format(pivote_celda.coordenadaX, pivote_celda.coordenadaY,
-                    pivote_celda.derecha.coordenadaX, pivote_celda.derecha.coordenadaY)
-                    contenido += '\n\ti{}_{}->i{}_{}[dir=back];'.format(pivote_celda.coordenadaX, pivote_celda.coordenadaY,
                     pivote_celda.derecha.coordenadaX, pivote_celda.derecha.coordenadaY)
                 pivote_celda = pivote_celda.derecha
         
-            contenido += '\n\tx{}->i{}_{}[dir=none color="white"];'.format(pivote.id, pivote.acceso.coordenadaX, pivote.acceso.coordenadaY)
-            contenido += '\n\tx{}->i{}_{}[dir=back];'.format(pivote.id, pivote.acceso.coordenadaX, pivote.acceso.coordenadaY)
+            contenido += '\n\tx{}->i{}_{};'.format(pivote.id, pivote.acceso.coordenadaX, pivote.acceso.coordenadaY)
+            #contenido += '\n\tx{}->i{}_{};'.format(pivote.id, pivote.acceso.coordenadaX, pivote.acceso.coordenadaY)
             pivote = pivote.siguiente
             posx += 1
         
@@ -177,14 +180,14 @@ class MatrizDispersa1():
         while pivote != None:
             pivote_celda : Nodo_Interno = pivote.acceso
             while pivote_celda != None:
-                if pivote_celda.abajo != None:
-                    contenido += '\n\ti{}_{}->i{}_{};'.format(pivote_celda.coordenadaX, pivote_celda.coordenadaY,
-                    pivote_celda.abajo.coordenadaX, pivote_celda.abajo.coordenadaY)
-                    contenido += '\n\ti{}_{}->i{}_{};'.format(pivote_celda.coordenadaX, pivote_celda.coordenadaY,
-                    pivote_celda.abajo.coordenadaX, pivote_celda.abajo.coordenadaY) 
+                #if pivote_celda.abajo != None:
+                    #contenido += '\n\ti{}_{}->i{}_{};'.format(pivote_celda.coordenadaX, pivote_celda.coordenadaY,
+                    #pivote_celda.abajo.coordenadaX, pivote_celda.abajo.coordenadaY)
+                    #contenido += '\n\ti{}_{}->i{}_{};'.format(pivote_celda.coordenadaX, pivote_celda.coordenadaY,
+                    #pivote_celda.abajo.coordenadaX, pivote_celda.abajo.coordenadaY) 
                 pivote_celda = pivote_celda.abajo
-            contenido += '\n\ty{}->i{}_{};'.format(pivote.id, pivote.acceso.coordenadaX, pivote.acceso.coordenadaY)
-            contenido += '\n\ty{}->i{}_{}[dir=back];'.format(pivote.id, pivote.acceso.coordenadaX, pivote.acceso.coordenadaY)
+            #contenido += '\n\ty{}->i{}_{};'.format(pivote.id, pivote.acceso.coordenadaX, pivote.acceso.coordenadaY)
+            #contenido += '\n\ty{}->i{}_{};'.format(pivote.id, pivote.acceso.coordenadaX, pivote.acceso.coordenadaY)
             pivote = pivote.siguiente
                 
         contenido += '\n}'
@@ -192,8 +195,9 @@ class MatrizDispersa1():
         dot = "matriz_{}_dot.txt".format(nombre)
         with open(dot, 'w') as grafo:
             grafo.write(contenido)
-        result = "matriz_{}.pdf".format(nombre)
-        os.system("neato -Tpdf " + dot + " -o " + result)
+        result = "matriz_{}.png".format(nombre)
+        os.system("neato -Tpng " + dot + " -o " + result)
+        #os.system("neato -Tpng matriz_Salida.dot.txt -o matriz_Salida.png")
         webbrowser.open(result)
 
 
