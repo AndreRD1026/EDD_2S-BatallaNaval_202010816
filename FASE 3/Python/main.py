@@ -20,6 +20,10 @@ from MatrizDispersa1 import MatrizDispersa1
 
 matrizD = MatrizDispersa(0)
 matriz2 = MatrizDispersa(0)
+matrizAct1 = MatrizDispersa(0)
+matrizAct2 = MatrizDispersa(0)
+matrizFinal1 = MatrizDispersa(0)
+matrizFinal2 = MatrizDispersa(0)
 matriPrueba = MatrizDispersa1(0)
 matriPrueba2 = MatrizDispersa1(0)
 
@@ -478,6 +482,7 @@ def Partida():
         TotalBarcos = Portaaviones + Submarino + Destructores + Buques
         otroB = TotalBarcos
         nuevocontador = otroB
+        nuevocontador2 = otroB
         totalmonedas = monedasusuario
         pasarmoneda = totalmonedas
         tokensjugador = pasarmoneda
@@ -717,7 +722,7 @@ def imprimir_matriz(matriz, deberia_mostrar_barcos, jugador):
                     c += 1
                     matrizD.insert(l, c, col)
             c = 0
-            matrizD.graficarNeato('Jugador1')
+            matrizD.graficarNeato2('Jugador1')
 
 
 def imprimir_matriz2(matriz, deberia_mostrar_barcos, jugador):
@@ -761,39 +766,7 @@ def imprimir_matriz2(matriz, deberia_mostrar_barcos, jugador):
                     c1 += 1
                     matriz2.insert(l1, c1, col1)
             c1 = 0
-            matriz2.graficarNeato1('Jugador2')
-
-
-def insertaTodo():
-    with open('Prueba.txt') as archivo:
-        l = 0
-        c = 0
-        lineas = archivo.readlines()
-        for linea in lineas:
-            columnas = linea
-            l += 1
-            for col in columnas:
-                if col != '\n':
-                    c += 1
-                    matrizD.insert(l, c, col)
-            c = 0
-            matrizD.graficarNeato('Salida')
-
-def insertaTodo1():
-    with open('Prueba1.txt') as archivo:
-        l = 0
-        c = 0
-        lineas = archivo.readlines()
-        for linea in lineas:
-            columnas = linea
-            l += 1
-            for col in columnas:
-                if col != '\n':
-                    c += 1
-                    matrizD.insert(l, c, col)
-            c = 0
-            matrizD.graficarNeato1('Salida1')
-
+            matriz2.graficarNeato2('Jugador2')
 
 def solicitando_coordenadas():
     global XDisparo, YDisparo
@@ -901,7 +874,7 @@ def abrirventana():
     textoPoosY.place(x=1000, y=240)
     btnAbandonar = Button(ventanaNueva, height=2, width=8, text="Abandonar",command=lambda:[abandonarpartida()] , background="#B03314", font=("Verdana",10), fg="black")
     btnAbandonar.place(x=20, y=320)
-    btnAtaque = Button(ventanaNueva, height=2, width=8, text="Atacar",command=lambda:[sacarcoordenadas(textoPoosX.get(1.0, tk.END+"-1c"),textoPoosY.get(1.0, tk.END+"-1c")), pruebanueva1()] , background="#B03314", font=("Verdana",10), fg="black")
+    btnAtaque = Button(ventanaNueva, height=2, width=8, text="Atacar",command=lambda:[sacarcoordenadas(textoPoosX.get(1.0, tk.END+"-1c"),textoPoosY.get(1.0, tk.END+"-1c")), pruebanueva1(), actualizando1()] , background="#B03314", font=("Verdana",10), fg="black")
     btnAtaque.place(x=990, y=320)
 
 def abrirventana2():
@@ -966,7 +939,8 @@ def sacarcoordenadas2(nuevoX, nuevoY):
     
 
 def disparar() -> bool:
-    global nuevocontador, tokensjugador, barcosdestruidos, tokensganados
+    global nuevocontador, tokensjugador, barcosdestruidos, tokensganados, disparosfalladosj1
+    disparosfalladosj1 = 0
     barcosdestruidos = 0
     tokensganados = 0
     x = int(YDisparo)
@@ -976,6 +950,7 @@ def disparar() -> bool:
         matriz[y][x] = DISPARO_FALLADO
         #print("Fallado")
         MessageBox.showinfo("Fallo", "Disparo fallado")
+        disparosfalladosj1 += 1
         imprimir_matriz(MatrizActual, False,
                     oponente_de_jugador(turno_actual1))
         return False
@@ -983,13 +958,13 @@ def disparar() -> bool:
     elif matriz[y][x] == DISPARO_FALLADO or matriz[y][x] == DISPARO_ACERTADO:
         #print("De nuevo")
         #MessageBox.showinfo("Fallo", "El disparo ya ha sido fallado")
+        disparosfalladosj1 += 1
         imprimir_matriz(MatrizActual, False,
                     oponente_de_jugador(turno_actual1))
         return False
     else:
         matriz[y][x] = DISPARO_ACERTADO
         MessageBox.showinfo("Exito", "El disparo ha impactado en un barco")
-        #nuevocontador = nuevocontador - 1
         nuevocontador -= 1
         tokensjugador += 20
         barcosdestruidos += 1
@@ -1000,7 +975,8 @@ def disparar() -> bool:
         return True
 
 def disparar2() -> bool:
-    global nuevocontador2, tokensjugador2, barcosdestruidos2, tokensganados2
+    global nuevocontador2, tokensjugador2, barcosdestruidos2, tokensganados2, disparosfalladosj2
+    disparosfalladosj2 = 0
     barcosdestruidos2 = 0
     tokensganados2 = 0
     x = int(YDisparo2)
@@ -1010,11 +986,13 @@ def disparar2() -> bool:
         matriz[y][x] = DISPARO_FALLADO
         #print("Fallado")
         MessageBox.showinfo("Fallo", "Disparo fallado")
+        disparosfalladosj2 += 1
         imprimir_matriz2(MatrizActual2, False,
                     oponente_de_jugador(turno_actual1))
         
         return False
     elif matriz[y][x] == DISPARO_FALLADO or matriz[y][x] == DISPARO_ACERTADO:
+        disparosfalladosj2 += 1
         imprimir_matriz2(MatrizActual2, False,
                     oponente_de_jugador(turno_actual1))
         return False
@@ -1046,7 +1024,7 @@ def creartableros():
 
 
 def pruebanueva():
-    global MatrizActual, turno_actual1
+    global MatrizActual, turno_actual1, jugadorganador1, tokensganador1, barcosganador1, falladosj1
     DERROTADO = FALSE
     turno_actual1 = JUGADOR_1
     while DERROTADO == False:
@@ -1057,9 +1035,14 @@ def pruebanueva():
             MatrizActual = matriz_oponente
             abrirventana()
             if nuevocontador == 9 :
+                jugadorganador1 = turno_actual1
+                tokensganador1 =  tokensganados
+                barcosganador1 = barcosdestruidos
+                falladosj1 = disparosfalladosj1
                 MessageBox.showinfo("Exito", "La partida ha terminado")
                 agregarpuntos()
                 resultadojugador1()
+                tablerofinal1()
                 ventanaNueva.destroy()
                 mostrarjugador1()
                 #print("Se termina")
@@ -1067,8 +1050,38 @@ def pruebanueva():
             DERROTADO = TRUE
 
 
+def tablerofinal1():
+    with open('Jugador1.txt') as archivo:
+        l = 0
+        c = 0
+        lineas = archivo.readlines()
+        for linea in lineas:
+            columnas = linea
+            l += 1
+            for col in columnas:
+                if col != '\n':
+                    c += 1
+                    matrizFinal1.insert(l, c, col)
+            c = 0
+            matrizFinal1.graficarNeato2('TableroFinal1')
+
+def tablerofinal2():
+    with open('Jugador2.txt') as archivo:
+        l = 0
+        c = 0
+        lineas = archivo.readlines()
+        for linea in lineas:
+            columnas = linea
+            l += 1
+            for col in columnas:
+                if col != '\n':
+                    c += 1
+                    matrizFinal1.insert(l, c, col)
+            c = 0
+            matrizFinal1.graficarNeato2('TableroFinal2')
+
 def resultadojugador1():
-    with open('Prueba.txt') as archivo:
+    with open('Jugador1.txt') as archivo:
         l = 0
         c = 0
         lineas = archivo.readlines()
@@ -1099,7 +1112,7 @@ def resultadojugador2():
 
 
 def pruebanueva1():
-    global  MatrizActual2
+    global  MatrizActual2, jugadorganador2, tokensganador2, barcosganador2, falladosj2
     ventanaNueva.destroy()
     DERROTADO = FALSE
     turno_actual2 = JUGADOR_2
@@ -1112,10 +1125,15 @@ def pruebanueva1():
                         oponente_de_jugador(turno_actual2))
             MatrizActual2 = matriz_oponente
             abrirventana2()
-            if nuevocontador == 0 :
+            if nuevocontador2 == 9 :
+                jugadorganador2 = turno_actual2
+                tokensganador2 =  tokensganados2
+                barcosganador2 = barcosdestruidos2
+                falladosj2 = disparosfalladosj2
                 MessageBox.showinfo("Exito", "La partida ha terminado")
                 resultadojugador1()
-                ventanaNueva.destroy()
+                tablerofinal1()
+                ventanaNueva2.destroy()
                 mostrarjugador1()
                 #resultadojugador2()
                 break
@@ -1133,7 +1151,7 @@ def abandonarpartida():
         ventanaNueva.destroy()
         ventanaUser.deiconify()
     else:
-        MessageBox.showinfo('Regresar', 'Regresando al menu')
+        MessageBox.showinfo('Regresar', 'Regresando al juego')
 
 def mostrarjugador1():
     ventanaGanador = Toplevel()
@@ -1151,17 +1169,81 @@ def mostrarjugador1():
     labelDestruidos.place(x=50, y=90)
     labeLTokensG = Label (ventanaGanador, text ="Tokens Ganados : " + str(tokensganados), font=("Verdana",16), background="#044D9A", fg="white")
     labeLTokensG.place(x=50, y=120)
-    btnDisparos = Button(ventanaGanador, height=2, width=12, text="Ver tablero", command = lambda:[resultadojugador1()], background="#368807", font=("Verdana",10), fg="black")
+    btnDisparos = Button(ventanaGanador, height=2, width=12, text="Ver tablero", command = lambda:[abrirtablerofinal1()], background="#368807", font=("Verdana",10), fg="black")
     btnDisparos.place(x=50, y=200)
     btnListaA = Button(ventanaGanador, height=2, width=12, text="Lista de Jugadas", command = lambda:[print("Hola")], background="#368807", font=("Verdana",10), fg="black")
     btnListaA.place(x=200, y=200)
     btnGrafo = Button(ventanaGanador, height=2, width=12, text="Grafo de Jugadas", command = lambda:[print("Hola")], background="#368807", font=("Verdana",10), fg="black")
     btnGrafo.place(x=50, y=250)
     btnVolverJuego = Button(ventanaGanador, height=2, width=12, text="Volver a jugar", command = lambda:[Partida()], background="#368807", font=("Verdana",10), fg="black")
-    btnVolverJuego.place(x=200, y=250)
-    btnRegresarM = Button(ventanaGanador, height=2, width=12, text="Regresar al menu", command = lambda:[print("Hola"), ventanaGanador.withdraw(), ventanaUser.deiconify()], background="#368807", font=("Verdana",10), fg="black")
-    btnRegresarM.place(x=130, y=300)
-    #ventanaGanador.withdraw()
+    btnVolverJuego.place(x=50, y=300)
+    btnEstadisticas = Button(ventanaGanador, height=2, width=15, text="Estadisiticas del Ganador", command = lambda:[estadisticasganador()], background="#368807", font=("Verdana",10), fg="black")
+    btnEstadisticas.place(x=200, y=250)
+    btnRegresarM = Button(ventanaGanador, height=2, width=12, text="Regresar al menu", command = lambda:[ventanaGanador.withdraw(), ventanaUser.deiconify()], background="#368807", font=("Verdana",10), fg="black")
+    btnRegresarM.place(x=200, y=300)
+
+
+def estadisticasganador():
+    if nuevocontador == 9 :
+        #definir figura y ejes
+        fig, ax = plt.subplots()
+        
+        table_data = [ ["Puntos Ganados", "Barcos destruidos"],
+            [tokensganador1, barcosganador1]
+        ]
+
+        #create table
+        table = ax.table(cellText = table_data, loc = 'center')
+
+        #modificar tabla de
+        table.set_fontsize (14)
+        table.scale(1,4)
+        ax.axis('off')
+
+        #display table
+        plt.title("Jugador Ganador : " + jugadorganador1)
+        plt.show()
+    else:
+        #definir figura y ejes
+        fig, ax = plt.subplots()
+        
+        table_data = [ ["Puntos Ganados", "Barcos destruidos"],
+            [tokensganador2, barcosganador2]
+        ]
+        #create table
+        table = ax.table(cellText = table_data, loc = 'center')
+
+        #modificar tabla de
+        table.set_fontsize (14)
+        table.scale(1,4)
+        ax.axis('off')
+
+        #display table
+        plt.title("Jugador Ganador : " + jugadorganador2)
+        plt.show()
+
+
+def actualizando1():
+    with open('Jugador1.txt') as archivo:
+        l = 0
+        c = 0
+        lineas = archivo.readlines()
+        for linea in lineas:
+            columnas = linea
+            l += 1
+            for col in columnas:
+                if col != '\n':
+                    c += 1
+                    matrizAct1.insert(l, c, col)
+            c = 0
+            matrizAct1.graficarNeato2('Jugador1')
+
+def abrirtablerofinal1():
+    im = Image.open('Salida/matriz_TableroFinal1.png')
+    im.show()
+
+def abrirlistaadyacencia1():
+    pass
 
 def agregarpuntos():
     for uss in ListaUsuarios:
@@ -1429,6 +1511,10 @@ textoNombre.place(x=100, y=130)
 btnAgregar = Button(ventanaNombre, height=2, width=16, text="Agregar", command = lambda:[ventanaObtenerDimension.deiconify(), ventanaNombre.withdraw()], background="#368807", font=("Verdana",10), fg="black")
 btnAgregar.place(x=65, y=200)
 ventanaNombre.withdraw()
+
+
+#--------------------------------- ESTADISTICAS DEL GANADOR ------------------------------
+
 
 #--------------------------------- INICIANDO INTERFAZ------------------------------
 ventana.mainloop()

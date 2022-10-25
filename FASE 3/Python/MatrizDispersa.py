@@ -367,6 +367,142 @@ class MatrizDispersa():
         #os.system("neato -Tpng matriz_Salida.dot.txt -o matriz_Salida.png")
         webbrowser.open(result)
 
+    def graficarNeato2(self, nombre):
+        contenido = '''digraph G{
+    node[shape=box, width=1, height=1, fontname="Arial", fillcolor="white", style=filled]
+    edge[style = "invis" arrowhead="none" arrowtail="none"]
+    node[label = "capa:''' + str(self.capa) +'''" fillcolor="darkolivegreen1" pos = "-1,1!"]raiz;'''
+        contenido += '''label = "{}" \nfontname="Arial Black" \nfontsize="25pt" \n
+                    \n'''.format('')
+
+        # --graficar nodos ENCABEZADO
+        # --graficar nodos fila
+        pivote = self.filas.primero
+        posx = 0
+        while pivote != None:
+            contenido += '\n\tnode[label = "{}" fillcolor="azure3" pos="-1,-{}!" shape=box]x{};'.format(pivote.id, 
+            posx, pivote.id)
+            pivote = pivote.siguiente
+            posx += 1
+        pivote = self.filas.primero
+        while pivote.siguiente != None:
+            contenido += '\n\tx{}->x{};'.format(pivote.id, pivote.siguiente.id)
+            contenido += '\n\tx{}->x{}[dir=back];'.format(pivote.id, pivote.siguiente.id)
+            pivote = pivote.siguiente
+        contenido += '\n\traiz->x{};'.format(self.filas.primero.id)
+
+        # --graficar nodos columna
+        pivotey = self.columnas.primero
+        posy = 0
+        while pivotey != None:
+            contenido += '\n\tnode[label = "{}" fillcolor="azure3" pos = "{},1!" shape=box]y{};'.format(pivotey.id, 
+            posy, pivotey.id)
+            pivotey = pivotey.siguiente
+            posy += 1
+        pivotey = self.columnas.primero
+        while pivotey.siguiente != None:
+            contenido += '\n\ty{}->y{};'.format(pivotey.id, pivotey.siguiente.id)
+            contenido += '\n\ty{}->y{}[dir=back];'.format(pivotey.id, pivotey.siguiente.id)
+            pivotey = pivotey.siguiente
+        contenido += '\n\traiz->y{};'.format(self.columnas.primero.id)
+
+        #ya con las cabeceras graficadas, lo siguiente es los nodos internos, o nodosCelda
+        pivote = self.filas.primero
+        posx = 0
+        while pivote != None:
+            pivote_celda : Nodo_Interno = pivote.acceso
+            while pivote_celda != None:
+                # --- buscamos posy
+                pivotey = self.columnas.primero
+                posy_celda = 0
+                while pivotey != None:
+                    if pivotey.id == pivote_celda.coordenadaY: break
+                    posy_celda += 1
+                    pivotey = pivotey.siguiente
+                if pivote_celda.caracter == 'X':
+                    contenido += '\n\tnode[label="X" fillcolor="black" pos="{},-{}!" shape=box]i{}_{};'.format( #pos="{},-{}!"
+                        posy_celda, posx, pivote_celda.coordenadaX, pivote_celda.coordenadaY
+                    )
+                elif pivote_celda.caracter == "E":
+                    contenido += '\n\tnode[label="X" fillcolor="red" pos="{},-{}!" shape=box]i{}_{};'.format( #pos="{},-{}!"
+                        posy_celda, posx, pivote_celda.coordenadaX, pivote_celda.coordenadaY
+                    )
+                elif pivote_celda.caracter == "*":
+                    contenido += '\n\tnode[label="X" fillcolor="green" pos="{},-{}!" shape=box]i{}_{};'.format( #pos="{},-{}!"
+                        posy_celda, posx, pivote_celda.coordenadaX, pivote_celda.coordenadaY
+                    )
+                elif pivote_celda.caracter == "B":
+                    contenido += '\n\tnode[label=" " fillcolor="teal" pos="{},-{}!" shape=box]i{}_{};'.format( #pos="{},-{}!"
+                        posy_celda, posx, pivote_celda.coordenadaX, pivote_celda.coordenadaY
+                    )
+                elif pivote_celda.caracter == "D":
+                    contenido += '\n\tnode[label=" " fillcolor="gray" pos="{},-{}!" shape=box]i{}_{};'.format( #pos="{},-{}!"
+                        posy_celda, posx, pivote_celda.coordenadaX, pivote_celda.coordenadaY
+                    )
+                elif pivote_celda.caracter == "A":
+                    contenido += '\n\tnode[label=" " fillcolor="gray" pos="{},-{}!" shape=box]i{}_{};'.format( #pos="{},-{}!"
+                        posy_celda, posx, pivote_celda.coordenadaX, pivote_celda.coordenadaY
+                    )
+                elif pivote_celda.caracter == "S":
+                    contenido += '\n\tnode[label=" " fillcolor="navy" pos="{},-{}!" shape=box]i{}_{};'.format( #pos="{},-{}!"
+                        posy_celda, posx, pivote_celda.coordenadaX, pivote_celda.coordenadaY
+                    )
+                elif pivote_celda.caracter == "C":
+                    contenido += '\n\tnode[label=" " fillcolor="navy" pos="{},-{}!" shape=box]i{}_{};'.format( #pos="{},-{}!"
+                        posy_celda, posx, pivote_celda.coordenadaX, pivote_celda.coordenadaY
+                    )
+                elif pivote_celda.caracter == "P":
+                    contenido += '\n\tnode[label=" " fillcolor="maroon" pos="{},-{}!" shape=box]i{}_{};'.format( #pos="{},-{}!"
+                        posy_celda, posx, pivote_celda.coordenadaX, pivote_celda.coordenadaY
+                    )
+                elif pivote_celda.caracter == "V":
+                    contenido += '\n\tnode[label=" " fillcolor="maroon" pos="{},-{}!" shape=box]i{}_{};'.format( #pos="{},-{}!"
+                        posy_celda, posx, pivote_celda.coordenadaX, pivote_celda.coordenadaY
+                    )
+                else:
+                    contenido += '\n\tnode[label=" " fillcolor="white" pos="{},-{}!" shape=box]i{}_{};'.format( # pos="{},-{}!"
+                        posy_celda, posx, pivote_celda.coordenadaX, pivote_celda.coordenadaY
+                    ) 
+                pivote_celda = pivote_celda.derecha
+            
+            pivote_celda = pivote.acceso
+            while pivote_celda != None:
+                if pivote_celda.derecha != None:
+                    contenido += '\n\ti{}_{}->i{}_{};'.format(pivote_celda.coordenadaX, pivote_celda.coordenadaY,
+                    pivote_celda.derecha.coordenadaX, pivote_celda.derecha.coordenadaY)
+                    contenido += '\n\ti{}_{}->i{}_{}[dir=back];'.format(pivote_celda.coordenadaX, pivote_celda.coordenadaY,
+                    pivote_celda.derecha.coordenadaX, pivote_celda.derecha.coordenadaY)
+                pivote_celda = pivote_celda.derecha
+        
+            contenido += '\n\tx{}->i{}_{};'.format(pivote.id, pivote.acceso.coordenadaX, pivote.acceso.coordenadaY)
+            contenido += '\n\tx{}->i{}_{}[dir=back];'.format(pivote.id, pivote.acceso.coordenadaX, pivote.acceso.coordenadaY)
+            pivote = pivote.siguiente
+            posx += 1
+        
+        pivote = self.columnas.primero
+        while pivote != None:
+            pivote_celda : Nodo_Interno = pivote.acceso
+            while pivote_celda != None:
+                if pivote_celda.abajo != None:
+                    contenido += '\n\ti{}_{}->i{}_{};'.format(pivote_celda.coordenadaX, pivote_celda.coordenadaY,
+                    pivote_celda.abajo.coordenadaX, pivote_celda.abajo.coordenadaY)
+                    contenido += '\n\ti{}_{}->i{}_{}[dir=back];'.format(pivote_celda.coordenadaX, pivote_celda.coordenadaY,
+                    pivote_celda.abajo.coordenadaX, pivote_celda.abajo.coordenadaY) 
+                pivote_celda = pivote_celda.abajo
+            contenido += '\n\ty{}->i{}_{};'.format(pivote.id, pivote.acceso.coordenadaX, pivote.acceso.coordenadaY)
+            contenido += '\n\ty{}->i{}_{}[dir=back];'.format(pivote.id, pivote.acceso.coordenadaX, pivote.acceso.coordenadaY)
+            pivote = pivote.siguiente
+                
+        contenido += '\n}'
+        #--- se genera DOT y se procede a ecjetuar el comando
+        dot = "Graficos/" + "matriz_{}_dot.txt".format(nombre)
+        with open(dot, 'w') as grafo:
+            grafo.write(contenido)
+        result = "Salida/" + "matriz_{}.png".format(nombre)
+        os.system("neato -Tpng " + dot + " -o " + result)
+        #os.system("neato -Tpng matriz_Salida.dot.txt -o matriz_Salida.png")
+        webbrowser.open(result)
+
 
     def graficarDot(self, nombre):
         #-- lo primero es settear los valores que nos preocupan
