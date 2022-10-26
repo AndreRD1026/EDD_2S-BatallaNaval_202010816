@@ -14,10 +14,12 @@ from PIL import Image, ImageTk
 import requests
 from usuario import Usuario
 from articulos import Articulo
+from Carrito import Carro
 import hashlib
 from MatrizDispersa import MatrizDispersa
 from ListaAdyacente import ListaDG
 from prettytable import PrettyTable
+#from merkletools import MerkleTools
 
 matrizD = MatrizDispersa(0)
 matriz2 = MatrizDispersa(0)
@@ -284,50 +286,11 @@ def MostrarTienda():
 
 
 def GraficoTienda():
-    #definir figura y ejes
-    fig, ax = plt.subplots()
-    idAr1 = []
-    nombresAr = []
-    categArt = []
-#crear valores para la tabla
-    for art in ListaArticulos:
-        print(art.idArticulo)
-        ides = art.idArticulo
-        cates = art.categoriaArticulo
-        idAr1.append(ides)
-        categArt.append(cates)
-        table_data = [[idAr1, categArt]]
-    columns = ("ID", "Categoria")
-
-
-    
-    
-    '''table_data = [ ["Id", "Nombre"],
-        ["Jugador 1", 30],
-        ["Jugador 2", 20],
-        ["Jugador 3", 33],
-        ["Jugador 4", 25],
-        ["Jugador 5", 12]
-    ]'''
-
-    #create table
-    table = ax.table(cellText = table_data, loc = 'center')
-
-    #modificar tabla de
-    table.set_fontsize (14)
-    table.scale(1,4)
-    ax.axis('off')
-
-    #plt.table(cellText=table_data, colLabels=columns, loc="bottom")
-
-    #display table
-    plt.show()
-    print("hola")
-
-def GraficoTiendaaa():
-    global lblcontador, ventanaTiend, salida1
+    global lblcontador, ventanaTiend, salida1, lblmonedas
     salida1 = 0
-    lblcontador = salida1
+    lblcontador = contacarrito
+    lblcontartot = contatotal
+    lblmonedas = nuevasmonedas
     ventanaTiend = Toplevel()
     ventanaTiend.title("Tienda")
     ancho_ventanaTienda = 1000
@@ -354,27 +317,77 @@ def GraficoTiendaaa():
     lbltabla.place(x=20, y=60)
     lblname = Label(ventanaTiend, text ="Usuario: " + usuariologin, font=("Verdana",16), background="white", fg="black")
     lblname.place(x=600, y=60)
-    lbltok = Label(ventanaTiend, text ="Monedas: " + monedaslogin, font=("Verdana",16), background="white", fg="black")
+    lbltok = Label(ventanaTiend, text ="Monedas: " + str(nuevasmonedas), font=("Verdana",16), background="white", fg="black")
     lbltok.place(x=600, y=100)
-    lblcar = Label(ventanaTiend, text ="Carrito: " + str(contadorcarrito), font=("Verdana",16), background="red", fg="white")
+    lblcar = Label(ventanaTiend, text ="Carrito: " + str(lblcontador), font=("Verdana",16), background="red", fg="white")
     lblcar.place(x=750, y=60)
-    lblcar = Label(ventanaTiend, text ="Total: " + str(lblcontador), font=("Verdana",16), background="red", fg="white")
+    lblcar = Label(ventanaTiend, text ="Total: " + str(lblcontartot), font=("Verdana",16), background="red", fg="white")
     lblcar.place(x=750, y=100)
-    btnbuscarid = Button(ventanaTiend, height=2, width=16, text="Elegir articulo", command = lambda:[elegir()], background="#368807", font=("Verdana",10), fg="black")
+    btnbuscarid = Button(ventanaTiend, height=2, width=16, text="Elegir articulo", command = lambda:[ventanaBuscarArt.deiconify()], background="#368807", font=("Verdana",10), fg="black")
     btnbuscarid.place(x=600, y=150)
 
 
-def elegir():
-    global pruebaconta, contadortotal, salida1
-    pruebaconta = 0
-    pruebaconta += 1
-    salida1 += 1
-    contadortotal = pruebaconta
-    print("Sale? ", salida1)
-    ventanaTiend.destroy()
-    GraficoTiendaaa()
+def buscarcompra():
+    global idcompra, nombrecompra, preciocompra, categoriacompra
+    idbuscar = textoID.get(1.0, tk.END+"-1c")
 
-    #contadortotal += 1
+    for idd in ListaArticulos:
+        if idbuscar == idd.idArticulo:
+            idcompra = idd.idArticulo
+            nombrecompra = idd.nombreArticulo
+            preciocompra = idd.precioArticulo
+            categoriacompra = idd.categoriaArticulo
+            # print(idcompra)
+            # print(nombrecompra)
+            # print(preciocompra)
+            # print(categoriacompra)
+            return True
+    return False
+
+
+def verificarcompra():
+    global nuevasmonedas
+    comprobando = buscarcompra()
+    if comprobando == True:
+        if int(lblmonedas) <= int(preciocompra):
+            MessageBox.showinfo('Error', 'No tienes las monedas suficientes para comprar el articulo')
+            textoID.delete(1.0, tk.END+"-1c")
+        else:
+            MessageBox.showinfo('Satisfactorio', 'Skin comprada con exito')
+            ventanaTiend.destroy()
+            monedaslocal = int(lblmonedas) - int(preciocompra)
+            nuevasmonedas1 = monedaslocal
+            nuevasmonedas = nuevasmonedas1
+            textoID.delete(1.0, tk.END+"-1c")
+            GraficoTienda()
+    if comprobando == False:
+        MessageBox.showinfo('Error', 'Id ingresado no existe')
+        textoID.delete(1.0, tk.END+"-1c")
+
+def agregarcarrito():
+    global contacarrito, contatotal
+    preciosuma = int(preciocompra)
+    comprobando = buscarcompra()
+    if comprobando == True:
+        MessageBox.showinfo('Correcto', 'Articulo agregado a la lista')
+        ventanaTiend.destroy()
+        nuevocar = Carro(idcompra,nombrecompra,preciocompra)
+        ListaCarrito.append(nuevocar)
+        contacarrito += 1
+        contatotal += preciosuma
+        textoID.delete(1.0, tk.END+"-1c")
+        GraficoTienda()
+    if comprobando == False:
+        MessageBox.showinfo('Error', 'Id ingresado no existe')
+        textoID.delete(1.0, tk.END+"-1c")
+
+
+def ponercontadores():
+    global contacarrito, contatotal, nuevasmonedas
+    contacarrito = 0
+    contatotal = 0
+    nuevasmonedas = monedasusuario
+    GraficoTienda()
 
 #-------------------------------GUARDANDO DATOS PARA VOLVER A JUGAR-------------------------
 
@@ -1391,7 +1404,7 @@ btnEliminarCuenta = Button(ventanaUser, height=2, width=15, text="Eliminar mi cu
 btnEliminarCuenta.place(x=180, y=250)
 btnVerTutorial = Button(ventanaUser, height=2, width=15, text="Mostrar Tutorial", command = lambda: [Tutorial()], background="#368807", font=("Verdana",10), fg="black")
 btnVerTutorial.place(x=180, y=300)
-btnVerTienda = Button(ventanaUser, height=2, width=15, text="Tienda", command = lambda: [GraficoTiendaaa()], background="#368807", font=("Verdana",10), fg="black")
+btnVerTienda = Button(ventanaUser, height=2, width=15, text="Tienda", command = lambda: [ponercontadores()], background="#368807", font=("Verdana",10), fg="black")
 #btnVerTienda = Button(ventanaUser, height=2, width=15, text="Tienda", command = lambda: [MostrarTienda()], background="#368807", font=("Verdana",10), fg="black")
 btnVerTienda.place(x=180, y=350)
 btnPartida = Button(ventanaUser, height=2, width=15, text="Iniciar Partida", command = lambda: [ventanaNombre.deiconify()], background="#368807", font=("Verdana",10), fg="black")
@@ -1472,6 +1485,26 @@ textoNombre.place(x=80, y=130)
 btnAgregar = Button(ventanaNombre, height=2, width=16, text="Agregar", command = lambda:[ventanaObtenerDimension.deiconify(), ventanaNombre.withdraw()], background="#368807", font=("Verdana",10), fg="black")
 btnAgregar.place(x=65, y=200)
 ventanaNombre.withdraw()
+
+#---------------------------------- BUSCAR ARTICULO -----------------------------------
+ventanaBuscarArt = Toplevel()
+ventanaBuscarArt.title("Articulos")
+ventanaBuscarArt.resizable(0,0)
+ancho_ventanaArt = 250
+alto_ventanaArt = 250
+x_ventanaArt = ventanaBuscarArt.winfo_screenwidth() // 2 - ancho_ventanaArt // 2
+y_ventanaArt = ventanaBuscarArt.winfo_screenheight() // 2 - alto_ventanaArt // 2
+posicionArt = str(ancho_ventanaArt) + "x" + str(alto_ventanaArt) + "+" + str(x_ventanaArt) + "+" + str(y_ventanaArt)
+ventanaBuscarArt.geometry(posicionArt)
+labelID = Label (ventanaBuscarArt, text ="Ingrese el id del aritculo", font=("Verdana",16), background="green", fg="white")
+labelID.place(x=20, y=40)
+textoID = Text(ventanaBuscarArt, height=2, width=10, fg="white", font=("Consolas", 12)) 
+textoID.place(x=80, y=100)
+btnComprar = Button(ventanaBuscarArt, height=2, width=14, text="Comprar", command = lambda:[buscarcompra(), verificarcompra()], background="#368807", font=("Verdana",10), fg="black")
+btnComprar.place(x=65, y=150)
+btnAgregarCar = Button(ventanaBuscarArt, height=2, width=14, text="Agregar al carrito", command = lambda:[buscarcompra(), agregarcarrito()], background="#368807", font=("Verdana",10), fg="black")
+btnAgregarCar.place(x=65, y=200)
+ventanaBuscarArt.withdraw()
 
 #--------------------------------- INICIANDO INTERFAZ------------------------------
 ventana.mainloop()
