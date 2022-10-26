@@ -17,6 +17,7 @@ from articulos import Articulo
 import hashlib
 from MatrizDispersa import MatrizDispersa
 from ListaAdyacente import ListaDG
+from prettytable import PrettyTable
 
 matrizD = MatrizDispersa(0)
 matriz2 = MatrizDispersa(0)
@@ -28,8 +29,11 @@ ListaAdy = ListaDG()
 
 ListaUsuarios = []
 ListaArticulos = []
+ListaCarrito = []
 
 contauser = 1
+contadorcarrito = 0
+contadortotal = 0
 
 base_url = "http://127.0.0.1:8080/"
 
@@ -321,9 +325,56 @@ def GraficoTienda():
     print("hola")
 
 def GraficoTiendaaa():
+    global lblcontador, ventanaTiend, salida1
+    salida1 = 0
+    lblcontador = salida1
+    ventanaTiend = Toplevel()
+    ventanaTiend.title("Tienda")
+    ancho_ventanaTienda = 1000
+    alto_ventanaTienda = 800
+    x_ventanaTienda = ventanaTiend.winfo_screenwidth() // 2 - ancho_ventanaTienda // 2
+    y_ventanaTienda = ventanaTiend.winfo_screenheight() // 2 - alto_ventanaTienda // 2
+    posicionTienda = str(ancho_ventanaTienda) + "x" + str(alto_ventanaTienda) + "+" + str(x_ventanaTienda) + "+" + str(y_ventanaTienda)
+    ventanaTiend.geometry(posicionTienda)
+    scrollbar = Scrollbar(ventanaTiend)
+    scrollbar.pack( side = RIGHT, fill = Y )
+    '''Imprime una tabla con los errores'''
+    text = '\t'
+    x = PrettyTable()
+    x.field_names = ["ID","NOMBRE","CATEGORIA", "PRECIO"]
 
-    pass
+    for aart in ListaArticulos:
+        idesArt = aart.idArticulo
+        nombresArt = aart.nombreArticulo
+        catesArt = aart.categoriaArticulo
+        precArt = aart.precioArticulo
+        x.add_row([idesArt, nombresArt, catesArt, precArt])
+    text = x
+    lbltabla = Label(ventanaTiend, text =text, font=("Verdana",16), background="white", fg="black")
+    lbltabla.place(x=20, y=60)
+    lblname = Label(ventanaTiend, text ="Usuario: " + usuariologin, font=("Verdana",16), background="white", fg="black")
+    lblname.place(x=600, y=60)
+    lbltok = Label(ventanaTiend, text ="Monedas: " + monedaslogin, font=("Verdana",16), background="white", fg="black")
+    lbltok.place(x=600, y=100)
+    lblcar = Label(ventanaTiend, text ="Carrito: " + str(contadorcarrito), font=("Verdana",16), background="red", fg="white")
+    lblcar.place(x=750, y=60)
+    lblcar = Label(ventanaTiend, text ="Total: " + str(lblcontador), font=("Verdana",16), background="red", fg="white")
+    lblcar.place(x=750, y=100)
+    btnbuscarid = Button(ventanaTiend, height=2, width=16, text="Elegir articulo", command = lambda:[elegir()], background="#368807", font=("Verdana",10), fg="black")
+    btnbuscarid.place(x=600, y=150)
 
+
+def elegir():
+    global pruebaconta, contadortotal, salida1
+    pruebaconta = 0
+    pruebaconta += 1
+    salida1 += 1
+    contadortotal = pruebaconta
+    print("Sale? ", salida1)
+    ventanaTiend.destroy()
+    GraficoTiendaaa()
+
+    #contadortotal += 1
 
 #-------------------------------GUARDANDO DATOS PARA VOLVER A JUGAR-------------------------
 
@@ -1340,7 +1391,7 @@ btnEliminarCuenta = Button(ventanaUser, height=2, width=15, text="Eliminar mi cu
 btnEliminarCuenta.place(x=180, y=250)
 btnVerTutorial = Button(ventanaUser, height=2, width=15, text="Mostrar Tutorial", command = lambda: [Tutorial()], background="#368807", font=("Verdana",10), fg="black")
 btnVerTutorial.place(x=180, y=300)
-btnVerTienda = Button(ventanaUser, height=2, width=15, text="Tienda", command = lambda: [GraficoTienda()], background="#368807", font=("Verdana",10), fg="black")
+btnVerTienda = Button(ventanaUser, height=2, width=15, text="Tienda", command = lambda: [GraficoTiendaaa()], background="#368807", font=("Verdana",10), fg="black")
 #btnVerTienda = Button(ventanaUser, height=2, width=15, text="Tienda", command = lambda: [MostrarTienda()], background="#368807", font=("Verdana",10), fg="black")
 btnVerTienda.place(x=180, y=350)
 btnPartida = Button(ventanaUser, height=2, width=15, text="Iniciar Partida", command = lambda: [ventanaNombre.deiconify()], background="#368807", font=("Verdana",10), fg="black")
@@ -1417,7 +1468,7 @@ labelNombre.place(x=75, y=30)
 labelJugador = Label (ventanaNombre, text ="Nombre del jugador", font=("Verdana",16), background="#044D9A", fg="white")
 labelJugador.place(x=50, y=90)
 textoNombre = Text(ventanaNombre, height=2, width=12, fg="white", font=("Consolas", 12)) 
-textoNombre.place(x=100, y=130)
+textoNombre.place(x=80, y=130)
 btnAgregar = Button(ventanaNombre, height=2, width=16, text="Agregar", command = lambda:[ventanaObtenerDimension.deiconify(), ventanaNombre.withdraw()], background="#368807", font=("Verdana",10), fg="black")
 btnAgregar.place(x=65, y=200)
 ventanaNombre.withdraw()
