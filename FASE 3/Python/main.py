@@ -240,6 +240,7 @@ def Tutorial():
     print("Tutorial")
 
 
+#--------------------------------Tienda--------------------------------
 def MostrarTienda():
     #print("Tienda")
     print(monedasusuario)
@@ -320,43 +321,8 @@ def GraficoTienda():
     print("hola")
 
 def GraficoTiendaaa():
-    idAr1 = []
-    nombresAr = []
-    categArt =[]
-    precioAr = []
-    #Haga que este ejemplo sea reproducible
-    np.random.seed(0)
 
-    #definir figura y ejes
-    fig, ax = plt.subplots()
-
-    # ocultar los ejes
-    fig.patch.set_visible(False)
-    ax.axis ('off')
-    ax.axis ('off')
-
-    for art in ListaArticulos:
-        print(art.idArticulo)
-        ides = art.idArticulo
-        cates = art.categoriaArticulo
-        nombrear = art.nombreArticulo
-        precioar = art.precioArticulo
-        idAr1.append(ides)
-        nombresAr.append(nombrear)
-        categArt.append(cates)
-        precioAr.append(precioar)
-        #df = pd.DataFrame(idAr1,nombresAr, columns=['ID',"Nombre"])
-        df = pd.DataFrame(data=[idAr1,nombresAr], columns=["ID", "NOMBRE"])
-
-    #create data
-    #df = pd.DataFrame(np.random.rand(20, 2), columns=[' First ', ' Second '])
-
-    #create table
-    table = ax.table(cellText = df.values, colLabels = df.columns, loc = 'center')
-
-    #display table
-    fig.tight_layout()
-    plt.show()
+    pass
 
 
 #-------------------------------GUARDANDO DATOS PARA VOLVER A JUGAR-------------------------
@@ -884,7 +850,7 @@ def abrirventana():
     textoPoosY.place(x=1000, y=240)
     btnAbandonar = Button(ventanaNueva, height=2, width=8, text="Abandonar",command=lambda:[abandonarpartida()] , background="#B03314", font=("Verdana",10), fg="black")
     btnAbandonar.place(x=20, y=320)
-    btnAtaque = Button(ventanaNueva, height=2, width=8, text="Atacar",command=lambda:[sacarcoordenadas(textoPoosX.get(1.0, tk.END+"-1c"),textoPoosY.get(1.0, tk.END+"-1c")), pruebanueva1(), actualizando1()] , background="#B03314", font=("Verdana",10), fg="black")
+    btnAtaque = Button(ventanaNueva, height=2, width=8, text="Atacar",command=lambda:[sacarcoordenadas(textoPoosX.get(1.0, tk.END+"-1c"),textoPoosY.get(1.0, tk.END+"-1c")), ventanaNueva.destroy(), pruebanueva1()] , background="#B03314", font=("Verdana",10), fg="black")
     btnAtaque.place(x=990, y=320)
 
 def abrirventana2():
@@ -931,7 +897,7 @@ def abrirventana2():
     textoPoosX.place(x=1000, y=140)
     textoPoosY = Text(ventanaNueva2, height=2, width=8, fg="white", font=("Consolas", 12)) 
     textoPoosY.place(x=1000, y=240)
-    btnAtaque = Button(ventanaNueva2, height=2, width=8, text="Atacar",command=lambda:[sacarcoordenadas2(textoPoosX.get(1.0, tk.END+"-1c"),textoPoosY.get(1.0, tk.END+"-1c")), pruebanueva(), ventanaNueva2.destroy()] , background="#B03314", font=("Verdana",10), fg="black")
+    btnAtaque = Button(ventanaNueva2, height=2, width=8, text="Atacar",command=lambda:[sacarcoordenadas2(textoPoosX.get(1.0, tk.END+"-1c"),textoPoosY.get(1.0, tk.END+"-1c")), ventanaNueva2.destroy(), pruebanueva()] , background="#B03314", font=("Verdana",10), fg="black")
     btnAtaque.place(x=1000, y=320)
 
 
@@ -1044,7 +1010,7 @@ def pruebanueva():
                         oponente_de_jugador(turno_actual1))
             MatrizActual = matriz_oponente
             abrirventana()
-            if nuevocontador == 9 :
+            if nuevocontador == 0 :
                 jugadorganador1 = turno_actual1
                 tokensganador1 =  tokensganados
                 barcosganador1 = barcosdestruidos
@@ -1099,7 +1065,7 @@ def resultadojugador2():
 
 def pruebanueva1():
     global  MatrizActual2, jugadorganador2, tokensganador2, barcosganador2, falladosj2
-    ventanaNueva.destroy()
+    #ventanaNueva.destroy()
     DERROTADO = FALSE
     turno_actual2 = JUGADOR_2
     while DERROTADO == False:
@@ -1111,7 +1077,7 @@ def pruebanueva1():
                         oponente_de_jugador(turno_actual2))
             MatrizActual2 = matriz_oponente
             abrirventana2()
-            if nuevocontador2 == 9 :
+            if nuevocontador2 == 0 :
                 jugadorganador2 = turno_actual2
                 tokensganador2 =  tokensganados2
                 barcosganador2 = barcosdestruidos2
@@ -1209,21 +1175,6 @@ def estadisticasganador():
         plt.show()
 
 
-def actualizando1():
-    with open('Jugador1.txt') as archivo:
-        l = 0
-        c = 0
-        lineas = archivo.readlines()
-        for linea in lineas:
-            columnas = linea
-            l += 1
-            for col in columnas:
-                if col != '\n':
-                    c += 1
-                    matrizAct1.insert(l, c, col)
-            c = 0
-            matrizAct1.graficarNeato2('Jugador1')
-
 def abrirtablerofinal1():
     im = Image.open('Salida/matriz_TableroFinal1.png')
     im.show()
@@ -1235,8 +1186,6 @@ def abrirlistaadyacencia1():
 def abrirgrafoLista():
     im = Image.open('Salida/GrafoLista.png')
     im.show()
-
-
 
 def agregarpuntos():
     for uss in ListaUsuarios:
@@ -1305,9 +1254,7 @@ textoPass = Text(ventanaReg, height=2, width=30, fg="white", font=("Consolas", 1
 textoPass.place(x=230, y=255)
 textoEdad = Text(ventanaReg, height=2, width=30, fg="white", font=("Consolas", 11))
 textoEdad.place(x=230,y=330)
-#resultadojugador1
-btnRegistro = Button(ventanaReg, height=2, width=15, text="Registrar", command = lambda:[resultadojugador1()], background="#368807", font=("Verdana",10), fg="black")
-#btnRegistro = Button(ventanaReg, height=2, width=15, text="Registrar", command = lambda:[Comprobar(textoUsuario.get(1.0, tk.END#+"-1c"),textoPass.get(1.0, tk.END+"-1c"),textoEdad.get(1.0, tk.END+"-1c"))], background="#368807", font=("Verdana",10), fg="black")
+btnRegistro = Button(ventanaReg, height=2, width=15, text="Registrar", command = lambda:[Comprobar(textoUsuario.get(1.0, tk.END+"-1c"),textoPass.get(1.0, tk.END+"-1c"),textoEdad.get(1.0, tk.END+"-1c"))], background="#368807", font=("Verdana",10), fg="black")
 btnRegistro.place(x=180, y=400)
 btnRegreso = Button(ventanaReg, height=2, width=8, text="Regresar", command = lambda:[textoUsuario.delete(1.0, tk.END+"-1c"),textoPass.delete(1.0, tk.END+"-1c"),textoEdad.delete(1.0, tk.END+"-1c"), ventanaReg.withdraw(), ventana.deiconify()], background="#368807", font=("Verdana",10), fg="black")
 btnRegreso.place(x=405, y=5)
@@ -1469,7 +1416,7 @@ labelNombre = Label (ventanaNombre, text ="Jugador 2", font=("Verdana",16), back
 labelNombre.place(x=75, y=30)
 labelJugador = Label (ventanaNombre, text ="Nombre del jugador", font=("Verdana",16), background="#044D9A", fg="white")
 labelJugador.place(x=50, y=90)
-textoNombre = Text(ventanaNombre, height=2, width=8, fg="white", font=("Consolas", 12)) 
+textoNombre = Text(ventanaNombre, height=2, width=12, fg="white", font=("Consolas", 12)) 
 textoNombre.place(x=100, y=130)
 btnAgregar = Button(ventanaNombre, height=2, width=16, text="Agregar", command = lambda:[ventanaObtenerDimension.deiconify(), ventanaNombre.withdraw()], background="#368807", font=("Verdana",10), fg="black")
 btnAgregar.place(x=65, y=200)

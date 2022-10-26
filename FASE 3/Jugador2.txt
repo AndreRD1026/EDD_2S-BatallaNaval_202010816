@@ -1,10 +1,10 @@
-   B      
- *SSS     
- A      DD
+E  A   A  
+   A   A B
+   *SS    
+  C       
+  C       
+B C       
+     B    
+  B PPPP  
           
-        C 
-       AC 
-  B    AC 
-         B
-    PPPP  
-B         
+       DD 
