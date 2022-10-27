@@ -1,0 +1,34 @@
+digraph G  {
+
+    node[ shape = none, fontname = "Arial" ];
+
+    set2[ label=<
+
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+            <TR>
+                <TD>ID</TD>
+                <TD>NOMBRE</TD>
+                <TD>PRECIO</TD>
+            </TR>
+    <TR>
+<TD>2</TD>
+<TD>barco2</TD>
+<TD>400</TD>
+</TR>
+<TR>
+<TD>1</TD>
+<TD>barco1</TD>
+<TD>500</TD>
+</TR>
+<TR>
+<TD>7</TD>
+<TD>barco7</TD>
+<TD>150</TD>
+</TR>
+<TR>
+<TD>6</TD>
+<TD>barco6</TD>
+<TD>540</TD>
+</TR>
+</TABLE>>];
+}

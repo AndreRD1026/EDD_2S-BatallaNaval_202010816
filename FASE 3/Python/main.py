@@ -325,6 +325,8 @@ def GraficoTienda():
     lblcar.place(x=750, y=100)
     btnbuscarid = Button(ventanaTiend, height=2, width=16, text="Elegir articulo", command = lambda:[ventanaBuscarArt.deiconify()], background="#368807", font=("Verdana",10), fg="black")
     btnbuscarid.place(x=600, y=150)
+    btnverCarro = Button(ventanaTiend, height=2, width=16, text="Ver Carrito", command = lambda:[graphvizcarrito(), abrircarrito()], background="#368807", font=("Verdana",10), fg="black")
+    btnverCarro.place(x=600, y=200)
 
 
 def buscarcompra():
@@ -359,6 +361,7 @@ def verificarcompra():
             nuevasmonedas1 = monedaslocal
             nuevasmonedas = nuevasmonedas1
             textoID.delete(1.0, tk.END+"-1c")
+            ventanaBuscarArt.withdraw()
             GraficoTienda()
     if comprobando == False:
         MessageBox.showinfo('Error', 'Id ingresado no existe')
@@ -376,11 +379,11 @@ def agregarcarrito():
         contacarrito += 1
         contatotal += preciosuma
         textoID.delete(1.0, tk.END+"-1c")
+        ventanaBuscarArt.withdraw()
         GraficoTienda()
     if comprobando == False:
         MessageBox.showinfo('Error', 'Id ingresado no existe')
         textoID.delete(1.0, tk.END+"-1c")
-
 
 def ponercontadores():
     global contacarrito, contatotal, nuevasmonedas
@@ -388,6 +391,38 @@ def ponercontadores():
     contatotal = 0
     nuevasmonedas = monedasusuario
     GraficoTienda()
+
+
+def graphvizcarrito():
+    contenidocar = '''digraph G  {\n
+    node[ shape = none, fontname = "Arial" ];\n
+    set2[ label=<\n
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+            <TR>
+                <TD>ID</TD>
+                <TD>NOMBRE</TD>
+                <TD>PRECIO</TD>
+            </TR>
+    '''
+    for item in ListaCarrito:
+        contenidocar += "<TR>\n"
+        contenidocar += "<TD>" + item.idArt + "</TD>\n"
+        contenidocar += "<TD>" + item.nombreArt + "</TD>\n"
+        contenidocar += "<TD>" + item.precioArt + "</TD>\n"
+        contenidocar += "</TR>\n"
+    contenidocar += "</TABLE>>];\n"
+    contenidocar += "}"
+
+    dot = "Graficos/Carrito.dot"
+    with open(dot, 'w') as f:
+        f.write(contenidocar)
+    result = "Salida/Carrito.png"
+    os.system('dot -Tpng ' + dot +  ' -o' + result)
+
+
+def abrircarrito():
+    im = Image.open('Salida/Carrito.png')
+    im.show()
 
 #-------------------------------GUARDANDO DATOS PARA VOLVER A JUGAR-------------------------
 
@@ -407,11 +442,8 @@ def Partida():
 
     ventanaUser.withdraw()
     ListaAdy.crear(int(dimensionestablero))
-    #jugador2 = textoNombre.get(1.0, tk.END+"-1c")
     for x in range(int(dimensionestablero)):
         ListaAdy.insertar(x,x)
-        #print("X?", x)
-
     jugador2 = nombrejugador2
     
     MAR = " "
@@ -433,7 +465,6 @@ def Partida():
     Buq = 4
     # Formula para determinar la cantidad de barcos por tablero
     # B(m) = ((m-1)/10)+1
-    #dimens = textoDimension.get(1.0,tk.END+"-1c")
     dimens = dimensionestablero
     dimen = int(dimens)
     if dimen<10:
@@ -1456,13 +1487,15 @@ x_ventana2 = ventanaObtenerDimension.winfo_screenwidth() // 2 - ancho_ventana2 /
 y_ventana2 = ventanaObtenerDimension.winfo_screenheight() // 2 - alto_ventana2 // 2
 posicion2 = str(ancho_ventana2) + "x" + str(alto_ventana2) + "+" + str(x_ventana2) + "+" + str(y_ventana2)
 ventanaObtenerDimension.geometry(posicion2)
-labelDimension = Label (ventanaObtenerDimension, text ="Dimensiones del Tablero", font=("Verdana",16), background="#044D9A", fg="white")
+labelDimension = Label (ventanaObtenerDimension, text ="Dimensiones del Tablero", font=("Verdana",16), background="#044D9A", 
+fg="white")
 labelDimension.place(x=50, y=45)
 labelNum = Label (ventanaObtenerDimension, text ="Numero", font=("Verdana",16), background="#044D9A", fg="white")
 labelNum.place(x=50, y=115)
 textoDimension = Text(ventanaObtenerDimension, height=2, width=12 ,fg="white", font=("Consolas", 12)) 
 textoDimension.place(x=150, y=110)
-btnCrearT = Button(ventanaObtenerDimension, height=2, width=15, text="Crear", command = lambda:[GuardarConfiguracion(),Partida()], background="#368807", font=("Verdana",10), fg="black")
+btnCrearT = Button(ventanaObtenerDimension, height=2, width=15, text="Crear", command = lambda:[GuardarConfiguracion(),Partida()],
+background="#368807", font=("Verdana",10), fg="black")
 btnCrearT.place(x=80, y=190)
 ventanaObtenerDimension.withdraw()
 
