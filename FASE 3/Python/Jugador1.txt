@@ -1,0 +1,10 @@
+ *SS      
+E       * 
+  PPPPA   
+      A   
+    A  B  
+    A     
+       B  
+   C      
+   C      
+** C    * 

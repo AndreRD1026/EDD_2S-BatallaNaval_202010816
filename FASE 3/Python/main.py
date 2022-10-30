@@ -435,6 +435,8 @@ def GuardarConfiguracion():
 def Partida():
     global Portaaviones, Submarino, Destructores, Buques, TotalBarcos, nuevocontador, nuevocontador2
     global totalmonedas,tokensjugador, totalmonedas2, tokensjugador2, jugador2
+    global barcosdestruidos ,tokensganados, barcosdestruidos2, tokensganados2
+    global tirosfallados1, tirosfallados2
     global FILAS, COLUMNAS, MAR
     global BUQUE, DESTRUCTOR, SUBMARINO, DESTRUCTOR_VERTICAL, SUBMARINO_VERTICAL
     global PORTAAVIONES, PORTAAVIONES_VERTICAL, DISPARO_FALLADO, DISPARO_ACERTADO
@@ -490,6 +492,12 @@ def Partida():
         otroB = TotalBarcos
         nuevocontador = otroB
         nuevocontador2 = otroB
+        barcosdestruidos = 0
+        tokensganados = 0
+        barcosdestruidos2 = 0
+        tokensganados2 = 0
+        tirosfallados1 = 0
+        tirosfallados2 = 0
         totalmonedas = monedasusuario
         pasarmoneda = totalmonedas
         tokensjugador = pasarmoneda
@@ -520,6 +528,11 @@ def Partida():
         otroB = TotalBarcos
         nuevocontador = otroB
         nuevocontador2 = otroB
+        barcosdestruidos = 0
+        tokensganados = 0
+        barcosdestruidos2 = 0
+        tokensganados2 = 0
+        tirosfallados1 = 0
         totalmonedas = monedasusuario
         pasarmoneda = totalmonedas
         tokensjugador = pasarmoneda
@@ -550,6 +563,11 @@ def Partida():
         otroB = TotalBarcos
         nuevocontador = otroB
         nuevocontador2 = otroB
+        barcosdestruidos = 0
+        tokensganados = 0
+        barcosdestruidos2 = 0
+        tokensganados2 = 0
+        tirosfallados1 = 0
         totalmonedas = monedasusuario
         pasarmoneda = totalmonedas
         tokensjugador = pasarmoneda
@@ -900,9 +918,12 @@ def solicitando_coordenadas2():
     disparar2()
 
 def abrirventana():
-    global ventanaNueva, lbltokens
+    global ventanaNueva, lbltokens, lblbarcosdestruidos, lbltokensganador, lbltirosfallados1
     lblbarcoos = nuevocontador
     lbltokens = tokensjugador
+    lblbarcosdestruidos = barcosdestruidos
+    lbltirosfallados1 = tirosfallados1
+    lbltokensganador = tokensganados
     ventanaNueva = Toplevel()
     ventanaNueva.title("Tablero Jugador 1")
     ventanaNueva.resizable(0,0)
@@ -949,9 +970,12 @@ def abrirventana():
     btnAtaque.place(x=990, y=320)
 
 def abrirventana2():
-    global ventanaNueva2
+    global ventanaNueva2, lblbarcosdestruidos2, lbltokensganador2, lbltirosfallados2
     lblbarcoos2 = nuevocontador2
     lbltokens2 = tokensjugador2
+    lblbarcosdestruidos2 = barcosdestruidos2
+    lbltirosfallados2 = tirosfallados2
+    lbltokensganador2 = tokensganados2
     ventanaNueva2 = Toplevel()
     ventanaNueva2.title("Tablero Jugador 2")
     ventanaNueva2.resizable(0,0)
@@ -1011,9 +1035,8 @@ def sacarcoordenadas2(nuevoX, nuevoY):
 
 def disparar() -> bool:
     global nuevocontador, tokensjugador, barcosdestruidos, tokensganados, disparosfalladosj1
+    global tirosfallados1
     disparosfalladosj1 = 0
-    barcosdestruidos = 0
-    tokensganados = 0
     x = int(YDisparo)
     y = int(XDisparo)
     matriz = MatrizActual
@@ -1022,6 +1045,7 @@ def disparar() -> bool:
         #print("Fallado")
         MessageBox.showinfo("Fallo", "Disparo fallado")
         disparosfalladosj1 += 1
+        tirosfallados1 += 1
         imprimir_matriz(MatrizActual, False,
                     oponente_de_jugador(turno_actual1))
         return False
@@ -1047,9 +1071,8 @@ def disparar() -> bool:
 
 def disparar2() -> bool:
     global nuevocontador2, tokensjugador2, barcosdestruidos2, tokensganados2, disparosfalladosj2
+    global tirosfallados2
     disparosfalladosj2 = 0
-    barcosdestruidos2 = 0
-    tokensganados2 = 0
     x = int(YDisparo2)
     y = int(XDisparo2)
     matriz = MatrizActual2
@@ -1058,6 +1081,7 @@ def disparar2() -> bool:
         #print("Fallado")
         MessageBox.showinfo("Fallo", "Disparo fallado")
         disparosfalladosj2 += 1
+        tirosfallados2 += 1
         imprimir_matriz2(MatrizActual2, False,
                     oponente_de_jugador(turno_actual1))
         
@@ -1095,7 +1119,7 @@ def creartableros():
 
 
 def pruebanueva():
-    global MatrizActual, turno_actual1, jugadorganador1, tokensganador1, barcosganador1, falladosj1
+    global MatrizActual, turno_actual1, jugadorganador1, tokensganador1, barcosganador1, falladosj1, totaltiros1
     DERROTADO = FALSE
     turno_actual1 = JUGADOR_1
     while DERROTADO == False:
@@ -1107,9 +1131,10 @@ def pruebanueva():
             abrirventana()
             if nuevocontador == 0 :
                 jugadorganador1 = turno_actual1
-                tokensganador1 =  tokensganados
-                barcosganador1 = barcosdestruidos
-                falladosj1 = disparosfalladosj1
+                tokensganador1 =  lbltokensganador
+                barcosganador1 = lblbarcosdestruidos
+                falladosj1 = lbltirosfallados1
+                totaltiros1 = lblbarcosdestruidos + lbltirosfallados1
                 MessageBox.showinfo("Exito", "El jugador " + jugadorganador1 +  " ha ganado")
                 agregarpuntos()
                 resultadojugador1()
@@ -1159,7 +1184,7 @@ def resultadojugador2():
 
 
 def pruebanueva1():
-    global  MatrizActual2, jugadorganador2, tokensganador2, barcosganador2, falladosj2
+    global  MatrizActual2, jugadorganador2, tokensganador2, barcosganador2, falladosj2, totaltiros2
     #ventanaNueva.destroy()
     DERROTADO = FALSE
     turno_actual2 = JUGADOR_2
@@ -1174,9 +1199,10 @@ def pruebanueva1():
             abrirventana2()
             if nuevocontador2 == 0 :
                 jugadorganador2 = turno_actual2
-                tokensganador2 =  tokensganados2
-                barcosganador2 = barcosdestruidos2
-                falladosj2 = disparosfalladosj2
+                tokensganador2 =  lbltokensganador2
+                barcosganador2 = lblbarcosdestruidos2
+                falladosj2 = lbltirosfallados2
+                totaltiros2 = lblbarcosdestruidos2 + lbltirosfallados2
                 MessageBox.showinfo("Exito", "El jugador " + jugadorganador2 +  " ha ganado")
                 resultadojugador1()
                 tablerofinal1()
@@ -1231,12 +1257,12 @@ def mostrarjugador1():
 
 
 def estadisticasganador():
-    if nuevocontador == 9 :
+    if nuevocontador == 0 :
         #definir figura y ejes
         fig, ax = plt.subplots()
         
-        table_data = [ ["Puntos Ganados", "Barcos destruidos"],
-            [tokensganador1, barcosganador1]
+        table_data = [ ["Puntos Ganados", "Total Disparos" , "Barcos destruidos", "Tiros Fallados"],
+            [tokensganador1, totaltiros1 ,barcosganador1, falladosj1]
         ]
 
         #create table
@@ -1250,12 +1276,12 @@ def estadisticasganador():
         #display table
         plt.title("Jugador Ganador : " + jugadorganador1)
         plt.show()
-    else:
+    if nuevocontador2 == 0:
         #definir figura y ejes
         fig, ax = plt.subplots()
         
-        table_data = [ ["Puntos Ganados", "Barcos destruidos"],
-            [tokensganador2, barcosganador2]
+        table_data = [ ["Puntos Ganados", "Total Disparos", "Barcos destruidos" , "Tiros Fallados"],
+            [tokensganador2,totaltiros2, barcosganador2, falladosj2]
         ]
         #create table
         table = ax.table(cellText = table_data, loc = 'center')
@@ -1367,7 +1393,7 @@ x_ventana1 = ventanaLog.winfo_screenwidth() // 2 - ancho_ventana1 // 2
 y_ventana1 = ventanaLog.winfo_screenheight() // 2 - alto_ventana1 // 2
 posicion1 = str(ancho_ventana1) + "x" + str(alto_ventana1) + "+" + str(x_ventana1) + "+" + str(y_ventana1)
 ventanaLog.geometry(posicion1)
-bgL = PhotoImage(file="Python/user.png")
+bgL = PhotoImage(file="user.png")
 labelPhotoL = Label(ventanaLog, image=bgL)
 labelPhotoL.place(x=150,y=30)
 labelLogin = Label (ventanaLog, text ="Login", font=("Verdana",16), background="#044D9A", fg="white")
@@ -1397,7 +1423,7 @@ x_ventana1 = ventanaAdmin.winfo_screenwidth() // 2 - ancho_ventana1 // 2
 y_ventana1 = ventanaAdmin.winfo_screenheight() // 2 - alto_ventana1 // 2
 posicion1 = str(ancho_ventana1) + "x" + str(alto_ventana1) + "+" + str(x_ventana1) + "+" + str(y_ventana1)
 ventanaAdmin.geometry(posicion1)
-bg = PhotoImage(file="Python/admin.png")
+bg = PhotoImage(file="admin.png")
 labelPhoto = Label(ventanaAdmin, image=bg)
 labelPhoto.place(x=150,y=30)
 btnUser = Button(ventanaAdmin, height=2, width=22, text="Lista de usuarios", command = lambda: [verusuario()], background="#368807", font=("Verdana",10), fg="black")
@@ -1426,7 +1452,7 @@ x_ventana1 = ventanaUser.winfo_screenwidth() // 2 - ancho_ventana1 // 2
 y_ventana1 = ventanaUser.winfo_screenheight() // 2 - alto_ventana1 // 2
 posicion1 = str(ancho_ventana1) + "x" + str(alto_ventana1) + "+" + str(x_ventana1) + "+" + str(y_ventana1)
 ventanaUser.geometry(posicion1)
-bgUser = PhotoImage(file="Python/usuario.png")
+bgUser = PhotoImage(file="usuario.png")
 labelPhotoUser = Label(ventanaUser, image=bgUser)
 labelPhotoUser.place(x=150,y=30)
 btnEditar = Button(ventanaUser, height=2, width=15, text="Editar Informacion", command = lambda: [ventanaUser.withdraw(), ventanaEdit.deiconify()], background="#368807", font=("Verdana",10), fg="black")
@@ -1455,7 +1481,7 @@ x_ventana1 = ventanaEdit.winfo_screenwidth() // 2 - ancho_ventana1 // 2
 y_ventana1 = ventanaEdit.winfo_screenheight() // 2 - alto_ventana1 // 2
 posicion1 = str(ancho_ventana1) + "x" + str(alto_ventana1) + "+" + str(x_ventana1) + "+" + str(y_ventana1)
 ventanaEdit.geometry(posicion1)
-bgc = PhotoImage(file="Python/usuario.png")
+bgc = PhotoImage(file="usuario.png")
 labelPhotoC = Label(ventanaEdit, image=bgc)
 labelPhotoC.place(x=150,y=30)
 labelUserC = Label (ventanaEdit, text ="NICK", font=("Verdana",16), background="#044D9A", fg="white")

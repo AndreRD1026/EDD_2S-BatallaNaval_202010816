@@ -1,0 +1,1 @@
+Deben salir las matrices de los tableros y los otros grafos
