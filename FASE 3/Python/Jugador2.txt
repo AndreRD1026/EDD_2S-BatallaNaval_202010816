@@ -1,10 +1,10 @@
-E        E
-  *       
-DD    A   
- *SS  A   
+**ESSS    
+*         
+*         
           
+        * 
           
- * B   B  
-         C
-  A      C
-  A  PPPPC
+       *  
+*      AE 
+A*PPP   BB
+        **

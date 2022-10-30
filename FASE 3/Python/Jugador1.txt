@@ -1,10 +1,10 @@
- *SS      
-E       * 
-  PPPPA   
-      A   
-    A  B  
-    A     
-       B  
-   C      
-   C      
-** C    * 
+          
+  PPPP    
+  B       
+         B
+          
+ A B   SSS
+ AB       
+       CA 
+       CA 
+  DD   C  
